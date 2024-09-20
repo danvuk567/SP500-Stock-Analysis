@@ -1,4 +1,4 @@
-# Datawarehouse Creation files Description
+# Datawarehouse Creation Files Description
 
 For this project, we will use an SQL server database. The sql files will create database objects in our data warehouse using a Snowflake schema. For more information on Snowflake schemas, you can reference this site: [Snowflake Schema in Data Warehouse Model](https://www.geeksforgeeks.org/snowflake-schema-in-data-warehouse-model/). I will describe what the purpose of each file is going forward. 
 
