@@ -124,7 +124,7 @@ This sql file will create the Fact table called *Yahoo_Equity_Pricing* which sto
 	FOREIGN KEY (Industry_ID)
 	REFERENCES [Financial_Securities].[Equities].Industries(Industry_ID);
 
-	ALTER TABLE [Financial_Securities].[Equities].[Equities]
+        ALTER TABLE [Financial_Securities].[Equities].[Equities]
 	ADD CONSTRAINT FK_Equities_Sub_Industries
 	FOREIGN KEY FOREIGN KEY (Sub_Industry_ID)
 	REFERENCES [Financial_Securities].[Equities].Sub_Industries(Sub_Industry_ID);
@@ -134,7 +134,7 @@ This sql file will create the Fact table called *Yahoo_Equity_Pricing* which sto
 	FOREIGN KEY (Ticker_ID)
 	REFERENCES [Financial_Securities].[Equities].Equities (Ticker_ID);
 
-This sql file will create the foreign key constraints called *FK_Industry_Groups_Sector*, *FK_Industries_Industry_Groups*, *FK_Sub_Industries_Industries*, and *FK_Equities_Sub_Industries* which will enforce a Snowflake relational hierarchy for Equities. The foreign key *FK_US_Yahoo_Equity_Prices_Ticker_ID* will link the *Equities* Dimension table to the *Yahoo_Equity_Prices* Fact table via *Ticker_ID*.
+This sql file will create the foreign key constraints called *FK_Industry_Groups_Sector*, *FK_Industries_Industry_Groups*, *FK_Sub_Industries_Industries*, and *FK_Equities_Sub_Industries* which will enforce a Snowflake relational hierarchy for Equities. The foreign key *FK_US_Yahoo_Equity_Prices_Ticker_ID* will link the *Equities* Dimension table to the *Yahoo_Equity_Prices* Fact table via *Ticker_ID*. This file should only be run once the data is populated to ensure the constraint validation does not fail from missing data.
 
 ## *Create-Market_Calendar-table.sql*
 
@@ -147,10 +147,6 @@ This sql file will create the foreign key constraints called *FK_Industry_Groups
 
 This sql file will create the Dimension table called *Market_Calendar*. To determine if there is missing Equity pricing data in the *Yahoo_Equity_Pricing* table for any Ticker, we need to validate it against valid US market dates. The Python package [pandas_market_calendars](https://pandas-market-calendars.readthedocs.io/en/latest/) can retrieve the calendar from any global stock exchange which should serve our purpose. We can then store the date and times for any *Country* in this table. The Primary Key is defined as a unique composite key using *Country* and *Date*.
 
-
-
-
-    
 
 
 
