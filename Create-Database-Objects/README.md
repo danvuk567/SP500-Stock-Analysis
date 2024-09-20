@@ -49,7 +49,7 @@ This sql file will create the *Data_STG* table. Before we create any tables that
 	  [Ticker_ID] [int] IDENTITY (1, 1) NOT NULL,
 	  [Ticker] [nchar](10) NOT NULL,
 	  [Name] [nchar](50) NULL,
-      [Sub_Industry_ID] [int] NULL,
+      [Sub_Industry_ID] [int] NOT NULL,
     CONSTRAINT PK_Equities PRIMARY KEY(Ticker_ID));
 
 This sql file will create the Dimension table called *Equities* with an auto-generated identity *Ticker_ID*, the *Ticker* symbol and the *Name* of the Ticker. *Sub_Industry_ID* stores the unique Sub-Industry identifier that the Equity belongs to. The Primary Key is *Ticker_ID* which is unique.
