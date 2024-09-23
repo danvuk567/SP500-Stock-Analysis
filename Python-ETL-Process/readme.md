@@ -187,7 +187,7 @@ Lastly, we terminate the session s1 to avoid any increased memory usage and ensu
 
 
 
-## Load the Sector data: : Load_Sectors.ipynb
+## Load the Sectors data: : Load_Sectors.ipynb
 
 We establish a database connection and then query the *Data_STG* table and bind it to the df_sectors dataframe. We will define the *Sectors* table and then loop through the dataframe and query the table to see if the record already exists. We do this in case we want to rerun the code and update the table and if the record does not exist, we do an insert for the columns in *Sectors* referencing the columns in *Data_STG*. If any issues occur, we print the error message, close the session and raise the exception which will halt any further execution. We want to ensure all records are loaded. We do a final check to ensure the number of records match between the *Data_STG* table and the *Sectors* table and close the session.
 
