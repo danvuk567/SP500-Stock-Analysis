@@ -76,6 +76,56 @@ import urllib.parse as url
         s1.commit()  # Commit the transaction to make the changes permanent
 
 
+## Staging the Sector data
+
+We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our *Custom_Python_Functions* folder. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
+
+        import datetime as dt
+        import sqlalchemy as sa
+        import os
+        import sys
+        import urllib.parse as url
+        import pandas as pd
+
+        # Setup connection parameters
+        comp = os.environ["COMPUTERNAME"]  # Get the computer name from environment variables
+        dbase = "Financial_Securities"     # Define the name of the database
+
+        username = os.getlogin()
+        external_folder_path = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Custom_Python_Functions'
+        sys.path.append(external_folder_path)
+        from custom_python_functions import create_connection, clear_table
+
+
+        # Create a connection to the database
+        s, e = create_connection(comp, dbase, "", "")
+        s1 = s()  # Instantiate a session object
+
+        Base = sa.orm.declarative_base()
+
+        class Data_STG(Base):
+    
+            """
+            SQLAlchemy ORM class representing the 'Data_STG' table in the 'Equities' schema.
+
+            Attributes:
+                __tablename__ (str): The name of the table in the database.
+                __table_args__ (dict): Additional arguments for the table, including schema name.
+                Date (Column): The date column, part of the composite primary key.
+                Integer (Column): An integer column.
+                Description (Column): A description column, part of the composite primary key.
+            """
+    
+            __tablename__ = 'Data_STG'
+            __table_args__ = {'schema': 'Equities'}
+            Date = sa.Column(sa.Date, primary_key=True)
+            Int_Value1 = sa.Column(sa.Integer, primary_key=True)
+            Description = sa.Column(sa.String)
+
+        # Clear the existing data in the Data_STG table
+        clear_table(s1, 'Financial_Securities.Equities.Data_STG')
+
+
 
 
 
