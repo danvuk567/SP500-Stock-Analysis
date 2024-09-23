@@ -1,4 +1,4 @@
-# Data Sources and File Transformation Description
+# Data Sources and File Transformation Overview
 
 ## Finding and transforming Sub-Industry data for S&P500 Equities
 
