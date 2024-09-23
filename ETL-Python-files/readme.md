@@ -89,7 +89,7 @@ Before we can create a Dimension relational hierarchy that is linked to Equities
 
 Let's reference this Wikipedia link: [Global Industry Classification Standard](https://en.wikipedia.org/w/index.php?title=Global_Industry_Classification_Standard&oldid=1243171079) that was last updated in August 2024. We then copy-paste the data into excel and use **Power Query** to clean up and transform the data and save the file as *GICS_Industries.csv* in the *Data_Files* folder.
 
-
+![S&P500 GICS industries Excel snapshot](https://github.com/danvuk567/SP500-Stock-Analysis/edit/main/images/SP500_GICS_Industries.jpg)
 
 
 
