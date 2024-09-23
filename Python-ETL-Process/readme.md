@@ -4,11 +4,13 @@
 
 For this project, we will be running Python 3.9 in a conda environment. For more information on getting started with conda, please refer to this link: [Getting started with conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html). 
 
-The following packages will need be installed using conda or pip with the following commands:
+The following packages will need be installed if they do not already exist using conda or pip with the following commands:
+
+conda datetime
 
 conda install sqlalchemy
 
-conda install os
+conda numpy
 
 conda install pandas
 
