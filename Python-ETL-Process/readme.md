@@ -126,7 +126,7 @@ We will now import the packages we need and create a database connection by call
         # Clear the existing data in the Data_STG table
         clear_table(s1, 'Financial_Securities.Equities.Data_STG')
 
-We define the path to our *GICS_Industries.csv* file, use the current date nad read the file into the pandas dataframe df_sectors and keep only the unique Sector_ID and Sector.
+We define the path to our *GICS_Industries.csv* file, use the current date nad read the file into the pandas dataframe df_sectors and keep only the unique Sector_ID and Sector records.
 We check if the file exists and loop through the rows and use cnt_recs to keep track of how many rows were loaded. We use an SQL exception that will capture any error but we don't need to raise since we can rerun and clear the table each time we run the commands. After the loop, we issue a commit to our session and then query *Data_STG* to check if the number of records match the number or rows in the dataframe.
 
         in_file = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Data_Files/GICS_Industries.csv' # Path to the CSV file
@@ -297,6 +297,31 @@ We establish a database connection and then query the *Data_STG* table and bind 
             print(f"All {cnt_recs2} records were loaded into Sectors database table!")         
 
         s1.close()  # Close the session   
+
+## Stage Industry Groups data: Load_Industry_Groups_STG.ipynb 
+
+This process is similar to staging the Sectors data so I won't go into details. We load the file *GICS_Industries.csv* and in this case, keep the unique Industry_Group_ID, Industry_Group and Sector_ID records.
+We then load the data into the *Data_STG* table.
+
+## Load Industry Groups data: Load_Industry_Groups.ipynb 
+
+This process will load the *Industry_Groups* table with Industry Group and Sector_ID from the *Data_STG* table.
+
+## Stage Industries data: Load_Industries_STG.ipynb 
+
+We load the file *GICS_Industries.csv* and in this case, keep the unique Industry_ID, Industry and Industry_Group_ID records.
+We then load the data into the *Data_STG* table.
+
+## Load Industries data: Load_Industries.ipynb  
+
+This process will load the *Industries* table with Industry and Industry_Group_ID from the *Data_STG* table.
+
+
+
+
+
+
+
 
 
 
