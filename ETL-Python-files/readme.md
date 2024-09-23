@@ -94,7 +94,11 @@ Let's reference this Wikipedia link: [Global Industry Classification Standard](h
 ![GICS Industries Excel](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/GICS_Industries.jpg?raw=true)
 
 
-## Merging S&P500 Sub_industry data with *Power Query
+## Merging S&P500 Sub_industry data with Power Query
+
+We will then load *SP500_GICS_Sub-Industries.csv* and *GICS_Industries.csv* into Excel and use **Power Query** to merge the data based on Sub-Industry and save it as *SP500_GICS_Combined.csv*.
+
+
 
 
 
