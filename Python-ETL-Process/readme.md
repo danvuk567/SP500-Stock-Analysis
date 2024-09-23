@@ -86,7 +86,6 @@ We will now import the packages we need and create a database connection by call
         import sqlalchemy as sa
         import os
         import sys
-        import urllib.parse as url
         import pandas as pd
 
         # Setup connection parameters
