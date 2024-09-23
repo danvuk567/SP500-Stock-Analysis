@@ -1,4 +1,4 @@
-# This section describes the data source files needed for the project 
+# Data Sources and File Transformation Description
 
 ## Finding and transforming Sub-Industry data for S&P500 Equities
 
