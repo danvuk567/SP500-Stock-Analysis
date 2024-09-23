@@ -80,7 +80,7 @@ import urllib.parse as url
 
 ## Staging the Sector data
 
-We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our *Custom_Python_Functions* folder. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
+We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our *Custom_Python_Functions* folder. We can define the path to this folder using our Windows username and sys package. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
 
         import datetime as dt
         import sqlalchemy as sa
@@ -127,6 +127,68 @@ We will now import the packages we need and create a database connection by call
         # Clear the existing data in the Data_STG table
         clear_table(s1, 'Financial_Securities.Equities.Data_STG')
 
+We define the path to our *GICS_Industries.csv* file, use the current date nad read the file into a pandas dataframe and keep only the unique Sector_ID and Sector.
+We check if the file exists and loop through the rows and use cnt_recs to keep track of how many rows were loaded. We use an SQL exception that will capture any error but we don't need to raise since we can rerun and clear the table each time we run the commands. After the loop, we issue a commit to our session and check if the number of rows in the dataframe 
+
+        in_file = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Data_Files/GICS_Industries.csv' # Path to the CSV file
+
+
+        curr_date = dt.datetime.now()  # Current date and time
+
+        cnt_recs = 0  # Counter for the number of successfully inserted records
+
+        if os.path.isfile(in_file):
+            # Load the CSV file into a DataFrame
+            df_sectors = pd.read_csv(in_file)
+    
+
+            # Select relevant columns
+            df_sectors = df_sectors[['Sector_ID', 'Sector']].drop_duplicates()
+    
+            # Iterate through the rows of the DataFrame
+            for index, row in df_sectors.iterrows():
+                try:
+                    # Create a new Data_STG instance for each row
+                    q1 = Data_STG(
+                        Date=curr_date,
+                        Int_Value1=row['Sector_ID'],
+                        Description=row['Sector']
+                    )
+                    s1.add(q1)  # Add the instance to the session
+                    cnt_recs += 1  # Increment the counter
+            
+                # Handle SQLAlchemy errors if they occur during adding the object
+                except sa.exc.SQLAlchemyError as e:
+                    # Print the error
+                    message = f"Issue with updating Data_STG database table for Date: {curr_date} and Sector: {row['Sector']}. Error: {e}"
+                    print(message)
+    
+            # Commit all changes to the database
+            s1.commit()
+
+            # SQL query to count the number of records in the Sectors table
+            sql_stat = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Data_STG]"""
+
+            try: 
+                result = e.execute(sql_stat)  # Execute the count query
+                cnt_recs = result.scalar()  # Get the count of records
+    
+            # Handle SQLAlchemy errors if they occur during query execution
+            except sa.exc.SQLAlchemyError as e:
+            # Print the error
+            print(f"Issue querying Data_STG database table for count! Error: {e}")
+
+            # Compare the record counts and print the result    
+            if cnt_recs < len(df_sectors):
+                print(f"Only {cnt_recs} records out of {len(df_sectors)} records were loaded into the Data_STG table!")
+            else:
+                print(f"All {cnt_recs} records were loaded into the Data_STG table!")
+        else:
+            print("File not found!")  # Print a message if the file does not exist
+
+Lastly, we terminate the session s1 to avoid any increased memory usage and ensure that any uncommitted changes are finalized or rolled back.
+
+        s1.close()  # Close the session
 
 
 
