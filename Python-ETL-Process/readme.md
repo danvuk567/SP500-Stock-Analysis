@@ -6,15 +6,20 @@ For this project, we will be running Python 3.9 in a conda environment. For more
 
 The following packages will need be installed if they do not already exist using conda or pip with the following commands:
 
-conda datetime
+conda install datetime
 
 conda install sqlalchemy
 
-conda numpy
+conda install numpy
 
 conda install pandas
 
 conda install urllib
+
+pip install yfinance
+
+conda install time
+
 
 ## Create custom re-usable functions: custom_python_functions.py
 
@@ -341,6 +346,163 @@ We load the file *SP500_GICS_Combined.csv* that we merged with all Industry data
 ## Load Sub-Industries data: Load_Sub-Industries.ipynb  
 
 This process will load the *Equities* table with Equity data and Sub_Industry_ID from the *Data_STG* table.
+
+## Stage Yahoo Equity Pricing data: Load_Yahoo_Equity_Prices_STG.ipynb
+
+For this process, we'll go into some new types of code. We will import the packages needed and 2 other packages, yfinance and time. After establishing a connection, we define the staging table *Data_STG* to store the pricing data we will retrieve from Yahoo Finance. We then clear the *Data_STG* table.
+
+        import datetime as dt
+        import sqlalchemy as sa
+        import os
+        import sys
+        import pandas as pd
+        import yfinance as yf
+        import time
+
+        Base = sa.orm.declarative_base()
+
+        class Data_STG(Base):
+    
+            """
+            SQLAlchemy ORM class representing the 'Data_STG' table in the 'Equities' schema.
+
+            Attributes:
+            __tablename__ (str): The name of the table in the database.
+            __table_args__ (dict): Additional arguments for the table, including schema name.
+            Date (Column): The date column, used as part of the primary key.
+            Description (Column): The description column, used as part of the primary key.
+            Float_Value1 (Column): A column for storing floating-point values, such as stock prices or metrics.
+            Float_Value2 (Column): Another column for storing floating-point values.
+            Float_Value3 (Column): Another column for storing floating-point values.
+            Float_Value4 (Column): Another column for storing floating-point values.
+            Int_Value1 (Column): A column for storing integer values, such as volumes or counts.
+            """
+    
+            __tablename__ = 'Data_STG'
+            __table_args__ = {'schema': 'Equities'}
+            Date = sa.Column(sa.Date, primary_key=True)
+            Description = sa.Column(sa.String, primary_key=True)
+            Float_Value1 = sa.Column('Float_Value1', sa.Float)
+            Float_Value2 = sa.Column('Float_Value2', sa.Float)
+            Float_Value3 = sa.Column('Float_Value3', sa.Float)
+            Float_Value4 = sa.Column('Float_Value4', sa.Float)
+            Int_Value1 = sa.Column('Int_Value1', sa.BigInteger)  
+
+            # Clear the existing data in the Data_STG table
+            clear_table(s1, 'Financial_Securities.Equities.Data_STG')
+
+Next, we'll use the tickers we have loaded in the Equties table and store them in a dataframe and convert the values to a list called *ticker_list*.
+
+            # Define SQL query to retrieve tickers from the Equities table
+            sql_stat = """SELECT
+              TRIM(Ticker) AS Ticker
+              FROM [Financial_Securities].[Equities].[Equities]
+              ORDER BY Ticker"""
+
+            try:
+                # Execute the SQL query and read the results into a DataFrame
+                df_tickers = pd.read_sql(sql_stat, s1.bind)
+                # Store the values as a list
+                ticker_list = df_tickers['Ticker'].values.tolist()
+
+                # Handle exceptions during SQL query execution
+                except sa.exc.SQLAlchemyError as e:
+                print(f"Issue querying Equities database table! Error: {e}")
+                s1.close()
+                raise
+
+We will then define a function called *get_dates_for_years* that will get start dates and end dates for the number of years we want to fetch data for. We then call the function for 3 years in order to fetch the last 3 years of pricing data.
+
+            def get_dates_for_years(yrs):
+    
+            """
+            Generates the start and end dates for data retrieval.
+
+            Args:
+                yrs (int): Number of years to look back from the current year.
+
+            Returns:
+                tuple: A tuple containing the start date and end date in string format.
+            """
+    
+            # Calculate the end date as one day before today
+            end_date = (dt.datetime.now() + dt.timedelta(days=-1)).strftime("%Y-%m-%d")
+            # Calculate the start year by subtracting the given number of years from the current year
+            start_year = int(dt.datetime.now().strftime("%Y")) - yrs
+            # Set the start date to January 1st of the start year
+            start_date = str(start_year) + "-01-01"
+    
+            return start_date, end_date
+
+            # Get the date range for data retrieval
+            start_date, end_date = get_dates(3)
+
+Next, we define a function to get the pricing data from Yahoo Finance API for the ticker, start_date and end_date we pass. Closing prices simply refer to the cost of shares at the end of the day, whereas adjusted closing prices take dividends, stock splits, and new stock offerings into account. For more information on this, refer to this link: [Adjusted Closing Price: How It Works, Types, Pros & Cons](https://www.investopedia.com/terms/a/adjusted_closing_price.asp). For our analysis, we only want prices that are influenced by buyers and sellers, so we want to retrieve adjusted prices. In order to make sure all prices are adjusted, we retrieve the Open, High, Low and Close prices and divide all the prices by the *Factor = Close / Adj Close*. Some stocks have multiple classes and so those tickers will have a suffix of class A, B or C. For more information on this, refer to this link: [Dual Class Stock: Definition, Structure, and Controversy](https://www.investopedia.com/terms/d/dualclassstock.asp). For those cases, the ticker notation may have a "." or "-" or "/" denoting the suffix. Our multi-class Equity tickers were suffixed using "." and Yahoo Finance uses "-" so we will replace the string for thos cases when calling the API funtion.
+
+
+        def create_daily_pricing(ticker, start_date, end_date):
+    
+        """
+        Retrieves and processes daily pricing data for a given ticker symbol.
+
+        Args:
+            ticker (str): The stock ticker symbol.
+            start_date (str): The start date for the data retrieval.
+            end_date (str): The end date for the data retrieval.
+
+        Returns:
+            a DataFrame with daily pricing data.
+        """
+    
+        # Download stock data from Yahoo Finance
+        stock_data = yf.download(ticker.replace(".", "-"), start=start_date, end=end_date)
+    
+        # Copy the data for processing
+        df_tmp = stock_data.copy()
+        df_tmp['Ticker'] = ticker
+        df_tmp.reset_index(inplace=True)
+        df_tmp['Date'] = pd.to_datetime(df_tmp['Date'], format='%Y-%m-%d')
+    
+        # Fill missing values using forward fill method
+        df_tmp['Open'] = df_tmp['Open'].fillna(method="ffill")
+        df_tmp['High'] = df_tmp['High'].fillna(method="ffill")
+        df_tmp['Low'] = df_tmp['Low'].fillna(method="ffill")
+    
+        # Adjust prices and calculate the factor for adjustments based on Close vs. Adjusted Close 
+        df_tmp['Factor'] = df_tmp['Close'] / df_tmp['Adj Close']
+        df_tmp['Close'] = round(df_tmp['Adj Close'].fillna(method="ffill"), 2)
+        df_tmp['Factor'] = df_tmp['Close'] / df_tmp['Adj Close']
+        df_tmp['Open'] = round(df_tmp['Open'] / df_tmp['Factor'], 2)
+        df_tmp['High'] = round(df_tmp['High'] / df_tmp['Factor'], 2)
+        df_tmp['Low'] = round(df_tmp['Low'] / df_tmp['Factor'], 2)
+    
+        # Select relevant columns and prepare DataFrame for database insertion
+        df_tmp = df_tmp[['Ticker', 'Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
+        df_tmp['Date2'] = df_tmp['Date']
+        df_tmp.set_index(['Date2'], inplace=True)
+        df_tmp.sort_values(by=['Date'], inplace=True)
+
+        return df_tmp
+
+We will then loop through our tickers in our ticker list and store our pricing data using our create_daily_pricing function in the df_equities dataframe. We allow 1 second to pass using the sleep function from the time package before fetching each ticker data to avoid any API rate limits. This will take some time to run in order to fetch pricing history for roughly 500 tickers.
+
+        # Initialize variables for processing
+        first_ticker = True
+
+        for ticker in ticker_list:
+            # Fetch and process daily pricing data for each ticker
+            df_tmp = create_daily_pricing(ticker, start_date, end_date)
+    
+            if len(df_tmp) > 0:
+                # Combine data for all tickers into a single DataFrame
+                if first_ticker:
+                    df_equities = df_tmp.copy()
+                    first_ticker = False
+                else:
+                    df_equities = pd.concat([df_equities, df_tmp])
+        
+                # Sleep to avoid hitting API rate limits
+                time.sleep(1)
 
 
 
