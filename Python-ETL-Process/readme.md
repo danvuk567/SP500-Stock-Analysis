@@ -548,7 +548,9 @@ We load the data into Data_STG and raise an exception to halt further processing
                 raise
 
         # Commit all changes to the database
-        s1.commit()        
+        s1.commit()  
+
+        print("Database data load is complete")
 
 And finally, we check if all records were loaded in the *Data_STG* table and close the session.
 
@@ -688,6 +690,8 @@ country = "United States" # Set the country to be United States
         # Commit the changes to the database
         s1.commit()
 
+        print("Database data load is complete")
+
 Finally, we validate if all the records were loaded.
 
         # Execute SQL query to count the number of records in the Market_Calendar table
@@ -706,7 +710,9 @@ Finally, we validate if all the records were loaded.
         else:
             print(f"All {cnt_recs} records were loaded into Market_Calendar database table!")  
 
-s1.close()  # Close the session
+        s1.close()  # Close the session
+
+## Load Yahoo Equity Pricing data: Load_Yahoo_Equity_Prices.ipynb
 
 
 
