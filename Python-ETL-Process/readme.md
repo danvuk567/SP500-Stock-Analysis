@@ -83,6 +83,37 @@ import urllib.parse as url
         s1.commit()  # Commit the transaction to make the changes permanent
 
 
+*get_dates_for_years* will pass the number of years back and number of years forward. It will return the 1st day of the year as the start date for years back. And it will return for the end date as the last day of the year for years forward > 0, otherwise it returns yesterday's date.
+
+            get_dates_for_years(yrs_back, yrs_forward):
+    
+            """
+            Generates the start and end dates for data retrieval.
+
+            Args:
+                yrs_back (int): Number of years to look back from the current year.
+                yrs_forward (int): Number of years to look forward from the current year.
+
+            Returns:
+                tuple: A tuple containing the start date and end date in string format.
+            """
+
+            if yrs_forward > 0:
+                # Calculate the end date as last day of yrs_forward from now
+                end_year = int(dt.datetime.now().strftime("%Y")) + yrs_forward
+                end_date = str(end_year) + "-12-31"
+            else:
+                # Calculate the end date as one day before today
+                end_date = (dt.datetime.now() + dt.timedelta(days=-1)).strftime("%Y-%m-%d")
+                
+            # Calculate the start year by subtracting the given number of years from the current year
+            start_year = int(dt.datetime.now().strftime("%Y")) - yrs_back
+            # Set the start date to January 1st of the start year
+            start_date = str(start_year) + "-01-01"
+    
+            return start_date, end_date
+
+
 ## Staging the Sector data: Load_Sectors_STG.ipynb
 
 We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our *Custom_Python_Functions* folder. We can define the path to this folder using our Windows username and sys package. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
@@ -411,31 +442,10 @@ Next, we'll use the tickers we have loaded in the Equties table and store them i
                 s1.close()
                 raise
 
-We will then define a function called *get_dates_for_years* that will get start dates and end dates for the number of years we want to fetch data for. We then call the function for 3 years in order to fetch the last 3 years of pricing data.
-
-            def get_dates_for_years(yrs):
-    
-            """
-            Generates the start and end dates for data retrieval.
-
-            Args:
-                yrs (int): Number of years to look back from the current year.
-
-            Returns:
-                tuple: A tuple containing the start date and end date in string format.
-            """
-    
-            # Calculate the end date as one day before today
-            end_date = (dt.datetime.now() + dt.timedelta(days=-1)).strftime("%Y-%m-%d")
-            # Calculate the start year by subtracting the given number of years from the current year
-            start_year = int(dt.datetime.now().strftime("%Y")) - yrs
-            # Set the start date to January 1st of the start year
-            start_date = str(start_year) + "-01-01"
-    
-            return start_date, end_date
+We then call the custom function *get_dates_for_years* function for 3 years back and 0 years forward in order to use dates to fetch the last 3 years of pricing data.
 
             # Get the date range for data retrieval
-            start_date, end_date = get_dates(3)
+            start_date, end_date = get_dates_for_years(3, 0)
 
 Next, we define a function to get the pricing data from Yahoo Finance API for the ticker, start_date and end_date we pass. Closing prices simply refer to the cost of shares at the end of the day, whereas adjusted closing prices take dividends, stock splits, and new stock offerings into account. For more information on this, refer to this link: [Adjusted Closing Price: How It Works, Types, Pros & Cons](https://www.investopedia.com/terms/a/adjusted_closing_price.asp). For our analysis, we only want prices that are influenced by buyers and sellers, so we want to retrieve adjusted prices. In order to make sure all prices are adjusted, we retrieve the Open, High, Low and Close prices and divide all the prices by the *Factor = Close / Adj Close*. Some stocks have multiple classes and so those tickers will have a suffix of class A, B or C. For more information on this, refer to this link: [Dual Class Stock: Definition, Structure, and Controversy](https://www.investopedia.com/terms/d/dualclassstock.asp). For those cases, the ticker notation may have a "." or "-" or "/" denoting the suffix. Our multi-class Equity tickers were suffixed using "." and Yahoo Finance uses "-" so we will replace the string for thos cases when calling the API funtion. Finally, we check if all the tickers were fetched from our ticker list.
 
@@ -560,6 +570,8 @@ And finally, we check if all records were loaded in the *Data_STG* table and clo
 
     s1.close()  # Close the session
 
+
+## Load Market Calendar data: Load_US_Market_Calendar.ipynb
 
 
 
