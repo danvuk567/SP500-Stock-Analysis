@@ -437,7 +437,7 @@ We will then define a function called *get_dates_for_years* that will get start 
             # Get the date range for data retrieval
             start_date, end_date = get_dates(3)
 
-Next, we define a function to get the pricing data from Yahoo Finance API for the ticker, start_date and end_date we pass. Closing prices simply refer to the cost of shares at the end of the day, whereas adjusted closing prices take dividends, stock splits, and new stock offerings into account. For more information on this, refer to this link: [Adjusted Closing Price: How It Works, Types, Pros & Cons](https://www.investopedia.com/terms/a/adjusted_closing_price.asp). For our analysis, we only want prices that are influenced by buyers and sellers, so we want to retrieve adjusted prices. In order to make sure all prices are adjusted, we retrieve the Open, High, Low and Close prices and divide all the prices by the *Factor = Close / Adj Close*. Some stocks have multiple classes and so those tickers will have a suffix of class A, B or C. For more information on this, refer to this link: [Dual Class Stock: Definition, Structure, and Controversy](https://www.investopedia.com/terms/d/dualclassstock.asp). For those cases, the ticker notation may have a "." or "-" or "/" denoting the suffix. Our multi-class Equity tickers were suffixed using "." and Yahoo Finance uses "-" so we will replace the string for thos cases when calling the API funtion.
+Next, we define a function to get the pricing data from Yahoo Finance API for the ticker, start_date and end_date we pass. Closing prices simply refer to the cost of shares at the end of the day, whereas adjusted closing prices take dividends, stock splits, and new stock offerings into account. For more information on this, refer to this link: [Adjusted Closing Price: How It Works, Types, Pros & Cons](https://www.investopedia.com/terms/a/adjusted_closing_price.asp). For our analysis, we only want prices that are influenced by buyers and sellers, so we want to retrieve adjusted prices. In order to make sure all prices are adjusted, we retrieve the Open, High, Low and Close prices and divide all the prices by the *Factor = Close / Adj Close*. Some stocks have multiple classes and so those tickers will have a suffix of class A, B or C. For more information on this, refer to this link: [Dual Class Stock: Definition, Structure, and Controversy](https://www.investopedia.com/terms/d/dualclassstock.asp). For those cases, the ticker notation may have a "." or "-" or "/" denoting the suffix. Our multi-class Equity tickers were suffixed using "." and Yahoo Finance uses "-" so we will replace the string for thos cases when calling the API funtion. Finally, we check if all the tickers were fetched from our ticker list.
 
 
         def create_daily_pricing(ticker, start_date, end_date):
@@ -483,6 +483,11 @@ Next, we define a function to get the pricing data from Yahoo Finance API for th
         df_tmp.sort_values(by=['Date'], inplace=True)
 
         return df_tmp
+
+        if len(df_equities['Ticker'].drop_duplicates()) < len(ticker_list):
+            print(f"Only {len(df_equities['Ticker'].drop_duplicates())} records out of {len(ticker_list)} records were fetched!")
+        else:
+            print(f"All {len(ticker_list)} records were fetched!")
 
 We will then loop through our tickers in our ticker list and store our pricing data using our create_daily_pricing function in the df_equities dataframe. We allow 1 second to pass using the sleep function from the time package before fetching each ticker data to avoid any API rate limits. This will take some time to run in order to fetch pricing history for roughly 500 tickers.
 
@@ -531,6 +536,29 @@ We load the data into Data_STG and raise an exception to halt further processing
 
         # Commit all changes to the database
         s1.commit()        
+
+And finally, we check if all records were loaded in the *Data_STG* table and close the session.
+
+    # SQL query to count the number of records in the Data_STG table
+    sql_stat = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Data_STG]"""
+
+    try: 
+        result = e.execute(sql_stat)  # Execute the count query
+        cnt_recs = result.scalar()  # Get the count of records
+    
+    # Handle SQLAlchemy errors if they occur during query execution
+    except sa.exc.SQLAlchemyError as e:
+        # Print the error
+        print(f"Issue querying Data_STG database table for count! Error: {e}")
+
+        
+    # Compare the record counts and print the result    
+    if cnt_recs < len(df_equities):
+        print(f"Only {cnt_recs} records out of {len(df_equities)} records were loaded into the Data_STG table!")
+    else:
+        print(f"All {cnt_recs} records were loaded into the Data_STG table!")
+
+    s1.close()  # Close the session
 
 
 
