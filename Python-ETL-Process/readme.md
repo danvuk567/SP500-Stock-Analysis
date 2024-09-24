@@ -379,9 +379,9 @@ This process will load the *Industries* table with Sub_Industry data and Industr
 
 ## Stage Equities data: Load_Equities_STG.ipynb 
 
-We load the file *SP500_GICS_Combined.csv* that we merged with all Industry data at Equity level and in this case, keep the Ticker, Name and Sub_Industry_ID records. We then load the data into the *Data_STG* table.
+We load the file *SP500_GICS_Combined.csv* that we merged with all Equity data as long as the tickers matches the tickers found in the *SP500_Equities_Prices.csv* file. We compare the 2 sources to ensure we have the latest valid list of S&P500 tickers. If the tickers are valid, we keep the Ticker, Name and Sub_Industry_ID records from *SP500_GICS_Combined.csv*. We then load the data into the *Data_STG* table.
 
-## Load Sub-Industries data: Load_Sub-Industries.ipynb  
+## Load Equities data: Load_Equities_STG.ipynb   
 
 This process will load the *Equities* table with Equity data and Sub_Industry_ID from the *Data_STG* table.
 
