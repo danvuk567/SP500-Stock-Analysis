@@ -20,6 +20,9 @@ pip install yfinance
 
 conda install time
 
+pip install pandas_market_calendars
+
+
 
 ## Create custom re-usable functions: custom_python_functions.py
 
