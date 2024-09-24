@@ -268,9 +268,9 @@ We establish a database connection and then query the *Data_STG* table and bind 
                         Name=row['Description']
                     )
                     s1.add(q1)  # Add the instance to the session
-        
+
+            # Handle SQLAlchemy errors if they occur during query execution
             except sa.exc.SQLAlchemyError as e:
-                # Handle SQLAlchemy errors if they occur during adding the object
                 message = f"Issue with updating Sector database table for Name: {row.Description}. Error: {e}"
                 print(message)
                 s1.close()  # Close the session
@@ -279,15 +279,26 @@ We establish a database connection and then query the *Data_STG* table and bind 
 
         s1.commit()  # Commit the transactions to the database
 
+        # SQL query to count the number of records in the Data_STG table
+        sql_stat2 = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Data_STG]"""
+          
+        try: 
+            result1 = e.execute(sql_stat2)  # Execute the count query
+            cnt_recs1 = result1.scalar()  # Get the count of records
+
+        # Handle SQLAlchemy errors if they occur during query execution
+        except sa.exc.SQLAlchemyError as e:
+            print(f"Issue querying Data_STG database table for count! Error: {e}")
+
         # SQL query to count the number of records in the Sectors table
         sql_stat3 = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Sectors]"""
               
         try: 
             result1 = e.execute(sql_stat3)  # Execute the count query
             cnt_recs2 = result1.scalar()  # Get the count of records
-    
+
+        # Handle SQLAlchemy errors if they occur during query execution
         except sa.exc.SQLAlchemyError as e:
-            # Handle SQLAlchemy errors if they occur during query execution
             print(f"Issue querying Sectors database table for count! Error: {e}")
 
         # Compare the record counts and print the result
@@ -305,16 +316,38 @@ We then load the data into the *Data_STG* table.
 
 ## Load Industry Groups data: Load_Industry_Groups.ipynb 
 
-This process will load the *Industry_Groups* table with Industry Group and Sector_ID from the *Data_STG* table.
+This process will load the *Industry_Groups* table with Industry Group data and Sector_ID from the *Data_STG* table.
 
 ## Stage Industries data: Load_Industries_STG.ipynb 
 
-We load the file *GICS_Industries.csv* and in this case, keep the unique Industry_ID, Industry and Industry_Group_ID records.
-We then load the data into the *Data_STG* table.
+We load the file *GICS_Industries.csv* and in this case, keep the unique Industry_ID, Industry and Industry_Group_ID records. We then load the data into the *Data_STG* table.
 
 ## Load Industries data: Load_Industries.ipynb  
 
-This process will load the *Industries* table with Industry and Industry_Group_ID from the *Data_STG* table.
+This process will load the *Industries* table with Industry data and Industry_Group_ID from the *Data_STG* table.
+
+## Stage Sub-Industries data: Load_Sub_Industries_STG.ipynb 
+
+We load the file *GICS_Industries.csv* and in this case, keep the unique Sub_Industry_ID, Sub_Industry and Industry_ID records. We then load the data into the *Data_STG* table.
+
+## Load Sub-Industries data: Load_Sub-Industries.ipynb  
+
+This process will load the *Industries* table with Sub_Industry data and Industry_ID from the *Data_STG* table.
+
+## Stage Equities data: Load_Equities_STG.ipynb 
+
+We load the file *SP500_GICS_Combined.csv* that we merged with all Industry data at Equity level and in this case, keep the Ticker, Name and Sub_Industry_ID records. We then load the data into the *Data_STG* table.
+
+## Load Sub-Industries data: Load_Sub-Industries.ipynb  
+
+This process will load the *Equities* table with Equity data and Sub_Industry_ID from the *Data_STG* table.
+
+
+
+
+
+
+
 
 
 
