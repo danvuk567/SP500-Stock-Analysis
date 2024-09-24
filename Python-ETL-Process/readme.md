@@ -200,6 +200,8 @@ We check if the file exists and loop through the rows and use cnt_recs to keep t
             # Commit all changes to the database
             s1.commit()
 
+            print("Database data load is complete")
+
             # SQL query to count the number of records in the Sectors table
             sql_stat = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Data_STG]"""
 
@@ -317,6 +319,8 @@ We establish a database connection and then query the *Data_STG* table and bind 
 
 
         s1.commit()  # Commit the transactions to the database
+
+        print("Database data load is complete")
 
         # SQL query to count the number of records in the Data_STG table
         sql_stat2 = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Data_STG]"""
@@ -714,6 +718,147 @@ Finally, we validate if all the records were loaded.
 
 ## Load Yahoo Equity Pricing data: Load_Yahoo_Equity_Prices.ipynb
 
+In this last process, we will load the *Yahoo_Equity_Prices* with Yahoo pricing data we staged. We connect to the database, declare the *Yahoo_Equity_Prices* table, and then create a complex query that will now merge the dates of the *Market_Calendar* with the ticker range of dates. If any prices are null, we can then handle them by forward filling them. The query data is then bound to the *df_pricing* dataframe.
+
+        # SQL query to get the Ticker_ID, Ticker and pricing data from Data_STG and Equities tables
+        # and joined with Market_Calendar to get all possible dates in case there are missing dates
+        # between the bounds of the existing pricing dates for each Ticker.
+        sql_stat = """WITH q1 AS 
+        (SELECT
+         Description, 
+         CAST(MIN(Date) AS Date) AS Min_Date,
+         CAST(MAX(Date) AS Date) AS Max_Date
+        FROM [Financial_Securities].[Equities].[Data_STG]
+        GROUP BY Description),
+        q2 AS
+        (SELECT
+         q3.Ticker_ID,
+         q3.Ticker,
+         q4.Date
+        FROM
+        [Financial_Securities].[Equities].[Equities] q3,
+        [Financial_Securities].[Equities].[Market_Calendar] q4),
+        q5 AS
+        (SELECT 
+         q2.Ticker_ID,
+         q2.Ticker,
+         q2.Date 
+        FROM q2
+        INNER JOIN q1
+        ON q1.Description = q2.Ticker
+        AND q2.Date BETWEEN q1.Min_Date AND q1.Max_Date)
+        SELECT 
+         q5.Ticker_ID,
+         q5.Ticker,
+         q5.Date,
+         ROUND(q7.Float_Value1, 2) AS Float_Value1,
+         ROUND(q7.Float_Value2, 2) AS Float_Value2, 
+         ROUND(q7.Float_Value3, 2) AS Float_Value3, 
+         ROUND(q7.Float_Value4, 2) AS Float_Value4, 
+         q7.Int_Value1
+        FROM q5
+        LEFT OUTER JOIN [Financial_Securities].[Equities].[Data_STG] q7
+        ON q5.Ticker = q7.Description
+        AND q5.Date = CAST(q7.Date AS Date)
+        ORDER BY q5.Ticker_ID, q5.Date
+        """
+                                                                    
+        try:              
+            df_pricing = pd.read_sql(sql_stat, s1.bind) # Execute the SQL query through the session and bind the data to the df_pricing dataframe
+    
+        # Handle SQLAlchemy errors if they occur during query execution
+        except sa.exc.SQLAlchemyError as e:
+            print(f"Issue querying database tables! Error: {e}")
+            s1.close()  # Close the session
+            raise  # Re-raise the exception to propagate the error
+    
+        print("Query data load is complete")
+
+Let's now forward fill all the pricing data based on Ticker.
+
+        # Let's sort and forward fill any pricing data that is missing for dates in the
+        # Market Calendar within the bounds of the existing pricing dates for each Ticker
+        df_pricing.sort_values(by=['Ticker_ID', 'Date'], inplace=True)
+        df_pricing[['Float_Value1', 'Float_Value2', 'Float_Value3', 'Float_Value4']] = df_pricing.groupby('Ticker_ID')[['Float_Value1', 'Float_Value2', 'Float_Value3', 'Float_Value4']].ffill()
+
+We iterate through the *df_pricing* dataframe and laod the *Yahoo_Equity_Prices* table.
+
+        for index, row in df_pricing.iterrows():
+            try:
+        
+                # Query the 'Yahoo_Equity_Prices' table to find records where the 'Date' column matches the value in the DataFrame's 'Date' row
+                # and the 'Ticker_ID' column matches the value in the DataFrame's 'Ticker_ID' row
+                q1 = s1.query(Yahoo_Equity_Prices).filter(Yahoo_Equity_Prices.Date == row.Date, Yahoo_Equity_Prices.Ticker_ID == row.Ticker_ID)
+
+                # Check if any records were found with the specified 'Date' and 'Ticker_ID'
+                if (q1.count() >= 1):
+                    # If one or more records are found, get the first matching record
+                    q1 = s1.query(Yahoo_Equity_Prices).filter(Yahoo_Equity_Prices.Date == row.Date, Yahoo_Equity_Prices.Ticker_ID == row.Ticker_ID).first()
+                    # Update the pricing attributes of the found record with the values from the DataFrame's pricing columns
+                    q1.Open=row['Float_Value1']
+                    q1.High=row['Float_Value2']
+                    q1.Low=row['Float_Value3']
+                    q1.Close= row['Float_Value4']
+                    q1.Volume=row['Int_Value1']
+            
+                else:
+            
+                    # Create a new Yahoo_Equity_Prices object for each row in df_pricing dataframe
+                    q1 = Yahoo_Equity_Prices(
+                        Ticker_ID=row['Ticker_ID'],
+                        Date=row['Date'],
+                        Open=row['Float_Value1'],
+                        High=row['Float_Value2'],
+                        Low=row['Float_Value3'],
+                        Close=row['Float_Value4'],
+                        Volume=row['Int_Value1']
+                    )
+    
+                    s1.add(q1)  # Add the instance to the session
+        
+            # Handle SQLAlchemy errors if they occur during adding the object
+            except sa.exc.SQLAlchemyError as e:
+                message = f"Issue with updating Yahoo_Equity_Prices database table for Ticker: {row.Ticker}. Error: {e}"
+                print(message)
+                s1.close()  # Close the session
+                raise  # Re-raise the exception to propagate the error
+
+        s1.commit() # Commit the transactions to the database
+
+        print("Database data load is complete")
+
+And lastly, we validate if all the records have been loaded and close the session.
+
+        # SQL query to count the number of records in the Data_STG table
+        sql_stat2 = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Data_STG]"""
+          
+        try: 
+            result1 = e.execute(sql_stat2)  # Execute the count query
+            cnt_recs1 = result1.scalar()  # Get the count of records
+    
+        # Handle SQLAlchemy errors if they occur during query execution
+        except sa.exc.SQLAlchemyError as e:
+            print(f"Issue querying Data_STG database table for count! Error: {e}")
+
+
+        # SQL query to count the number of records in the Yahoo_Equity_Prices table
+        sql_stat3 = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices]"""
+              
+        try: 
+            result1 = e.execute(sql_stat3)  # Execute the count query
+            cnt_recs2 = result1.scalar()  # Get the count of records
+    
+        # Handle SQLAlchemy errors if they occur during query execution
+        except sa.exc.SQLAlchemyError as e:   
+            print(f"Issue querying Sub_Industries database table for count! Error: {e}")
+
+        # Compare the record counts and print the result
+        if cnt_recs2 < cnt_recs1:
+            print(f"Only {cnt_recs2} of {cnt_recs1} records were loaded into Yahoo_Equity_Prices database table!")
+        else:
+            print(f"All {cnt_recs2} records were loaded into Yahoo_Equity_Prices database table!") 
+
+        s1.close()  # Close the session
 
 
 
