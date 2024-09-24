@@ -447,7 +447,7 @@ Next, we'll use the tickers we have loaded in the Equties table and store them i
 
 We then call the custom function *get_dates_for_years* function for 3 years back and 0 years forward in order to use dates to fetch the last 3 years of pricing data.
 
-            # Get the date range for data retrieval
+            # Generate the date range of 3 years back as of yesterday
             start_date, end_date = get_dates_for_years(3, 0)
 
 Next, we define a function to get the pricing data from Yahoo Finance API for the ticker, start_date and end_date we pass. Closing prices simply refer to the cost of shares at the end of the day, whereas adjusted closing prices take dividends, stock splits, and new stock offerings into account. For more information on this, refer to this link: [Adjusted Closing Price: How It Works, Types, Pros & Cons](https://www.investopedia.com/terms/a/adjusted_closing_price.asp). For our analysis, we only want prices that are influenced by buyers and sellers, so we want to retrieve adjusted prices. In order to make sure all prices are adjusted, we retrieve the Open, High, Low and Close prices and divide all the prices by the *Factor = Close / Adj Close*. Some stocks have multiple classes and so those tickers will have a suffix of class A, B or C. For more information on this, refer to this link: [Dual Class Stock: Definition, Structure, and Controversy](https://www.investopedia.com/terms/d/dualclassstock.asp). For those cases, the ticker notation may have a "." or "-" or "/" denoting the suffix. Our multi-class Equity tickers were suffixed using "." and Yahoo Finance uses "-" so we will replace the string for thos cases when calling the API funtion. Finally, we check if all the tickers were fetched from our ticker list.
@@ -575,6 +575,138 @@ And finally, we check if all records were loaded in the *Data_STG* table and clo
 
 
 ## Load Market Calendar data: Load_US_Market_Calendar.ipynb
+
+To determine if there is missing Equity pricing data for any Ticker for the same range of dates, we need to validate it against US market dates. We can retrieve the calendar from any global Stock exchange from [Pandas Market Calendars](https://pandas-market-calendars.readthedocs.io/en/latest/) which should serve our purpose. After we install pandas_market_calendars, we can import it along with other needed packages. For the purpose of this project, we'll fetch 3 years back and 6 years forward for the calendar. Let's define a function called *get_market_calendar* using the exchange, start_date, end_date and timezone paramaters that returns a dataframe. We will then call the function using the *NYSE* stock exchange with our date range and using the *America/New_York* timezone.
+
+        import datetime as dt
+        import sqlalchemy as sa
+        from sqlalchemy.ext.declarative import declarative_base
+        import os
+        import urllib.parse as url
+        import pandas as pd
+        import pandas_market_calendars as mcal
+
+        def get_market_calendar(exchange, s_date, e_date, timezone):
+
+            """
+            Fetch the market calendar schedule for a given exchange.
+
+            Args:
+                exchange (str): The exchange name (e.g., 'NYSE').
+                s_date (str): Start date in 'YYYY-MM-DD' format.
+                e_date (str): End date in 'YYYY-MM-DD' format.
+                timezone (str): Timezone for the calendar.
+
+            Returns:
+                DataFrame: DataFrame with columns Date, Open_Time, and Close_Time.
+            """
+    
+            try:
+                # Get the calendar for the specified exchange
+                nyse = mcal.get_calendar(exchange)
+                # Fetch the schedule for the date range
+                df_tmp = nyse.schedule(start_date=s_date, end_date=e_date, tz=timezone)
+        
+                # Extract date, open time, and close time from market_open and market_close
+                df_tmp['Date'] = pd.to_datetime(df_tmp['market_open']).dt.date
+                df_tmp['Open_Time'] = pd.to_datetime(df_tmp['market_open']).dt.time
+                df_tmp['Close_Time'] = pd.to_datetime(df_tmp['market_close']).dt.time
+        
+                # Select only relevant columns
+                df_tmp = df_tmp[['Date', 'Open_Time', 'Close_Time']]
+        
+                return df_tmp
+    
+            except Exception as ex:
+                print(f"Error fetching calendar data: {ex}")
+                raise
+
+            # Fetch the calendar data for the NYSE
+            df_dates = get_calendar('NYSE', start_date, end_date, 'America/New_York')
+
+Once we create a database connection, we will declare our *Market_Calendar* table. We will load the data directly into the table as this is a one time load with respect to any future projects.
+
+        Base = sa.orm.declarative_base()
+
+        class Market_Calendar(Base):
+    
+            """
+            SQLAlchemy ORM class representing the 'Market_Calendar' table in the 'Equities' schema.
+
+            Attributes:
+                __tablename__ (str): The name of the table.
+                __table_args__ (dict): Additional arguments for the table, including schema name.
+                Country (Column): Country or exchange code.
+                Date (Column): The date of the market schedule.
+                Open_Time (Column): Market open time.
+                Close_Time (Column): Market close time.
+            """    
+    
+            __tablename__ = 'Market_Calendar'
+            __table_args__ = {'schema': 'Equities'}
+            Country = sa.Column(sa.String, primary_key=True)
+            Date = sa.Column(sa.Date, primary_key=True)
+            Open_Time = sa.Column('Open_Time', sa.Time)
+            Close_Time = sa.Column('Close_Time', sa.Time)
+
+Now let's load the data into the *Market_Calendar* table for the country = "United States".  
+
+country = "United States" # Set the country to be United States
+
+        # Process each row in the DataFrame
+        try:
+            for index, row in df_dates.iterrows():
+        
+                # Query the 'Market_Calendar' table to find records where the 'Country" column matches country variable and the 
+                # 'Date' column matches the value in the DataFrame's 'Date' row
+                q1 = s1.query(Market_Calendar).filter(Market_Calendar.Country == country, Market_Calendar.Date == row['Date'])
+        
+                # Check if any records were found with the specified 'Country' and 'Date'
+                if (q1.count() >= 1):
+                    # If one or more records are found, get the first matching record
+                    q1 = s1.query(Market_Calendar).filter(Market_Calendar.Country == country, Market_Calendar.Date == row['Date']).first()
+                    # Update existing record
+                    q1.Open_Time = row['Open_Time']
+                    q1.Close_Time = row['Close_Time']
+                else:
+                    # Create new record
+                    q1 = Market_Calendar(
+                        Country=country,
+                        Date=row['Date'],
+                        Open_Time=row['Open_Time'],
+                        Close_Time=row['Close_Time']
+                    )
+                    s1.add(q1)
+
+        # Handle SQLAlchemy errors
+        except sa.exc.SQLAlchemyError as e:
+            message = f"Issue with updating Market_Calendar database table for Date: {row['Date']}. Error: {e}"
+            print(message)
+            s1.rollback()  # Rollback changes on error
+            raise
+
+        # Commit the changes to the database
+        s1.commit()
+
+Finally, we validate if all the records were loaded.
+
+        # Execute SQL query to count the number of records in the Market_Calendar table
+        sql_stat = """SELECT COUNT(*) FROM [Financial_Securities].[Equities].[Market_Calendar]"""
+        try:
+            result = e.execute(sql_stat)
+            cnt_recs = result.scalar()
+    
+        # Handle errors querying the Market_Calendar table
+        except sa.exc.SQLAlchemyError as e:
+            print(f"Issue querying Market_Calendar database table for count! Error: {e}")
+    
+        # Compare the number of records in the database with the number of records in the DataFrame
+        if cnt_recs < len(df_dates):
+            print(f"Only {cnt_recs} of {len(df_dates)} records were loaded into Market_Calendar database table!")
+        else:
+            print(f"All {cnt_recs} records were loaded into Market_Calendar database table!")  
+
+s1.close()  # Close the session
 
 
 
