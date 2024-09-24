@@ -504,6 +504,35 @@ We will then loop through our tickers in our ticker list and store our pricing d
                 # Sleep to avoid hitting API rate limits
                 time.sleep(1)
 
+        print("Pricing data fetch is complete")
+      
+We load the data into Data_STG and raise an exception to halt further processing if there are any issues so that we ensure all thepricing data is loaded.
+
+        # Insert the data into the Data_STG table
+        for index, row in df_equities.iterrows():
+            try:
+                q1 = Data_STG(
+                    Date=row['Date'],
+                    Description=row['Ticker'],
+                    Float_Value1=row['Open'],
+                    Float_Value2=row['High'],
+                    Float_Value3=row['Low'],
+                    Float_Value4=row['Close'],
+                    Int_Value1=row['Volume'],
+                )
+                s1.add(q1)
+
+            # Handle exceptions during data insertion
+            except sa.exc.SQLAlchemyError as e:
+                message = f"Issue with updating Data_STG database table for Ticker: {row['Ticker']}. Error: {e}"
+                print(message)
+                s1.close()
+                raise
+
+        # Commit all changes to the database
+        s1.commit()        
+
+
 
 
 
