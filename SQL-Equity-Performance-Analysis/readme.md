@@ -17,9 +17,9 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
  		     LAST_VALUE(q2.[Close]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Close",
 		     LAST_VALUE(q2.Volume) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Volume",
  		     ROW_NUMBER() OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date DESC) AS Row_Num
- 		   FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q2
-		   INNER JOIN [Financial_Securities].[Equities].[Equities] q3
-		    ON q2.Ticker_ID = q3.Ticker_ID)
+ 		FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q2
+		INNER JOIN [Financial_Securities].[Equities].[Equities] q3
+		ON q2.Ticker_ID = q3.Ticker_ID)
 		SELECT
 		    q1.Ticker_ID,
 		    q1.Ticker,
