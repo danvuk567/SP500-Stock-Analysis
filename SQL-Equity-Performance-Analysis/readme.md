@@ -55,7 +55,7 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 
 ## Yearly % Returns Query: *[Yearly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Returns-Query.sql)*
 
-Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to which year had the highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Here is the query for Yearly Returns for **MSFT**.
+Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to which year had the highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Let's query the Yearly Returns for **MSFT**.
 
 	SELECT
         Ticker,
