@@ -117,7 +117,7 @@ In all SQL operations, we will need to create a connection to the database. We w
             return start_date, end_date
 
 
-## Stage the Sectors data: *[Load_Sectors_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Sectors_STG.ipynb)*  
+## Stage the Sectors data: *[Load-Sectors_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Sectors_STG.ipynb)*  
 
 We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our *Custom_Python_Functions* folder. We can define the path to this folder using our Windows username and sys package. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
 
@@ -228,7 +228,7 @@ Lastly, we terminate the session s1 to avoid any increased memory usage and ensu
 
 
 
-## Load the Sectors data: *[Load_Sectors.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Sectors.ipynb)*  
+## Load the Sectors data: *[Load-Sectors.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Sectors.ipynb)*  
 
 We establish a database connection and then query the *Data_STG* table and bind it to the df_sectors dataframe. We will define the *Sectors* table and then loop through the dataframe and query the table to see if the record already exists. We do this in case we want to rerun the code and update the table and if the record does not exist, we do an insert for the columns in *Sectors* referencing the columns in *Data_STG*. If any issues occur, we print the error message, close the session and raise the exception which will halt any further execution. We want to ensure all records are loaded. We do a final check to ensure the number of records match between the *Data_STG* table and the *Sectors* table and close the session.
 
@@ -352,40 +352,40 @@ We establish a database connection and then query the *Data_STG* table and bind 
 
         s1.close()  # Close the session   
 
-## Stage Industry Groups data: *[Load_Industry_Groups_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Industry_Groups_STG.ipynb)* 
+## Stage Industry Groups data: *[Load-Industry_Groups_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Industry_Groups_STG.ipynb)* 
 
 This process is similar to staging the Sectors data so I won't go into details. We load the file *GICS_Industries.csv* and in this case, keep the unique Industry_Group_ID, Industry_Group and Sector_ID records.
 We then load the data into the *Data_STG* table.
 
-## Load Industry Groups data: *[Load_Industry_Groups.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Industry_Groups.ipynb)*
+## Load Industry Groups data: *[Load-Industry_Groups.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Industry_Groups.ipynb)*
 
 This process will load the *Industry_Groups* table with Industry Group data and Sector_ID from the *Data_STG* table.
 
-## Stage Industries data: *[Load_Industries_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Industries_STG.ipynb)*
+## Stage Industries data: *[Load-Industries_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Industries_STG.ipynb)*
 
 We load the file *GICS_Industries.csv* and in this case, keep the unique Industry_ID, Industry and Industry_Group_ID records. We then load the data into the *Data_STG* table.
 
-## Load Industries data: *[Load_Industries.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Industries.ipynb)*
+## Load Industries data: *[Load-Industries.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Industries.ipynb)*
 
 This process will load the *Industries* table with Industry data and Industry_Group_ID from the *Data_STG* table.
 
-## Stage Sub-Industries data: *[Load_Sub_Industries_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Sub_Industries_STG.ipynb)*
+## Stage Sub-Industries data: *[Load-Sub_Industries_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Sub_Industries_STG.ipynb)*
 
 We load the file *GICS_Industries.csv* and in this case, keep the unique Sub_Industry_ID, Sub_Industry and Industry_ID records. We then load the data into the *Data_STG* table.
 
-## Load Sub-Industries data: *[Load_Sub_Industries.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Sub_Industries.ipynb)*
+## Load Sub-Industries data: *[Load-Sub_Industries.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Sub_Industries.ipynb)*
 
 This process will load the *Industries* table with Sub_Industry data and Industry_ID from the *Data_STG* table.
 
-## Stage Equities data: *[Load_Equities_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Equities_STG.ipynb)*
+## Stage Equities data: *[Load-Equities_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Equities_STG.ipynb)*
 
 We load the file *SP500_GICS_Combined.csv* that we merged with all Equity data as long as the tickers matches the tickers found in the *SP500_Equities_Prices.csv* file. The last row in the *SP500_Equities_Prices.csv* file is removed as there are usually comments at the end of the data from Barchart. We compare the 2 sources to ensure we have the latest valid list of S&P500 tickers. If the tickers are valid, we keep the Ticker, Name and Sub_Industry_ID records from *SP500_GICS_Combined.csv*. We then load the data into the *Data_STG* table.
 
-## Load Equities data: *[Load_Equities_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Equities_STG.ipynb)* 
+## Load Equities data: *[Load-Equities.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Equities.ipynb)* 
 
 This process will load the *Equities* table with Equity data and Sub_Industry_ID from the *Data_STG* table.
 
-## Stage Yahoo Equity Pricing data: *[Load_Yahoo_Equity_Prices_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Yahoo_Equity_Prices_STG.ipynb)*
+## Stage Yahoo Equity Pricing data: *[Load-Yahoo_Equity_Prices_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Yahoo_Equity_Prices_STG.ipynb)*
 
 For this process, we'll go into some new types of code. We will import the packages needed and 2 other packages, yfinance and time. After establishing a connection, we define the staging table *Data_STG* to store the pricing data we will retrieve from Yahoo Finance. We then clear the *Data_STG* table.
 
