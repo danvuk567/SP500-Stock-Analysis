@@ -55,7 +55,7 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 
 ## Yearly % Returns Query: *[Yearly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Returns-Query.sql)*
 
-Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to which year had the highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Let's query the Yearly Returns for **MSFT**.
+Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to see which year had the lowest and highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Let's query the Yearly Returns for **MSFT**.
 
 	SELECT
         Ticker,
@@ -71,7 +71,32 @@ Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to which year had t
 
  ![MSFT Yearly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Returns_Data.jpg?raw=true)
  
-We can observe that in the past 4 years, **MSFT** had the highest return of **58.19%** in **2023**.
+We can observe that in the past 4 years, **MSFT** had the lowest return of highest return of **58.19%** in **2023**.
+
+## Create Equity Yearly Price View: *[Create-VW_Yahoo_Equity_Quarter_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-VW_Yahoo_Equity_Quarter_Prices-View.sql)*
+
+We create a Quarterly pricing view similar to the logic in the Yearly pricing view but based on Year and Quarter.
+
+## Quarterly % Returns Query: *[Yearly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Returns-Query.sql)*
+
+Let's now examine where the lowest Quarter returns and highest Quarter returns occured for **MSFT**.
+
+	SELECT
+    	    Ticker,
+    	    "Year",
+    	    "Quarter"
+   	    "Date",
+     	    CASE
+	       WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
+	       ELSE ROUND((("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
+     	    END AS "% Return"
+	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Quarter_Prices]
+	WHERE Ticker = 'MSFT'
+	ORDER BY "Year", "Quarter";
+
+ 
+
+
 
 
 
