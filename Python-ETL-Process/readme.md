@@ -88,7 +88,7 @@ In all SQL operations, we will need to create a connection to the database. We w
 
 *get_dates_for_years* will pass the number of years back and number of years forward. It will return the 1st day of the year as the start date for years back. And it will return for the end date as the last day of the year for years forward > 0, otherwise it returns yesterday's date.
 
-            get_dates_for_years(yrs_back, yrs_forward):
+            def get_dates_for_years(yrs_back, yrs_forward):
     
             """
             Generates the start and end dates for data retrieval.
@@ -657,7 +657,7 @@ Once we create a database connection, we will declare our *Market_Calendar* tabl
 
 Now let's load the data into the *Market_Calendar* table for the country = "United States".  
 
-country = "United States" # Set the country to be United States
+        country = "United States" # Set the country to be United States
 
         # Process each row in the DataFrame
         try:
