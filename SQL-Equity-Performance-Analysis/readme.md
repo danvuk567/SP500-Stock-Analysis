@@ -55,7 +55,7 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 
 ## Yearly % Returns Query: Yearly_Ticker_Returns_Query.sql
 
-Let’s examine the Yearly returns for **MSFT** to which year had the highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Here is the query for Yearly Returns for **MSFT**.
+Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to which year had the highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Here is the query for Yearly Returns for **MSFT**.
 
 	SELECT
         Ticker,
@@ -71,7 +71,9 @@ Let’s examine the Yearly returns for **MSFT** to which year had the highest re
 
  ![MSFT Yearly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Returns_Data.jpg?raw=true)
  
-So, in the past 4 years, **MSFT** had the highest return of **58.19%** in **2023**.
+We can observe that in the past 4 years, **MSFT** had the highest return of **58.19%** in **2023**.
+
+
 
     
  
