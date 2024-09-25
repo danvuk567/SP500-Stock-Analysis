@@ -123,7 +123,7 @@ This sql file will create the Fact table called *Yahoo_Equity_Pricing* which sto
 	FOREIGN KEY (Industry_ID)
 	REFERENCES [Financial_Securities].[Equities].Industries(Industry_ID);
 
-        ALTER TABLE [Financial_Securities].[Equities].[Equities]
+ALTER TABLE [Financial_Securities].[Equities].[Equities]
 	ADD CONSTRAINT FK_Equities_Sub_Industries
 	FOREIGN KEY FOREIGN KEY (Sub_Industry_ID)
 	REFERENCES [Financial_Securities].[Equities].Sub_Industries(Sub_Industry_ID);
