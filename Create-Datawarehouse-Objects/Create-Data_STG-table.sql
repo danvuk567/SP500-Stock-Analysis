@@ -1,22 +1,22 @@
 CREATE TABLE [Financial_Securities].[Equities].[Data_STG](
         [Date] [datetime] NOT NULL,
-		[Date2] [datetime] NULL,
-		[Date3] [datetime] NULL,
-		[Date4] [datetime] NULL,
-		[Date5] [datetime] NULL,
+	[Date2] [datetime] NULL,
+	[Date3] [datetime] NULL,
+	[Date4] [datetime] NULL,
+	[Date5] [datetime] NULL,
         [Description] [nchar](100) NOT NULL,
         [Description2] [nchar](100) NULL,
         [Description3] [nchar](100) NULL,
-		[Description4] [nchar](100) NULL,
-		[Description5] [nchar](100) NULL,
+	[Description4] [nchar](100) NULL,
+	[Description5] [nchar](100) NULL,
         [Int_Value1] [bigint] NULL,
         [Int_Value2] [bigint] NULL,
         [Int_Value3] [bigint] NULL,
-		[Int_Value4] [bigint] NULL,
-		[Int_Value5] [bigint] NULL,
+	[Int_Value4] [bigint] NULL,
+	[Int_Value5] [bigint] NULL,
         [Float_Value1] [real] NULL,
         [Float_Value2] [real] NULL,
         [Float_Value3] [real] NULL,
-		[Float_Value4] [real] NULL,
-		[Float_Value5] [real] NULL
-		CONSTRAINT PK_Data_STG PRIMARY KEY(Date, Description));
+	[Float_Value4] [real] NULL,
+	[Float_Value5] [real] NULL
+CONSTRAINT PK_Data_STG PRIMARY KEY(Date, Description));
