@@ -30,8 +30,8 @@ In all SQL operations, we will need to create a connection to the database. We w
 
 *create_connection function* will pass a server name, database name, uid (user id) and passwd (password) and use the SQL Server Native driver to create a connection to the database using the SLQAlchemy package engine. The session factory is bound to the engine and both the session and engine are returned. If no username is provided, the server is assumed to have a trusted connection which is usually the localhost.
 
-import sqlalchemy as sa
-import urllib.parse as url
+    import sqlalchemy as sa
+    import urllib.parse as url
 
     def create_connection(serv, dbase, uid, passwd):
         """
