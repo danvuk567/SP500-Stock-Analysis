@@ -580,7 +580,7 @@ And finally, we check if all records were loaded in the *Data_STG* table and clo
     s1.close()  # Close the session
 
 
-## Load Market Calendar data: Load_US_Market_Calendar.ipynb
+## Load Market Calendar data: *[Load-US_Market_Calendar.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-US_Market_Calendar.ipynb)*
 
 To determine if there is missing Equity pricing data for any Ticker for the same range of dates, we need to validate it against US market dates. We can retrieve the calendar from any global Stock exchange from [Pandas Market Calendars](https://pandas-market-calendars.readthedocs.io/en/latest/) which should serve our purpose. After we install pandas_market_calendars, we can import it along with other needed packages. For the purpose of this project, we'll fetch 3 years back and 6 years forward for the calendar. Let's define a function called *get_market_calendar* using the exchange, start_date, end_date and timezone paramaters that returns a dataframe. We will then call the function using the *NYSE* stock exchange with our date range and using the *America/New_York* timezone.
 
@@ -716,7 +716,7 @@ Finally, we validate if all the records were loaded.
 
         s1.close()  # Close the session
 
-## Load Yahoo Equity Pricing data: Load_Yahoo_Equity_Prices.ipynb
+## Load Yahoo Equity Pricing data: *[Load-Yahoo_Equity_Prices.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Yahoo_Equity_Prices.ipynb)*
 
 In this last process, we will load the *Yahoo_Equity_Prices* with Yahoo pricing data we staged. We connect to the database, declare the *Yahoo_Equity_Prices* table, and then create a complex query that will now merge the dates of the *Market_Calendar* with the ticker range of dates. If any prices are null, we can then handle them by forward filling them. The query data is then bound to the *df_pricing* dataframe.
 
