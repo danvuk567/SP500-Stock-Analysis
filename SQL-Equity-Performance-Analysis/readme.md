@@ -94,6 +94,8 @@ Let's now examine where the lowest Quarter returns and highest Quarter returns o
 	WHERE Ticker = 'MSFT'
 	ORDER BY "Year", "Quarter";
 
+ ![MSFT Quarterly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Returns_Data.jpg?raw=true)
+
  
 
 
