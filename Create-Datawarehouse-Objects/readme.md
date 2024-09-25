@@ -14,7 +14,7 @@ Equities fall into a type of business and although every business is unique, bus
 This sql file will create the database called *Financial_Securities* which will house Financial Securities data. It will also create a schema called *Equities* which is the type of Financial Securities we will be focusing on.
 
 
-## *Create-Data_STG-table.sql*
+## *[Create-Database.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Data_STG-table.sql)* 
 
     CREATE TABLE [Financial_Securities].[Equities].[Data_STG](
       [Date] [datetime] NOT NULL,
