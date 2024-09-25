@@ -69,7 +69,7 @@ Let’s examine the Yearly returns for **MSFT** to which year had the highest re
 	WHERE Ticker = 'MSFT'
     ORDER BY "Year";
 
-So, in the past 4 years, **MSFT** had the highest return of 58.19% in 2023.
+So, in the past 4 years, **MSFT** had the highest return of **58.19%** in **2023**.
 
     
  
