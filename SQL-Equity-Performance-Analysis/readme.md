@@ -96,7 +96,7 @@ Let's now examine Quarter returns for **MSFT** to see if we can identify the rea
 
  ![MSFT Quarterly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Returns_Data.jpg?raw=true)
 
- We can observe **MSFT** had 3 quarters in **2023** with high returns of roughly **18% to 20%** which attributed to the high returns of **58.19%** in **2023**. And we had low returns in the 1st and 3rd Quarter of **2022** and a significant return of **-16.5%** in the 2nd Quarter of **2022**. This attributed to low return of **-28.02%** in **2022**.
+ We can observe **MSFT** had **3 Quarters** in **2023** with high returns of roughly **18% to 20%** which attributed to the high returns of **58.19%** in **2023**. And we had low returns in the **1st** and **3rd Quarter** of **2022** and a significant return of **-16.5%** in the **2nd Quarter** of **2022**. This attributed to low return of **-28.02%** in **2022**.
 
 
 
