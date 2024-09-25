@@ -5,7 +5,7 @@ For this project, we will use an SQL server database. The sql files will create 
 Equities fall into a type of business and although every business is unique, businesses can be grouped and classified with similar criteria as industries such as manufacturing, retail, financial services etc. The most common Industry classification is the Global Industry Classification Standard (GICS) which is also used by S&P Indices. There are 4 levels of GICS industry classification: Sector, Industry Group. Industry and Sub-Industry. For more information on GICS industry classification, refer to these official websites: [The Global Industry Classification Standard](https://www.msci.com/our-solutions/indexes/gics) and [GICS: Global Industry Classification Standard](https://www.spglobal.com/spdji/en/landing/topic/gics/). In order to aggregate and analyze data at higher levels, we can create these Dimension tables using some of the sql scripts described below. These tables will be part of a relational hierarchy that is linked to *Equities* Dimension table that  stores the unique information for our S&P 500 Equities. 
 
 
-## *[Create-Database.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Database.sql?raw=true)*  
+## *[Create-Database.sql](https://github.com/danvuk567/SP500-Stock-Analysis/Create-Datawarehouse-Objects/Create-Data_STG-table.sql)*  
 
     CREATE DATABASE Financial_Securities;
 
