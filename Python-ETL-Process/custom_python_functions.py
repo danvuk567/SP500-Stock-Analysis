@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Sep 23 13:23:10 2024
-
-@author: Daniel
+@author: Daniel Vukota
 """
 
 import sqlalchemy as sa
