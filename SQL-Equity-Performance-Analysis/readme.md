@@ -35,7 +35,7 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 
   ## Yearly Pricing Query: Yearly_Ticker_Pricing_Query.sql
 
-  Lest's query the yearly pricing view for the MSFT ticker and observe the results.
+  Lest's query the yearly pricing view for the **MSFT** Ticker and observe the results.
 
   	SELECT 
       	    Ticker,
@@ -52,18 +52,26 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 
  ![MSFT Yearly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Pricing_Data.jpg?raw=true)
 
-  
+
+## Yearly % Returns Query: Yearly_Ticker_Returns_Query.sql
+
+Let’s examine the Yearly returns for **MSFT** to which year had the highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Here is the query for Yearly Returns for **MSFT**.
+
 	SELECT
         Ticker,
-	"Year",
-	"Date",
-	CASE
+	    "Year",
+	    "Date",
+	     CASE
 		WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
 		ELSE ROUND((("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
-	END AS "% Return"
+	     END AS "% Return"
 	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
 	WHERE Ticker = 'MSFT'
-        ORDER BY "Year"
+    ORDER BY "Year";
+
+So, in the past 4 years, **MSFT** had the highest return of 58.19% in 2023.
+
+    
  
  
 
