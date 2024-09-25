@@ -38,17 +38,19 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
   Lest's query yearly pricing for MSFT and observe the results.
 
   	SELECT 
-      		Ticker,
-      		"Year",
-      		"Date",
-      		"Open",
-      		"High",
-      		"Low",
-      		"Close",
-      		"Volume"
+      	    Ticker,
+      	    "Year",
+      	    "Date",
+      	    "Open",
+      	    "High",
+      	    "Low",
+      	    "Close",
+      	    "Volume"
 	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
 	WHERE Ticker = 'MSFT'
 	ORDER BY "Year";
+
+ 
 
  
 
