@@ -117,7 +117,7 @@ In all SQL operations, we will need to create a connection to the database. We w
             return start_date, end_date
 
 
-## Staging the Sector data: Load_Sectors_STG.ipynb
+## Stage the Sectors data: *[Load_Sectors_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Sectors_STG.ipynb)*  
 
 We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our *Custom_Python_Functions* folder. We can define the path to this folder using our Windows username and sys package. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
 
@@ -228,7 +228,7 @@ Lastly, we terminate the session s1 to avoid any increased memory usage and ensu
 
 
 
-## Load the Sectors data: : Load_Sectors.ipynb
+## Load the Sectors data: Load_Sectors.ipynb
 
 We establish a database connection and then query the *Data_STG* table and bind it to the df_sectors dataframe. We will define the *Sectors* table and then loop through the dataframe and query the table to see if the record already exists. We do this in case we want to rerun the code and update the table and if the record does not exist, we do an insert for the columns in *Sectors* referencing the columns in *Data_STG*. If any issues occur, we print the error message, close the session and raise the exception which will halt any further execution. We want to ensure all records are loaded. We do a final check to ensure the number of records match between the *Data_STG* table and the *Sectors* table and close the session.
 
