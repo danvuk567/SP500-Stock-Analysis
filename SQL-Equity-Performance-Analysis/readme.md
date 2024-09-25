@@ -50,6 +50,8 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 	WHERE Ticker = 'MSFT'
 	ORDER BY "Year";
 
+ ![MSFT Yearly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Pricing_Data.png?raw=true)
+
  
 
  
