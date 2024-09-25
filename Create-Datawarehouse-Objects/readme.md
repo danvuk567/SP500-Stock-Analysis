@@ -53,7 +53,7 @@ This sql file will create the *Data_STG* table. Before we create any tables that
 
 This sql file will create the Dimension table called *Equities* with an auto-generated identity *Ticker_ID*, the *Ticker* symbol and the *Name* of the Ticker. *Sub_Industry_ID* stores the unique Sub-Industry identifier that the Equity belongs to. The Primary Key is *Ticker_ID* which is unique.
 
-## *[Create-Sectors-table.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Sector-table.sql)* 
+## *[Create-Sectors-table.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Sectors-table.sql)* 
 
     CREATE TABLE [Financial_Securities].[Equities].[Sectors](
 	  [Sector_ID] [int] NOT NULL,
