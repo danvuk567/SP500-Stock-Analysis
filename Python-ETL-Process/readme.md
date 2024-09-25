@@ -373,7 +373,7 @@ This process will load the *Industries* table with Industry data and Industry_Gr
 
 We load the file *GICS_Industries.csv* and in this case, keep the unique Sub_Industry_ID, Sub_Industry and Industry_ID records. We then load the data into the *Data_STG* table.
 
-## Load Sub-Industries data: *[Load_Sub-Industries.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Sub-Industries.ipynb)*
+## Load Sub-Industries data: *[Load_Sub_Industries.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load_Sub_Industries.ipynb)*
 
 This process will load the *Industries* table with Sub_Industry data and Industry_ID from the *Data_STG* table.
 
