@@ -77,7 +77,7 @@ We can observe that in the past 4 years, **MSFT** had the lowest return of highe
 
 We create a Quarterly pricing view similar to the logic in the Yearly pricing view but based on Year and Quarter.
 
-## Quarterly % Returns Query: *[Yearly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Returns-Query.sql)*
+## Quarterly % Returns Query: *[Quarterly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Quarterly-Ticker-Returns-Query.sql)*
 
 Let's now examine where the lowest Quarter returns and highest Quarter returns occured for **MSFT**.
 
