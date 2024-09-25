@@ -33,9 +33,9 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 		FROM q1
 		WHERE q1.Row_Num = 1;
 
-  ## Yearly Pricing Query for Microsoft (MSFT): Yearly_Ticker_Pricing_Query.sql
+  ## Yearly Pricing Query: Yearly_Ticker_Pricing_Query.sql
 
-  Lest's query yearly pricing for MSFT and observe the results.
+  Lest's query the yearly pricing view for the MSFT ticker and observe the results.
 
   	SELECT 
       	    Ticker,
