@@ -92,7 +92,7 @@ This sql file will create the Dimension table called *Industries* which stores G
 
 This sql file will create the Dimension table called *Sub_Industries* which stores GICS Sub-Industry information and is one level below Industries in the Equities relational hierarchy. *Industry_ID* stores the unique Industry identifier that the Sub-Industry belongs to. The Primary Key is defined as *Sub_Industry_ID* which is unique.
 
-## *[Create-Yahoo_Equity_Pricing-table.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Yahoo_Equity_Pricing-table.sql)*
+## *[Create-Yahoo_Equity_Prices-table.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Yahoo_Equity_Prices-table.sql)*
 
     CREATE TABLE [Financial_Securities].[Equities].[Yahoo_Equity_Prices](
 	  [Date] [date] NOT NULL,
