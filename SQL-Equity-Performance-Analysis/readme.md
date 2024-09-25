@@ -71,7 +71,7 @@ Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to see which year h
 
  ![MSFT Yearly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Returns_Data.jpg?raw=true)
  
-We can observe that in the past 4 years, **MSFT** had the lowest return of highest return of **58.19%** in **2023**.
+We can observe that in the past 4 years, **MSFT** had the lowest return of **-28.02%** in **2022** and the highest return of **58.19%** in **2023**.
 
 ## Create Equity Yearly Price View: *[Create-VW_Yahoo_Equity_Quarter_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-VW_Yahoo_Equity_Quarter_Prices-View.sql)*
 
@@ -79,7 +79,7 @@ We create a Quarterly pricing view similar to the logic in the Yearly pricing vi
 
 ## Quarterly % Returns Query: *[Quarterly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Quarterly-Ticker-Returns-Query.sql)*
 
-Let's now examine where the lowest Quarter returns and highest Quarter returns occured for **MSFT**.
+Let's now examine Quarter returns for **MSFT** to see if we can identify the reasons for worst year and best year returns.
 
 	SELECT
       Ticker,
@@ -96,7 +96,7 @@ Let's now examine where the lowest Quarter returns and highest Quarter returns o
 
  ![MSFT Quarterly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Returns_Data.jpg?raw=true)
 
- 
+ We can observe **MSFT** had 3 quarters in **2023** with high returns of roughly **18% to 20%** which attributed to the high returns of **58.19%** in **2023**. And we had low returns in the 1st and 3rd Quarter of **2022** and a significant return of **-16.5%** in the 2nd Quarter of **2022**. This attributed to low return of **-28.02%** in **2022**.
 
 
 
