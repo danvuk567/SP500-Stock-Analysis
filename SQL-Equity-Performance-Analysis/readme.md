@@ -1,6 +1,6 @@
 # SQL Equity Performance Analysis
 
-## Create Equity Yearly Price View: *[Create-VW_Yahoo_Equity_Year_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Create-VW_Yahoo_Equity_Year_Prices-View.sql)*
+## Create Equity Yearly Price View: *[Create-VW_Yahoo_Equity_Year_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-VW_Yahoo_Equity_Year_Prices-View.sql)*
 
 Let's start by doing some analysis on yearly pricing data. We can aggregate the data in the *Yahoo_Equity_Prices* table and create a view called *VW_Yahoo_Equity_Year_Prices* that we will use in the project. Here we make use of various WINDOW functions to capture the last date of the year by Ticker using MAX. The "Date" for yearly data will be represented by the last date. We'll get the 1st Open price by Ticker and year as "Open" using FIRST_VALUE, the highest High price by Ticker and year as "High" using MAX, the lowest Low price by Ticker and year as "Low" using MIN, the last Close price by Ticker and year as "Close" using LAST_VALUE, and the last Volume by Ticker and year as "Volume" using LAST_VALUE. We group the data using PARTITION BY Ticker_ID and Year, ORDER BY date and use UNBOUNDED PRECEDING and UNBOUNDED FOLLOWING clauses to scan and all the rows within the year. In doing so, duplication of our desired output wiil occur for all the records by year by ticker and in order to produce unique values, we can use ROW_NUMBER() as Row_Num and query for Row_Num = 1.
 
@@ -33,7 +33,7 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 		FROM q1
 		WHERE q1.Row_Num = 1;
 
-  ## Yearly Pricing Query: *[Yearly-Ticker-Pricing-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Yearly-Ticker-Pricing-Query.sql)*
+  ## Yearly Pricing Query: *[Yearly-Ticker-Pricing-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Pricing-Query.sql)*
 
   Lest's query the yearly pricing view for the **MSFT** Ticker and observe the results.
 
@@ -53,7 +53,7 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
  ![MSFT Yearly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Pricing_Data.jpg?raw=true)
 
 
-## Yearly % Returns Query: *[Yearly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Yearly-Ticker-Returns-Query.sql)*
+## Yearly % Returns Query: *[Yearly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Returns-Query.sql)*
 
 Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to which year had the highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Here is the query for Yearly Returns for **MSFT**.
 
