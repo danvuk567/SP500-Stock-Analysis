@@ -60,7 +60,7 @@ SELECT
     ROUND(MAX(q2."% Return") * 100, 2) AS "Highest Quarterly % Return",
     ROUND(AVG(q2."% Return") * 100, 2) AS "Avg Quarterly % Return",
     ROUND(q4."Median % Return" * 100, 2) AS "Median Quarterly % Return",
-    ROUND(STDEVP(q2."% Return") * 100, 2) AS "Quarterly % Volatility"
+    ROUND(STDEVP(q2."% Return") * 100, 2) AS "Quarterly % Variance"
 FROM q1
 INNER JOIN q2
 ON q1.Ticker_ID = q2.Ticker_ID
