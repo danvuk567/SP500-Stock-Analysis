@@ -265,7 +265,7 @@ If we want to compare which stocks from the S&P 500 performed the best by Year, 
 
 ![SP500_Equity_Top_5_Returns_by_Year_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Data.jpg?raw=true)
 
-We see that **NVDA** is in the top 5 in all 5 years except 2022. **SMCI** is the only other stock that appears more than once. Both **NVDA** and **SMCI** are computer hardware types and in one of the top performing industries of the decade. 
+We see that **NVDA** is in the top 5 in all 5 years except 2022. **SMCI** and **CEG** are the only other stock that appears more than once. Both **NVDA** and **SMCI** are computer hardware types and in one of the top performing industries of the decade. 
 
 ## Yearly Equity Return Percentile Query: *[Yearly-Equity-Return-Percentile-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Equity-Return-Percentile-Query.sql)*
 
@@ -300,6 +300,10 @@ We can also look at bucketing yearly performance in percentiles using the **NTIL
 		ORDER BY q2."Year", q2."% Return" DESC;
 
 ![SP500_Equity_100th_Percentile_Returns_by_Year_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_100th_Percentile_Returns_by_Year_Data.jpg?raw=true)
+
+Because we are bucketing in 100 different ranges depending how the returns are dispersed, you may get a different ranking range. For 2021 and 2022, we only got 4 stocks in the top 100th percentile. This time around, **NVDA** appeared 2 out of 4 years,  **CEG** apeared 2 out of 4 years and **SMCI** appears once.
+
+
 
 
 
