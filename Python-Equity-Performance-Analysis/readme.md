@@ -4,6 +4,7 @@ Let's do the same type of analysis we did using SQL in Python. To do that, we'll
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom_Python_Functions/custom_python_functions.py)*
 
     def get_pricing_data(df_tmp, period):
+    
         """
         This function processes pricing data from a DataFrame based on the specified period ('Year', 'Quarter', or 'Month').
     
@@ -42,11 +43,12 @@ Let's do the same type of analysis we did using SQL in Python. To do that, we'll
         return df_tmp2
 
 
-    import plotly as pltly
-    import plotly.io as pio
-    pio.renderers.default='browser'
+     import plotly as pltly
+     import plotly.io as pio
+     pio.renderers.default='browser'
 
      def plot_pricing_candlestick(df_tmp, ticker, period):
+     
         """
         Plots a candlestick chart for the given DataFrame, ticker, and period.
     
