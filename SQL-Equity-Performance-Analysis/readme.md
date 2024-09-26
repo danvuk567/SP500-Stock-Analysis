@@ -303,6 +303,48 @@ We can also look at bucketing yearly performance in percentiles using the **NTIL
 
 Because we are bucketing in 100 different ranges depending how the returns are dispersed, you may get a different ranking range. For 2021 and 2022, we only got 4 stocks in the top 100th percentile. This time around, **NVDA** appeared 2 out of 4 years,  **CEG** apeared 2 out of 4 years and **SMCI** appears once.
 
+## Equity Cumulative Return Rank Query: *[Equity-Cumulative-Return-Rank-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Equity-Cumulative-Return-Rank-Query.sql)*
+
+Comparing simple returns by year by Ticker gives you a good idea of which stocks performed the best at the end of the year. But if we want to compare stocks across a longer timeframe, we could calculate the simple returns for all 4 years. But what if we did not have prices but only had returns? We could not add these simple returns to capture a total. We could use geometric mean but the simplest way is could to use **Log returns** since they are **additive**. This basically captures the compounding effect and gives a more accurate picture of long-term performance. Also, with simple returns, periods of high volatility with large positive or negative returns can skew the perception of a stock’s performance at a certain point in time. With log returns, we can capture volatility and risk much better. Let’s explore using daily log returns to capture the cumulative returns over the past 4 years. The cumulative returns are calculated by subtracting 1 from the exponential of the sum of all the log returns for a stock. Let’s do this in SQL using the LOG, SUM and EXP functions.
+
+	WITH q1 AS
+	(SELECT
+ 	  q2.Ticker_ID,
+ 	  TRIM(q3.Ticker) AS Ticker,
+ 	  YEAR(q2.Date) AS "Year",
+ 	  q2."Date",
+		CASE
+		  WHEN COALESCE(LAG(q2."Close", 1) OVER (PARTITION BY q2.Ticker_ID ORDER BY q2."Date"), 0) = 0 THEN LOG(q2."Close" / q2."Open")
+		  ELSE LOG(q2."Close" / LAG(q2."Close", 1) OVER (PARTITION BY q2.Ticker_ID ORDER BY q2."Date"))
+		END AS "Log % Return"
+	FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q2
+	INNER JOIN [Financial_Securities].[Equities].[Equities] q3
+	ON q2.Ticker_ID = q3.Ticker_ID),
+	q4 AS
+	(SELECT 
+	   q1.Ticker_ID,
+	   q1.Ticker,
+	   ROUND((EXP(SUM(q1."Log % Return")) - 1.0) * 100, 2) AS "Cumulative % Return"
+	FROM q1
+	GROUP BY 
+	  q1.Ticker_ID,
+	  q1.Ticker),
+	q5 AS
+	(
+	SELECT 
+	  q4.Ticker_ID,
+	  q4.Ticker,
+	  q4."Cumulative % Return",
+	  DENSE_RANK() OVER(ORDER BY q4."Cumulative % Return" DESC) AS "Cumulative % Return Rank"
+	FROM q4)
+	SELECT
+	  q5.Ticker,
+	  q5."Cumulative % Return",
+	  q5."Cumulative % Return Rank"
+	FROM q5
+	WHERE q5."Cumulative % Return Rank" <= 10
+	ORDER BY q5."Cumulative % Return Rank";
+
 
 
 
