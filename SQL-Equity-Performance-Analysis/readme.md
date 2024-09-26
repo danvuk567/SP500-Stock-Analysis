@@ -34,7 +34,7 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 
   ## Yearly Pricing Query: *[Yearly-Ticker-Pricing-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Pricing-Query.sql)*
 
-  Lest's query the yearly pricing view for the **MSFT** Ticker and observe the results.
+  Let's query the yearly pricing view for the **MSFT** Ticker and observe the results.
 
   	SELECT 
       	    Ticker,
