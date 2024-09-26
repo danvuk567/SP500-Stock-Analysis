@@ -1,7 +1,7 @@
 
 Let's do the same type of analysis we did using SQL in Python. To do that, we'll define a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month*. The data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL. We will add this to *custom_python_functions.py* which can be re-used in this project. We'll also plot **Candlestick** charts of pricing data and to do that, you'll need to have the plotly package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp)
 
-## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom_Python_Functions/custom_python_functions.py)*
+## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
     def get_pricing_data(df_tmp, period):
     
