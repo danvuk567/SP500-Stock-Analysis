@@ -102,7 +102,58 @@ Let's do the same type of analysis we did using SQL in Python. To do that, we'll
         fig.show()  
         
 
-    Lest's query the yearly pricing data for the **MSFT** Ticker, observe the results an plot the Candlestick chart.
+Let's connect to the database, store the yearly pricing data in the dataframe, get the yearly pricing data for **MSFT*, print the results and plot the Candlestick chart.
+
+        # Define SQL query to retrieve tickers from the Yahoo_Equity_Prices table
+        sql_stat = """SELECT 
+                TRIM(q2.Ticker) AS Ticker,
+                q1.Date,
+                ROUND(q1.[Open], 2) AS "Open",
+                ROUND(q1.[High], 2) AS "High",
+                ROUND(q1.[Low], 2) AS "Low",
+                ROUND(q1.[Close], 2) AS "Close",
+                q1.Volume AS "Volume"
+        FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q1
+        INNER JOIN [Financial_Securities].[Equities].[Equities] q2
+        ON q1.Ticker_ID = q2.Ticker_ID
+        ORDER BY q2.Ticker, q1.Date
+        """
+
+        try:
+            # Execute the SQL query and read the results into a DataFrame
+            df_pricing = pd.read_sql(sql_stat, s1.bind)
+    
+        except sa.exc.SQLAlchemyError as e:
+            # Handle exceptions during SQL query execution
+            print(f"Issue querying database tables! Error: {e}")
+            s1.close()
+            raise
+
+        if df_pricing.empty:
+            print("DataFrame is empty after SQL query.")
+    
+        else:
+            df_pricing['Date'] = pd.to_datetime(df_pricing['Date'])
+            df_pricing['Year'] = df_pricing['Date'].dt.year
+            df_pricing.sort_values(by=['Ticker', 'Date'], inplace=True)
+
+            # Default Ticker used in single ticker analysis
+            ticker = 'MSFT'
+
+            df_pricing_yr = get_pricing_data(df_pricing, 'Year') 
+            df_pricing_yr_ticker = df_pricing_yr[df_pricing_yr['Ticker'] == ticker].copy()
+            df_pricing_yr_ticker.sort_values(by=['Date'], inplace=True)
+
+            # Print yearly pricing data
+            print(df_pricing_yr_ticker.to_string(index=False))
+
+            plot_pricing_candlestick(df_pricing_yr_ticker, ticker, 'Year')
+
+       s1.close() 
+
+            
+
+
 
 
 
