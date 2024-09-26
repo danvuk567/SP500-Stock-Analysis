@@ -148,7 +148,7 @@ This sql file will create the Dimension table called *Market_Calendar*. To deter
 
 And there you have it! We have set up a basic Snowflake schema for our Equity Data Warehouse.
 
-Equity_Snowflake_Schema_ERD.jpg
+![Equity_Snowflake_Schema_ERD.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Equity_Snowflake_Schema_ERD.jpg?raw=true)
 
 
 
