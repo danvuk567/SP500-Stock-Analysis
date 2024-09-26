@@ -101,7 +101,7 @@ Let's do the same type of analysis we did using SQL in Python. To do that, we'll
         )
         fig.show()
         
-## Equity Year Prices Query: *[Equity-Year-Prices-Query.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/Equity-Year-Prices-Query.ipynb)*
+## Equity Year Prices Query: *[Equity-Year-Prices-Query.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Perfromance-Analysis/Equity-Year-Prices-Query.ipynb)*
 
 Let's connect to the database, store the yearly pricing data in the dataframe, get the yearly pricing data for **MSFT*, print the results and plot the Candlestick chart.
 
