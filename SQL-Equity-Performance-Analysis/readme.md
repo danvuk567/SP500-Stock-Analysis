@@ -267,8 +267,39 @@ If we want to compare which stocks from the S&P 500 performed the best by Year, 
 
 We see that **NVDA** is in the top 5 in all 5 years except 2022. **SMCI** is the only other stock that appears more than once. Both **NVDA** and **SMCI** are computer hardware types and in one of the top performing industries of the decade. 
 
-We can also look at bucketing yearly performance in percentiles using the **NTILE** WINDOW function. Let's query stocks from the S&P 500 that were in the 100
+## Yearly Equity Return Percentile Query: *[Yearly-Equity-Return-Percentile-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Equity-Return-Percentile-Query.sql)*
 
+We can also look at bucketing yearly performance in percentiles using the **NTILE** WINDOW function. The top perfrorming stocks would be in the highest percentile (100) and worst performing stocks would be in the lowest percentile (1). Let's query stocks from the S&P 500 that were in the 100th percentile.
+
+		WITH q1 AS
+		   (SELECT
+			Ticker_ID,
+			Ticker,
+			"Year",
+			"Date",
+			CASE
+			   WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
+			   ELSE ROUND((("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
+			END AS "% Return"
+		    FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]),
+		q2 AS
+                (SELECT 
+		  q1.Ticker_ID,
+		  q1.Ticker,
+		  q1."Year",
+		  q1."% Return",
+		  NTILE(100) OVER(PARTITION BY q1."Year" ORDER BY q1."% Return" ASC) AS "% Return Percentile"
+		FROM q1)
+		SELECT
+		  q2."Year",
+		  q2.Ticker,
+		  q2."% Return",
+		  q2."% Return Rank"
+		FROM q2
+		WHERE q2."% Return Percentile" = 100
+		ORDER BY q2."Year", q2."% Return" DESC;
+
+![SP500_Equity_100th_Percentile_Returns_by_Year_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_100th_Percentile_Returns_by_Year_Data.jpg?raw=true)
 
 
 
