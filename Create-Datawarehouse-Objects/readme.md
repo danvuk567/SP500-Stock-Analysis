@@ -1,8 +1,8 @@
 # Data Warehouse Creation Files Description
 
-For this project, we will use an SQL server database. The sql files will create database objects in our data warehouse using a Snowflake schema. For more information on Snowflake schemas, you can reference this site: [Snowflake Schema in Data Warehouse Model](https://www.geeksforgeeks.org/snowflake-schema-in-data-warehouse-model/). I will describe what the purpose of each file is going forward. 
+For this project, we will use an **SQL Server** database. The sql files will create database objects in our **Data Warehouse** using a **Snowflake schema**. For more information on Snowflake schemas, you can reference this site: [Snowflake Schema in Data Warehouse Model](https://www.geeksforgeeks.org/snowflake-schema-in-data-warehouse-model/). I will describe what the purpose of each file is going forward. 
 
-Equities fall into a type of business and although every business is unique, businesses can be grouped and classified with similar criteria as industries such as manufacturing, retail, financial services etc. The most common Industry classification is the Global Industry Classification Standard (GICS) which is also used by S&P Indices. There are 4 levels of GICS industry classification: Sector, Industry Group. Industry and Sub-Industry. For more information on GICS industry classification, refer to these official websites: [The Global Industry Classification Standard](https://www.msci.com/our-solutions/indexes/gics) and [GICS: Global Industry Classification Standard](https://www.spglobal.com/spdji/en/landing/topic/gics/). In order to aggregate and analyze data at higher levels, we can create these Dimension tables using some of the sql scripts described below. These tables will be part of a relational hierarchy that is linked to *Equities* Dimension table that  stores the unique information for our S&P 500 Equities. 
+Equities fall into a type of business and although every business is unique, businesses can be grouped and classified with similar criteria as industries such as manufacturing, retail, financial services etc. The most common Industry classification is the **Global Industry Classification Standard (GICS)** which is also used by S&P Indices. There are 4 levels of GICS industry classification: **Sector**, **Industry Group**, **Industry** and **Sub-Industry**. For more information on GICS industry classification, refer to these official websites: [The Global Industry Classification Standard](https://www.msci.com/our-solutions/indexes/gics) and [GICS: Global Industry Classification Standard](https://www.spglobal.com/spdji/en/landing/topic/gics/). In order to aggregate and analyze data at higher levels, we can create these Dimension tables using some of the sql scripts described below. These tables will be part of a relational hierarchy that is linked to *Equities* Dimension table that  stores the unique information for our S&P 500 Equities. 
 
 
 ## *[Create-Database.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Database.sql)*  
@@ -145,6 +145,12 @@ This sql file will create the foreign key constraints called *FK_Industry_Groups
     CONSTRAINT PK_Market_Calendar PRIMARY KEY([Country], [Date]));
 
 This sql file will create the Dimension table called *Market_Calendar*. To determine if there is missing Equity pricing data in the *Yahoo_Equity_Pricing* table for any Ticker, we need to validate it against valid US market dates. The Python package [pandas_market_calendars](https://pandas-market-calendars.readthedocs.io/en/latest/) can retrieve the calendar from any global stock exchange which should serve our purpose. We can then store the date and times for any *Country* in this table. The Primary Key is defined as a unique composite key using *Country* and *Date*.
+
+And there you have it! We have set up a basic Snowflake schema for our Equity Data Warehouse.
+
+Equity_Snowflake_Schema_ERD.jpg
+
+
 
 
 
