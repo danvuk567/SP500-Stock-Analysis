@@ -15,7 +15,7 @@ q2 AS
        q1.Ticker,
        q1."Year",
        q1."% Return",
-       RANK() OVER(PARTITION BY q1."Year" ORDER BY q1."% Return" DESC) AS "% Return Rank"
+       DENSE_RANK() OVER(PARTITION BY q1."Year" ORDER BY q1."% Return" DESC) AS "% Return Rank"
      FROM q1)
 SELECT
   q2."Year",
