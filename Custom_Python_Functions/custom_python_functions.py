@@ -114,7 +114,7 @@ def get_pricing_data(df_pricing, period):
         required_cols = ['Ticker', 'Year']
         
     # Group data by required_cols, aggregating relevant columns
-    df_tmp = df_tmp.groupby(required_cols).agg(
+    df_tmp2 = df_tmp.groupby(required_cols).agg(
         {
             'Date': 'last',   # Get the last date for each group
             'Open': "first",  # Get the first opening price for each group
@@ -127,6 +127,6 @@ def get_pricing_data(df_pricing, period):
 
 
     # Return the processed DataFrame
-    return df_tmp
+    return df_tmp2
 
   
