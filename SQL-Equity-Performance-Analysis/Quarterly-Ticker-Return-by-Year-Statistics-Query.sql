@@ -24,7 +24,7 @@ FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Quarter_Prices]),
 q3 AS (
     SELECT
         q2.Ticker_ID,
-		q2.Ticker,
+	q2.Ticker,
         q2."Year",
         q2."Quarter",
         q2."% Return",
@@ -40,15 +40,15 @@ SELECT
     AVG(CASE 
           WHEN q3.Cnt % 2 = 1 THEN 
             CASE 
-			  WHEN q3.Row_Num = (q3.Cnt + 1) / 2 THEN q3."% Return"
-			  ELSE NULL 
-			END
-         ELSE 
-		   CASE 
-			 WHEN q3.Row_Num IN ((q3.Cnt / 2), (q3.Cnt / 2) + 1) THEN q3."% Return"
-			 ELSE NULL 
-		   END
-          END) AS "Median % Return"
+	      WHEN q3.Row_Num = (q3.Cnt + 1) / 2 THEN q3."% Return"
+	      ELSE NULL 
+	    END
+          ELSE 
+	    CASE 
+	      WHEN q3.Row_Num IN ((q3.Cnt / 2), (q3.Cnt / 2) + 1) THEN q3."% Return"
+	      ELSE NULL 
+	    END
+        END) AS "Median % Return"
 FROM q3
 WHERE q3.Row_Num IN ((q3.Cnt + 1) / 2, (q3.Cnt / 2) + 1)
 GROUP BY q3.Ticker_ID, q3.Ticker, q3."Year")
@@ -59,7 +59,7 @@ SELECT
     ROUND(MIN(q2."% Return") * 100, 2) AS "Lowest Quarterly % Return",
     ROUND(MAX(q2."% Return") * 100, 2) AS "Highest Quarterly % Return",
     ROUND(AVG(q2."% Return") * 100, 2) AS "Avg Quarterly % Return",
-	ROUND(q4."Median % Return" * 100, 2) AS "Median Quarterly % Return",
+    ROUND(q4."Median % Return" * 100, 2) AS "Median Quarterly % Return",
     ROUND(STDEVP(q2."% Return") * 100, 2) AS "Quarterly % Volatility"
 FROM q1
 INNER JOIN q2
