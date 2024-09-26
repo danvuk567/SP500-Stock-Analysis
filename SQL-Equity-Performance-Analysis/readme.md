@@ -229,7 +229,7 @@ Let's find out what the lowest Quarterly Return, the highest Quarterly Return, a
 
 ![MSFT Quarterly Return by Year Statistics Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data.jpg?raw=true)
 
-Looking at 2022, the average quarterly return was **-7.63%** which is higher than the median quarterly return of **-8.64%** and we can see that the positive **3.26%** highest return in Q4 had an impact. The highest variance appears to be in 2023 at **11.5%** and we can see a very high Median of **18.86%** is close the highest return of **20.51%** indicating that there were Quarters that had returns that were much much lower. We can see that the lowest negative return of **-7.08%** in Q3 had a strong impact on variance from the average.
+Looking at **2022**, the average quarterly return was **-7.63%** which is higher than the median quarterly return of **-8.64%** and we can see that the positive **3.26%** highest return in Q4 had an impact. The highest variance appears to be in **2023** at **11.5%** and we can see a very high Median of **18.86%** is close the highest return of **20.51%** indicating that there were Quarters that had returns that were much much lower. We can see that the lowest negative return of **-7.08%** in Q3 had a strong impact on variance from the average.
 
 
 
