@@ -10,13 +10,13 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
   		     q2.Ticker_ID,
    		     TRIM(q3.Ticker) AS Ticker,
 		     YEAR(q2.Date) AS "Year",
-		     MAX(q2.Date) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS Date,
-		     FIRST_VALUE(q2.[Open]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Open",
-		     MAX(q2.[High]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "High",
- 		     MIN(q2.[Low]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Low",
- 		     LAST_VALUE(q2.[Close]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Close",
-		     LAST_VALUE(q2.Volume) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Volume",
- 		     ROW_NUMBER() OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date DESC) AS Row_Num
+		     **MAX**(q2.Date) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS Date,
+		     **FIRST_VALUE**(q2.[Open]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Open",
+		     **MAX**(q2.[High]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "High",
+ 		     **MIN**(q2.[Low]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Low",
+ 		     **LAST_VALUE**(q2.[Close]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Close",
+		     **LAST_VALUE**(q2.Volume) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Volume",
+ 		     **ROW_NUMBER**()OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date DESC) AS Row_Num
  		FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q2
 		INNER JOIN [Financial_Securities].[Equities].[Equities] q3
 		ON q2.Ticker_ID = q3.Ticker_ID)
@@ -62,8 +62,8 @@ Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to see which year h
 	    "Year",
 	    "Date",
 	     CASE
-		WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
-		ELSE ROUND((("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
+		WHEN COALESCE(**LAG**("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
+		ELSE ROUND((("Close" / **LAG**("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
 	     END AS "% Return"
 	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
 	WHERE Ticker = 'MSFT'
@@ -98,7 +98,7 @@ Let's now examine Quarter returns for **MSFT** to see if we can identify the rea
 
  We can observe **MSFT** had **3 Quarters** in **2023** with high returns of roughly **18% to 20%** which impacted to the high return of **58.19%** in **2023**. And we had low returns in the **1st** and **3rd Quarter** of **2022** and a significant return of **-16.5%** in the **2nd Quarter** of **2022**. This impacted the low return of **-28.02%** in **2022**.
 
-## Quarterly % Return by Year Statistics Query:
+## Quarterly % Return by Year Statistics Query: *[Quarterly-Ticker-Return-by-Year-Statistics-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Quarterly-Ticker-Return-by-Year-Statistics-Query.sql)*
 
 Now let’s explore some statistical measures in SQL using Quarterly Returns. One statisitical measure, called the **Median**, does not have a direct function in SQL Server. For more information on the Meidan, refer to this link: [Median: What It Is and How to Calculate It, With Examples](https://www.investopedia.com/terms/m/median.asp). Let's derive the Median Quarterly Return by year for **MSFT**. We can use the concept of counting how many Quarters exist in a given year and if there are an even number of Quarters, we retrieve the 2 middle rows and if there is an odd number of Quarters, we retrieve the singular middle row. We then apply the average which works in both cases to the find the Median. Here is the complex query that demonstrates how this can be calculated.
 
@@ -207,11 +207,11 @@ Let's find out what the lowest Quarterly Return, the highest Quarterly Return, a
 		    q1.Ticker,
 		    q1."Year",
 		    ROUND(q1."% Return" * 100, 2) AS "Yearly % Return",
-		    ROUND(MIN(q2."% Return") * 100, 2) AS "Lowest Quarterly % Return",
-		    ROUND(MAX(q2."% Return") * 100, 2) AS "Highest Quarterly % Return",
-		    ROUND(AVG(q2."% Return") * 100, 2) AS "Avg Quarterly % Return",
+		    ROUND(**MIN**(q2."% Return") * 100, 2) AS "Lowest Quarterly % Return",
+		    ROUND(**MAX**(q2."% Return") * 100, 2) AS "Highest Quarterly % Return",
+		    ROUND(**AVG**(q2."% Return") * 100, 2) AS "Avg Quarterly % Return",
 		    ROUND(q4."Median % Return" * 100, 2) AS "Median Quarterly % Return",
-		    ROUND(STDEVP(q2."% Return") * 100, 2) AS "Quarterly % Volatility"
+		    ROUND(**STDEVP**(q2."% Return") * 100, 2) AS "Quarterly % Volatility"
 		FROM q1
 		INNER JOIN q2
 		ON q1.Ticker_ID = q2.Ticker_ID
