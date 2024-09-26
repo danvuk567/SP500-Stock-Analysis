@@ -233,7 +233,7 @@ Looking at **2022**, the average quarterly return was **-7.63%** which is higher
 
 ## Yearly Equity Return Ranking Query: *[Yearly-Equity-Return-Ranking-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Equity-Return-Ranking-Query.sql)*
 
-If we want to compare which stocks from the S&P 500 performed the best by Year, we can use the **RANK** WINDOW function ranking yearly returns in descending order. Let's get the TOP 5 performing stocks by year with this query.
+If we want to compare which stocks from the S&P 500 performed the best by Year, we can use the **DENSE_RANK()** WINDOW function ranking yearly returns in descending order. Let's get the TOP 5 performing stocks by year with this query.
 
 		WITH q1 AS
 		   (SELECT
@@ -252,7 +252,7 @@ If we want to compare which stocks from the S&P 500 performed the best by Year, 
 		  q1.Ticker,
 		  q1."Year",
 		  q1."% Return",
-		  RANK() OVER(PARTITION BY q1."Year" ORDER BY q1."% Return" DESC) AS "% Return Rank"
+		  DENSE_RANK() OVER(PARTITION BY q1."Year" ORDER BY q1."% Return" DESC) AS "% Return Rank"
 		FROM q1)
 		SELECT
 		  q2."Year",
@@ -267,6 +267,7 @@ If we want to compare which stocks from the S&P 500 performed the best by Year, 
 
 We see that **NVDA** is in the top 5 in all 5 years except 2022. **SMCI** is the only other stock that appears more than once. Both **NVDA** and **SMCI** are computer hardware types and in one of the top performing industries of the decade. 
 
+We can also look at bucketing yearly performance in percentiles using the **NTILE** WINDOW function. Let's query stocks from the S&P 500 that were in the 100
 
 
 
