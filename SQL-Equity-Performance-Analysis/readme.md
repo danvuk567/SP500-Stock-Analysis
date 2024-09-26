@@ -231,7 +231,7 @@ Let's find out what the lowest Quarterly Return, the highest Quarterly Return, a
 
 Looking at **2022**, the average quarterly return was **-7.63%** which is higher than the median quarterly return of **-8.64%** and we can see that the positive **3.26%** highest return in Q4 had an impact. The highest variance appears to be in **2023** at **11.5%** and we can see a very high Median of **18.86%** is close the highest return of **20.51%** indicating that there were Quarters that had returns that were much much lower. We can see that the lowest negative return of **-7.08%** in Q3 had a strong impact on variance from the average.
 
-## Equity Yearly Return Ranking Query: *[Equity-Yearly-Return-Ranking-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Equity-Yearly-Return-Ranking-Query.sql)*
+## Yearly Equity Return Ranking Query: *[Yearly-Equity-Return-Ranking-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Equity-Return-Ranking-Query.sql)*
 
 If we want to compare which stocks from the S&P 500 performed the best by Year, we can use the **RANK** WINDOW function ranking yearly returns in descending order. Let's get the TOP 5 performing stocks by year with this query.
 
@@ -263,7 +263,7 @@ If we want to compare which stocks from the S&P 500 performed the best by Year, 
 		WHERE q2."% Return Rank" <= 5
 		ORDER BY q2."Year", q2."% Return Rank";
 
-
+![SP500_Equity_Top_5_Returns_by_Year_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Data.jpg?raw=true)
 
 
 
