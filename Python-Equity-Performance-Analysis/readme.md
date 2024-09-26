@@ -102,7 +102,7 @@ Let's do the same type of analysis we did using SQL in Python. To do that, we'll
         fig.show()  
         
 
-    
+    Lest's query the yearly pricing data for the **MSFT** Ticker, observe the results an plot the Candlestick chart.
 
 
 
