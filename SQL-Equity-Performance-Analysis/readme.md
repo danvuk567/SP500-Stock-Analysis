@@ -313,10 +313,10 @@ Comparing simple returns by year by Ticker gives you a good idea of which stocks
  	  TRIM(q3.Ticker) AS Ticker,
  	  YEAR(q2.Date) AS "Year",
  	  q2."Date",
-		CASE
-		  WHEN COALESCE(LAG(q2."Close", 1) OVER (PARTITION BY q2.Ticker_ID ORDER BY q2."Date"), 0) = 0 THEN LOG(q2."Close" / q2."Open")
-		  ELSE LOG(q2."Close" / LAG(q2."Close", 1) OVER (PARTITION BY q2.Ticker_ID ORDER BY q2."Date"))
-		END AS "Log % Return"
+	  CASE
+	     WHEN COALESCE(LAG(q2."Close", 1) OVER (PARTITION BY q2.Ticker_ID ORDER BY q2."Date"), 0) = 0 THEN LOG(q2."Close" / q2."Open")
+	     ELSE LOG(q2."Close" / LAG(q2."Close", 1) OVER (PARTITION BY q2.Ticker_ID ORDER BY q2."Date"))
+	  END AS "Log % Return"
 	FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q2
 	INNER JOIN [Financial_Securities].[Equities].[Equities] q3
 	ON q2.Ticker_ID = q3.Ticker_ID),
