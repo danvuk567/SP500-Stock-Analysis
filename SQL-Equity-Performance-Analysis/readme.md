@@ -2,7 +2,7 @@
 
 ## Create Equity Yearly Price View: *[Create-VW_Yahoo_Equity_Year_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-VW_Yahoo_Equity_Year_Prices-View.sql)*
 
-Let's start by doing some analysis on yearly pricing data. We can aggregate the data in the *Yahoo_Equity_Prices* table and create a view called *VW_Yahoo_Equity_Year_Prices* that we will use in the project. Here we make use of various WINDOW functions to capture the last date of the year by Ticker using MAX. The "Date" for yearly data will be represented by the last date. We'll get the 1st Open price by Ticker and year as "Open" using FIRST_VALUE, the highest High price by Ticker and year as "High" using MAX, the lowest Low price by Ticker and year as "Low" using MIN, the last Close price by Ticker and year as "Close" using LAST_VALUE, and the last Volume by Ticker and year as "Volume" using LAST_VALUE. We group the data using PARTITION BY Ticker_ID and Year, ORDER BY date and use UNBOUNDED PRECEDING and UNBOUNDED FOLLOWING clauses to scan and all the rows within the year. In doing so, duplication of our desired output wiil occur for all the records by year by ticker and in order to produce unique values, we can use ROW_NUMBER() as Row_Num and query for Row_Num = 1.
+Let's start by doing some analysis on yearly pricing data. We can aggregate the data in the *Yahoo_Equity_Prices* table and create a view called *VW_Yahoo_Equity_Year_Prices* that we will use in the project. Here we make use of various **WINDOW functions** to capture the last date of the year by Ticker using **MAX**. The **Date** for yearly data will be represented by the **last date**. We'll get the 1st Open price by Ticker and year as **"Open"** using **FIRST_VALUE**, the highest High price by Ticker and year as **"High"** using **MAX**, the lowest Low price by Ticker and year as **"Low"** using **MIN**, the last Close price by Ticker and year as **"Close"** using **LAST_VALUE**, and the last Volume by Ticker and year as **"Volume"** using **LAST_VALUE**. We group the data using **PARTITION BY** Ticker_ID and Year, **ORDER BY** date and use **UNBOUNDED PRECEDING and UNBOUNDED FOLLOWING** clauses to scan and all the rows within the year. In doing so, duplication of our desired output wiil occur for all the records by year by ticker and in order to produce unique values, we can use **ROW_NUMBER**() as Row_Num and query for Row_Num = 1.
 
 		CREATE VIEW [Equities].[VW_Yahoo_Equity_Year_Prices] AS
 		WITH q1 AS
@@ -10,13 +10,13 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
   		     q2.Ticker_ID,
    		     TRIM(q3.Ticker) AS Ticker,
 		     YEAR(q2.Date) AS "Year",
-		     **MAX**(q2.Date) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS Date,
-		     **FIRST_VALUE**(q2.[Open]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Open",
-		     **MAX**(q2.[High]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "High",
- 		     **MIN**(q2.[Low]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Low",
- 		     **LAST_VALUE**(q2.[Close]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Close",
-		     **LAST_VALUE**(q2.Volume) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Volume",
- 		     **ROW_NUMBER**()OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date DESC) AS Row_Num
+		     MAX(q2.Date) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS Date,
+		     FIRST_VALUE(q2.[Open]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Open",
+		     MAX(q2.[High]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "High",
+ 		     MIN(q2.[Low]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Low",
+ 		     LAST_VALUE(q2.[Close]) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Close",
+		     LAST_VALUE(q2.Volume) OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "Volume",
+ 		     ROW_NUMBER()OVER (PARTITION BY q2.Ticker_ID, YEAR(q2.Date) ORDER BY q2.Date DESC) AS Row_Num
  		FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q2
 		INNER JOIN [Financial_Securities].[Equities].[Equities] q3
 		ON q2.Ticker_ID = q3.Ticker_ID)
@@ -55,15 +55,15 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 
 ## Yearly % Returns Query: *[Yearly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Returns-Query.sql)*
 
-Let’s examine the Yearly returns for ** Micorsoft (MSFT)** to see which year had the lowest and highest returns. Here we use the LAG WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Let's query the Yearly Returns for **MSFT**.
+Let’s examine the Yearly returns for **Micorsoft (MSFT)** to see which year had the lowest and highest returns. Here we use the **LAG** WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Let's query the Yearly Returns for **MSFT**.
 
 	SELECT
         Ticker,
 	    "Year",
 	    "Date",
 	     CASE
-		WHEN COALESCE(**LAG**("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
-		ELSE ROUND((("Close" / **LAG**("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
+		WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
+		ELSE ROUND((("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
 	     END AS "% Return"
 	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
 	WHERE Ticker = 'MSFT'
@@ -207,11 +207,11 @@ Let's find out what the lowest Quarterly Return, the highest Quarterly Return, a
 		    q1.Ticker,
 		    q1."Year",
 		    ROUND(q1."% Return" * 100, 2) AS "Yearly % Return",
-		    ROUND(**MIN**(q2."% Return") * 100, 2) AS "Lowest Quarterly % Return",
-		    ROUND(**MAX**(q2."% Return") * 100, 2) AS "Highest Quarterly % Return",
-		    ROUND(**AVG**(q2."% Return") * 100, 2) AS "Avg Quarterly % Return",
+		    ROUND(MIN(q2."% Return") * 100, 2) AS "Lowest Quarterly % Return",
+		    ROUND(MAX(q2."% Return") * 100, 2) AS "Highest Quarterly % Return",
+		    ROUND(AVG(q2."% Return") * 100, 2) AS "Avg Quarterly % Return",
 		    ROUND(q4."Median % Return" * 100, 2) AS "Median Quarterly % Return",
-		    ROUND(**STDEVP**(q2."% Return") * 100, 2) AS "Quarterly % Variance"
+		    ROUND(STDEVP(q2."% Return") * 100, 2) AS "Quarterly % Variance"
 		FROM q1
 		INNER JOIN q2
 		ON q1.Ticker_ID = q2.Ticker_ID
@@ -233,7 +233,7 @@ Looking at **2022**, the average quarterly return was **-7.63%** which is higher
 
 ## Multiple Equity Yearly Return Ranking Query
 
-If we want to compare which stocks from the S&P 500 performed the best by Year, we can use the RANK WINDOW function ranking yearly returns in descending order. Let's get the TOP 5 performing stocks by year with this query.
+If we want to compare which stocks from the S&P 500 performed the best by Year, we can use the **RANK** WINDOW function ranking yearly returns in descending order. Let's get the TOP 5 performing stocks by year with this query.
 
 		WITH q1 AS
 		   (SELECT
@@ -253,7 +253,7 @@ If we want to compare which stocks from the S&P 500 performed the best by Year, 
 		  q1.Ticker,
 		  q1."Year",
 		  q1."% Return",
-		  **RANK**() OVER(PARTITION BY q1."Year" ORDER BY q1."% Return" DESC) AS "% Return Rank"
+		  RANK() OVER(PARTITION BY q1."Year" ORDER BY q1."% Return" DESC) AS "% Return Rank"
 		FROM q1)
 		SELECT
 		  q2."Year",
