@@ -345,6 +345,7 @@ Comparing simple returns by year by Ticker gives you a good idea of which stocks
 	WHERE q5."Cumulative % Return Rank" <= 10
 	ORDER BY q5."Cumulative % Return Rank";
 
+![SP500_Equity_Top_5_Cumulative_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Cumulative_Returns_Data.jpg?raw=true)
 
 
 
