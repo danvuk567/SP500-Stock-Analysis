@@ -121,8 +121,7 @@ Now let’s explore some statistical measures in SQL using Quarterly Returns. On
 	        q1."% Return",
 	        ROW_NUMBER() OVER (PARTITION BY q1.Ticker_ID, q1."Year" ORDER BY q1."% Return") AS Row_Num,
 	        COUNT(*) OVER (PARTITION BY q1.Ticker, q1."Year") AS Cnt
-	    FROM q1
-	 )
+	    FROM q1)
 	 SELECT
 	    q2.Ticker_ID,
 	    q2.Ticker,
