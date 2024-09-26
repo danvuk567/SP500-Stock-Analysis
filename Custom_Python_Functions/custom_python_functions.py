@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 import urllib.parse as url
 import datetime as dt
 
+
 def create_connection(serv, dbase, uid, passwd):
     """
     Creates a connection to a SQL Server database using SQLAlchemy and returns a session and engine.
@@ -87,4 +88,45 @@ def get_dates_for_years(yrs_back, yrs_forward):
     start_date = str(start_year) + "-01-01"
     
     return start_date, end_date
+
+
+def get_pricing_data(df_pricing, period):
+    """
+    This function processes pricing data from a DataFrame based on the specified period ('Year', 'Quarter', or 'Month').
+    
+    Parameters:
+    - df_pricing: DataFrame containing the pricing data.
+    - period: String specifying the period for aggregation ('Year', 'Quarter', or 'Month').
+
+    Returns:
+    - Processed DataFrame aggregated by the specified period.
+    """
+    
+      
+    # Conditionally add the period column based on the specified period
+    if period == 'Quarter':
+        df_tmp['Quarter'] = df_tmp['Date'].dt.quarter
+        required_cols = ['Ticker', 'Year', 'Quarter']
+    elif period == 'Month':
+        df_tmp['Month'] = df_tmp['Date'].dt.month
+        required_cols = ['Ticker', 'Year', 'Month']
+    else:  # Default to 'Year'
+        required_cols = ['Ticker', 'Year']
+        
+    # Group data by required_cols, aggregating relevant columns
+    df_tmp = df_tmp.groupby(required_cols).agg(
+        {
+            'Date': 'last',   # Get the last date for each group
+            'Open': "first",  # Get the first opening price for each group
+            'High': 'max',    # Get the maximum high price for each group
+            'Low': 'min',     # Get the minimum low price for each group
+            'Close': 'last',  # Get the last closing price for each group
+            'Volume': 'last'  # Get the last volume for each group
+        }
+    ).reset_index()  # Reset the index to make 'Ticker' and 'Year' columns
+
+
+    # Return the processed DataFrame
+    return df_tmp
+
   
