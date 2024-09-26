@@ -152,6 +152,7 @@ Let's connect to the database, store the yearly pricing data in the dataframe, g
 
        s1.close() 
 
+ ![MSFT_Yearly_Pricing_Data_Python](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Pricing_Data_Python.jpg?raw=true)
             
 
 
