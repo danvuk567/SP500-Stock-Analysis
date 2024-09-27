@@ -7,7 +7,9 @@ import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 import urllib.parse as url
 import datetime as dt
-
+import plotly as pltly
+import plotly.io as pio
+pio.renderers.default='browser'
 import matplotlib.pyplot as plt
 
 
