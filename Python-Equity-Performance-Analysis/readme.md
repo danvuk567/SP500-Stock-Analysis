@@ -104,7 +104,7 @@ We'll also want to plot **Candlestick Charts** of pricing data and to do that, y
         )
         fig.show()
 
-Let's define a function called *plot_pricing_candlestick* takes a daily pricing dataframe, Ticker name and period type as parameters. Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a daily pricing dataframe, Ticker name and period type as parameters but also a price type.
+Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a daily pricing dataframe, Ticker name and period type as parameters but also a price type.
 
         import matplotlib.pyplot as plt
         
