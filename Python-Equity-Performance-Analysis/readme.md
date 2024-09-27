@@ -291,9 +291,9 @@ Now let's define a function called *calculate_stats* which will calculate Quarte
             # Return the DataFrame with the calculated statistics
             return df_tmp
 
-This custom function called *plot_year_stats_bar_charts* will use matplotlib subplots to show seperate bar charts of each period Statistic based on  *'Year'* and *'Year % Return'* we want to show. The code is a bit tricky and lengthy to get correct dynamic formatting. It requires a statistics dataframe and Ticker name as input parameters.
+This custom function called *plot_year_stats_bar_charts* will use matplotlib subplots to show separate bar charts of each period Statistic based on  *'Year'* and *'Year % Return'* we want to show. The code is a bit tricky and lengthy to get correct dynamic formatting. It requires a statistics dataframe and Ticker name as input parameters.
 
-        def plot_year_stats_bar_charts(df_stats, ticker):
+        def plot_period_stats_by_year_bar_charts(df_stats, ticker):
     
             """
             Create bar charts to visualize various statistics.
@@ -378,6 +378,59 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
             plt.show()
 
 
+This custom function called *plot_period_returns_by_year_box_plot* will use seaborn to plot boxplots of period returns based on  *'Year'*. It requires a return dataframe and Ticker name and period type as input parameters.
+
+        def plot_period_returns_by_year_box_plot(df_ret, ticker, period):
+    
+            """
+            Plots a box plot of returns for a given ticker and period.
+    
+            Parameters:
+            - df_ret: DataFrame containing return data.
+            - ticker: Stock ticker symbol.
+            - period: Time period for returns (e.g., 'Daily', 'Year', etc.).
+            """
+    
+            # Define properties for outliers in the box plot
+            # 'marker' defines the shape of the outliers
+            # 'color' sets the color of the outliers
+            # 'alpha' adjusts the transparency of the outliers
+            # 'markersize' sets the size of the outlier markers
+            flierprops = dict(marker='o', color='red', alpha=0.5, markersize=8)
+
+            # Create a figure with a specified size for the plot
+            plt.figure(figsize=(12, 8))
+    
+            # If the period is 'Daily', treat it as an empty string for labeling purposes
+            # Otherwise, append a space after the period string for readability in the title
+            if period == 'Daily':
+                period = ''
+            else:
+                period = period + ' '
+
+            # Check if the period is 'Year'
+            if period == 'Year':
+                # If period is 'Year', create a box plot of yearly percentage returns
+                # y-axis is set to the 'Year % Return' column in the DataFrame
+                sns.boxplot(y=f'Year % Return', data=df_ret, palette="Set2", flierprops=flierprops)
+                plt.title(f'{ticker} Year % Returns')  # Title includes the ticker and indicates yearly returns
+                plt.ylabel('Year % Return')  # Set the label for the y-axis to 'Year % Return'
+
+            else:
+                # For other periods, create a box plot with 'Year' on the x-axis and returns on the y-axis
+                # The 'hue' argument differentiates data points by 'Year', using different colors for each year
+                sns.boxplot(x='Year', y=f'{period}% Return', data=df_ret, hue='Year', palette="Set2", flierprops=flierprops)
+                plt.title(f'{ticker} {period}% Returns by Year')  # Title includes the ticker and period
+                plt.xlabel('Year')  # Set the label for the x-axis to 'Year'
+
+            # Add gridlines to the y-axis for clarity, using a dashed line style and slight transparency
+            plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+            # Rotate the x-axis labels by 45 degrees for better readability, especially if there are many years
+            plt.xticks(rotation=45)
+    
+            # Display the plot
+            plt.show()
             
         
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
