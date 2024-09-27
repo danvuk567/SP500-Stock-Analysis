@@ -44,11 +44,11 @@ We'll start by defining a pricing function called *get_pricing_data* that will t
         # Return the processed DataFrame
         return df_tmp2
 
-We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* which takes a daily pricing dataframe, Ticker name and period type as input parameters.
+We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the Jupyter notebook by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* which takes a daily pricing dataframe, Ticker name and period type as input parameters.
 
      import plotly as pltly
      import plotly.io as pio
-     pio.renderers.default='browser'
+     pio.renderers.default='notebook_connected'
 
      def plot_pricing_candlestick(df_tmp, ticker, period):
      
@@ -293,7 +293,7 @@ Now let's define a function called *calculate_stats* which will calculate Quarte
 
 This custom function called *plot_year_stats_bar_charts* will use matplotlib subplots to show seperate bar charts of each period Statistic based on  *'Year'* and *'Year % Return'* we want to show. The code is a bit tricky and lengthy to get correct dynamic formatting. It requires a statistics dataframe and Ticker name as input parameters.
 
-        def plot_stats_bar_charts(df_stats, ticker):
+        def plot_year_stats_bar_charts(df_stats, ticker):
     
             """
             Create bar charts to visualize various statistics.
@@ -362,6 +362,10 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
                     ax[i].set_xlabel('Year')
                     ax[i].set_ylabel(col)
                     ax[i].grid(axis='y', linestyle='--', alpha=0.7)
+
+                    # Set x-ticks to only whole years
+                    ax[i].set_xticks(df_stats['Year'].unique())  # Set x-ticks to unique years
+                    ax[i].set_xticklabels(df_stats['Year'].unique().astype(int), rotation=45)  # Use int for tick labels
         
                 # Turn off any unused subplots
                 for j in range(num_stats, len(ax)):
@@ -491,6 +495,8 @@ Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_
      print(df_comb_stats_ticker.to_string(index=False))
 
  ![MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg?raw=true) 
+
+ 
 
 
 
