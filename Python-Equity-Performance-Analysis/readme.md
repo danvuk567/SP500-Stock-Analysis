@@ -3,7 +3,7 @@ Let's do the same type of analysis we did using SQL in Python. We will adding ne
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-We'll start by defining a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as parameters. The dataframe data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL.
+We'll start by defining a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as parameters. The dataframe data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL. We use the built-in *groupby* and *agg* functions we can apply to dataframes to retrieve the **'Date'**, **'Open'**, **'High'**, **'Low'**, **'Close'** and **'Volume'**. 
 
     def get_pricing_data(df_tmp, period):
     
@@ -194,44 +194,105 @@ Here we define a function called *plot_returns_bar_chart* to create a **Bar Char
 
         def plot_returns_bar_chart(df_tmp, ticker, period, return_type):
     
-        """
-        Plots a bar chart of returns based on the specified period.
+            """
+            Plots a bar chart of returns based on the specified period.
     
-        Parameters:
-        - df_tmp: DataFrame containing return data.
-        - ticker: Stock ticker symbol.
-        - period: Time period for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
-        """
+            Parameters:
+            - df_tmp: DataFrame containing return data.
+            - ticker: Stock ticker symbol.
+            - period: Time period for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+            """
     
-        # Create a Label column based on the period
-        if period == 'Year':
-            df_tmp['Label'] = df_tmp['Year'].astype(str)
-        elif period == 'Quarter':
-            df_tmp['Label'] = df_tmp['Year'].astype(str) + "-Q" + df_tmp['Quarter'].astype(str)
-        elif period == 'Month':
-            # Ensure month is zero-padded if needed
-            df_tmp['Label'] = df_tmp['Year'].astype(str) + "-" + df_tmp['Month'].apply(lambda x: str(x).zfill(2))
-        else:
-            df_tmp['Label'] = df_tmp['Date']
+            # Create a Label column based on the period
+            if period == 'Year':
+                df_tmp['Label'] = df_tmp['Year'].astype(str)
+            elif period == 'Quarter':
+                df_tmp['Label'] = df_tmp['Year'].astype(str) + "-Q" + df_tmp['Quarter'].astype(str)
+            elif period == 'Month':
+                # Ensure month is zero-padded if needed
+                df_tmp['Label'] = df_tmp['Year'].astype(str) + "-" + df_tmp['Month'].apply(lambda x: str(x).zfill(2))
+            else:
+                df_tmp['Label'] = df_tmp['Date']
         
 
-        # Check if return_type exists in df_tmp
-        if return_type not in df_tmp.columns:
-            raise ValueError(f"Column '{return_type}' does not exist in the DataFrame.")
+            # Check if return_type exists in df_tmp
+            if return_type not in df_tmp.columns:
+                raise ValueError(f"Column '{return_type}' does not exist in the DataFrame.")
     
-        # Plot returns as a bar chart
-        colors = ['red' if x < 0 else 'blue' for x in df_tmp[return_type]]
-        plt.figure(figsize=(10, 8))
-        plt.axhline(0, color='red', linestyle='--', linewidth=2.0)
-        plt.bar(df_tmp['Label'], df_tmp[return_type], color=colors, edgecolor='black')
-        plt.title(f'{ticker} {return_type}')
-        plt.xlabel(period)
-        plt.ylabel(return_type)
-        plt.grid(axis='y', linestyle='--', alpha=0.7)
-        plt.xticks(rotation=45)  # Rotate labels if needed for readability
-        plt.show()
+            # Plot returns as a bar chart
+            colors = ['red' if x < 0 else 'blue' for x in df_tmp[return_type]]
+            plt.figure(figsize=(10, 8))
+            plt.axhline(0, color='red', linestyle='--', linewidth=2.0)
+            plt.bar(df_tmp['Label'], df_tmp[return_type], color=colors, edgecolor='black')
+            plt.title(f'{ticker} {return_type}')
+            plt.xlabel(period)
+            plt.ylabel(return_type)
+            plt.grid(axis='y', linestyle='--', alpha=0.7)
+            plt.xticks(rotation=45)  # Rotate labels if needed for readability
+            plt.show()
+
+Now let's define a function called *calculate_stats* which will calulcate Quarterly Return Statistics based on Year and Year % Return. Similar to what we did using SQL queries, we want to find the Lowest, Highest, Average, Median and Variance of Quarterly Returns for each Year. We use the built-in *groupby* and *agg* functions we can apply to dataframes to achieve this.
+
+        def calculate_stats(df_ret, period):
+    
+            """
+            Calculate various statistical metrics for returns such as Lowest, Highest, Average, Median returns, 
+            and Return Variance for the given period.
+
+            Parameters:
+            - df_ret: DataFrame containing return data.
+            - period: The period for which the statistics are being calculated ('Year', 'Quarter', 'Month', or 'Daily').
+
+            Returns:
+            - df_tmp: A DataFrame containing the calculated statistics for each 'Ticker' over the specified period.
+            """
+    
+            # Determine the required columns based on the given period
+            if (period == 'Quarter') or (period == 'Month') or (period == 'Daily'):
+                # For these periods, also include 'Year' and 'Year % Return' in the grouping columns
+                required_cols = ['Ticker', 'Year', 'Year % Return']
+            else:  
+                # Default to 'Year' only if the period is not specified as 'Quarter', 'Month', or 'Daily'
+                required_cols = ['Ticker']
+    
+            # Adjust period string for daily returns (no prefix) or for non-daily periods (add space after period)
+            if period == 'Daily':
+                period = ''  # No period prefix for daily returns
+            else:
+                period = period + ' '  # Add space to the period to be used as prefix in column names
+    
+            # Group the data by the required columns and calculate statistical metrics for returns
+            df_tmp = df_ret.groupby(required_cols).agg(
+                Lowest_Return=(period + '% Return', 'min'),      # Minimum return for the period
+                Highest_Return=(period + '% Return', 'max'),     # Maximum return for the period
+                Average_Return=(period + '% Return', 'mean'),    # Mean (average) return for the period
+                Median_Return=(period + '% Return', 'median'),   # Median return for the period
+                Return_Variance=(period + '% Return', lambda x: x.std(ddof=0))  # Variance (standard deviation) of returns
+            ).reset_index()  # Reset index to return a DataFrame with a flat structure
+
+            # Round the calculated statistics to 2 decimal places for better readability
+            df_tmp = df_tmp.round({
+                'Lowest_Return': 2,
+                'Highest_Return': 2,
+                'Average_Return': 2,
+                'Median_Return': 2,
+                'Return_Variance': 2
+            })
+
+            # Rename the columns to reflect the period and give better clarity
+            df_tmp.rename(columns={
+                'Lowest_Return': 'Lowest ' + period + '% Return',        # Rename lowest return column
+                'Highest_Return': 'Highest ' + period + '% Return',      # Rename highest return column
+                'Average_Return': 'Average ' + period + '% Return',      # Rename average return column
+                'Median_Return': 'Median ' + period + '% Return',        # Rename median return column
+                'Return_Variance': period + '% Variance',                # Rename variance column
+            }, inplace=True)
+    
+            # Return the DataFrame with the calculated statistics
+            return df_tmp
 
 
+            
         
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
 
@@ -340,9 +401,12 @@ Let's plot a bar chart of the Quarterly returns for **MSFT** using our custom fu
 
  ![MSFT_Quarterly_Return_Bar_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_Bar_Chart.jpg?raw=true)   
 
+Let's call our custom function *calculate_stats* for **MSFT** and print the results.
+
+     df_comb_stats_ticker = calculate_stats(df_comb_ret_ticker.copy(), 'Quarter')
+     print(df_comb_stats_ticker.to_string(index=False))
+
  ![MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg?raw=true) 
-
-
 
 
 
