@@ -502,8 +502,7 @@ Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_
  
 ![MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg?raw=true) 
 
-Based on all the Statistics it looks like 2021 was the best consistently performing year showing a very high Quarterly return, almost as high as 2023, but the lowest Quarterly return was still positive as opposed to other years.
-
+Based on all the Statistics it looks like 2021 was the top consistently trending year. It was showing a positive Lowest Quarterly return where all other years have negatives, the Quarterly Variance of returns was lower for 2021 than in 2023, and Highest Quarterly returns for 2021 was almost as high as 2023. Both Median and Average Quarterly returns were 2nd highest compared to 2023. 
 
 
 
