@@ -24,6 +24,11 @@ pip install pandas_market_calendars
 
 pip install plotly
 
+conda install matplotlib
+
+conda install seaborn
+
+conda install scipy
 
 
 ## Create custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom_Python_Functions/custom_python_functions.py)*  
