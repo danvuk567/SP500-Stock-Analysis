@@ -3,7 +3,7 @@ Let's do the same type of analysis we did using SQL in Python. We will adding ne
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-We'll start by defining a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as parameters. The dataframe data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL. We use the built-in *groupby* and *agg* functions we can apply to dataframes to retrieve the **'Date'**, **'Open'**, **'High'**, **'Low'**, **'Close'** and **'Volume'**. 
+We'll start by defining a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as input parameters. The dataframe data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL. We use the built-in *groupby* and *agg* functions we can apply to dataframes to retrieve the **'Date'**, **'Open'**, **'High'**, **'Low'**, **'Close'** and **'Volume'**. 
 
     def get_pricing_data(df_tmp, period):
     
@@ -44,7 +44,7 @@ We'll start by defining a pricing function called *get_pricing_data* that will t
         # Return the processed DataFrame
         return df_tmp2
 
-We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* which takes a daily pricing dataframe, Ticker name and period type as parameters.
+We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* which takes a daily pricing dataframe, Ticker name and period type as input parameters.
 
      import plotly as pltly
      import plotly.io as pio
@@ -104,7 +104,7 @@ We'll also want to plot **Candlestick Charts** of pricing data and to do that, y
         )
         fig.show()
 
-Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a pricing dataframe, Ticker name and period type as parameters but also a price type.
+Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a pricing dataframe, Ticker name and period type as input parameters as well as a price type.
 
         import matplotlib.pyplot as plt
         
@@ -149,7 +149,7 @@ Next we'll define a function called *plot_pricing_line* to create a **Line Chart
             plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
             plt.show()
 
-In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as parameters and returns a dataframe with Ticker returns. We will first derive the previous close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous close is null, otherwise we use (Close / Prev Close) – 1.0. We then drop the previous close column and modify the return column label based on period type.
+In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We will first derive the previous close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous close is null, otherwise we use (Close / Prev Close) – 1.0. We then drop the previous close column and modify the return column label based on period type.
 
     def calculate_return(df_tmp, period):
 
@@ -190,7 +190,7 @@ In order to calculate returns, we define a function called *calculate_return* wh
         return df_tmp
 
 
-Here we define a function called *plot_returns_bar_chart* to create a **Bar Chart** using the **matplotlib** package. It also takes a return dataframe, Ticker name and period type as parameters but also a return type.
+Here we define a function called *plot_returns_bar_chart* to create a **Bar Chart** using the **matplotlib** package. It also takes a return dataframe, Ticker name and period type as input parameters as well as a return type.
 
         def plot_returns_bar_chart(df_tmp, ticker, period, return_type):
     
@@ -231,7 +231,7 @@ Here we define a function called *plot_returns_bar_chart* to create a **Bar Char
             plt.xticks(rotation=45)  # Rotate labels if needed for readability
             plt.show()
 
-Now let's define a function called *calculate_stats* which will calulcate Quarterly Return Statistics based on Year and Year % Return. Similar to what we did using SQL queries, we want to find the Lowest, Highest, Average, Median and Variance of Quarterly Returns for each Year. We use the built-in *groupby* and *agg* functions we can apply to dataframes to achieve this.
+Now let's define a function called *calculate_stats* which will calculate Quarterly Return Statistics based on Year and Year % Return. Similar to what we did using SQL queries, we want to find the Lowest, Highest, Average, Median and Variance of Quarterly Returns for each Year. We use the built-in *groupby* and *agg* functions we can apply to dataframes to achieve this. It requires a return dataframe and period type as input parameters and returns a statistics dataframe.
 
         def calculate_stats(df_ret, period):
     
@@ -290,6 +290,88 @@ Now let's define a function called *calculate_stats* which will calulcate Quarte
     
             # Return the DataFrame with the calculated statistics
             return df_tmp
+
+This custom function called *plot_year_stats_bar_charts* will use matplotlib subplots to show seperate bar charts of each period Statistic based on  *'Year'* and *'Year % Return'* we want to show. The code is a bit tricky and lengthy to get correct dynamic formatting. It requires a statistics dataframe and Ticker name as input parameters.
+
+        def plot_stats_bar_charts(df_stats, ticker):
+    
+            """
+            Create bar charts to visualize various statistics.
+    
+            Parameters:
+            - df_stats: DataFrame containing the combined statistics.
+            - ticker: String representing the ticker symbol.
+            """
+    
+            # Determine the columns to plot by excluding 'Ticker' and 'Year'
+            columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year']]
+    
+            # Check if there is only one row in the DataFrame
+            if len(df_stats) == 1:
+        
+                # Determine the columns to plot by excluding 'Ticker' and 'Year'
+                columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year']]
+        
+                # Extract the single row of statistics
+                stats = {col: df_stats[col].values[0] for col in columns_to_plot}
+        
+                # Create a single subplot
+                fig, ax = plt.subplots(figsize=(12, 8))
+        
+                # Plot each statistic as a bar
+                for key, value in stats.items():
+                    ax.bar(key, value, color='blue', edgecolor='black', label=key)
+        
+                ax.set_title(f'{ticker} Year Statistics')
+                ax.set_ylabel('Value')
+                ax.grid(axis='y', linestyle='--', alpha=0.7)
+
+            else:
+        
+                # Determine the columns to plot by excluding 'Ticker' and 'Year' and 'Year % Return'
+                columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year', 'Year % Return']]
+        
+                # Number of statistics to plot
+                num_stats = len(columns_to_plot)
+        
+                # Determine the grid size based on the number of statistics
+                if num_stats <= 4:
+                    rows, cols = 2, 2
+                elif num_stats <= 6:
+                    rows, cols = 3, 2
+                elif num_stats <= 9:
+                    rows, cols = 3, 3
+                else:
+                    raise ValueError("Number of statistics exceeds the supported grid size.")
+        
+                # Create subplots with dynamic grid size
+                fig, ax = plt.subplots(rows, cols, figsize=(18, 12))
+        
+                # Flatten the axes array for easy iteration if it's multidimensional
+                ax = ax.flatten()
+        
+                # Plot each statistic
+                for i, col in enumerate(columns_to_plot):
+                    # Determine the color based on the return values
+                    colors = ['red' if x < 0 else 'blue' for x in df_stats[col]]
+            
+                    # Plot the bar chart
+                    ax[i].bar(df_stats['Year'], df_stats[col], color=colors, edgecolor='black')
+                    ax[i].axhline(0, color='red', linestyle='--', linewidth=2.0)
+                    ax[i].set_title(f'{ticker} {col}')
+                    ax[i].set_xlabel('Year')
+                    ax[i].set_ylabel(col)
+                    ax[i].grid(axis='y', linestyle='--', alpha=0.7)
+        
+                # Turn off any unused subplots
+                for j in range(num_stats, len(ax)):
+                    ax[j].axis('off')
+        
+                # Adjust layout of subplots
+                plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1, wspace=0.3, hspace=0.3)
+
+            # Show the plot
+            plt.show()
 
 
             
