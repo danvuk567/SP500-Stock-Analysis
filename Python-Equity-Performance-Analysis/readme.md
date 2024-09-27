@@ -1,12 +1,9 @@
 
-Let's do the same type of analysis we did using SQL in Python. To do that, we'll define a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as parameters. The data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL. We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* takes a daily pricing dataframe, Ticker name and period type as parameters. Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a daily pricing dataframe, Ticker name and period type as parameters but also a price type.
-
-
-the pLet's also define a function called *plot_pricing_line* to create a **Line Chart**. We'll 
-
-We will add this to *custom_python_functions.py* which can be re-used in this project. 
+Let's do the same type of analysis we did using SQL in Python. We will adding new functions to our *custom_python_functions.py* file which can be re-used in this project. 
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
+
+We'll start by defining a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as parameters. The data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL.
 
     def get_pricing_data(df_tmp, period):
     
@@ -47,6 +44,7 @@ We will add this to *custom_python_functions.py* which can be re-used in this pr
         # Return the processed DataFrame
         return df_tmp2
 
+We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* takes a daily pricing dataframe, Ticker name and period type as parameters.
 
      import plotly as pltly
      import plotly.io as pio
@@ -106,6 +104,7 @@ We will add this to *custom_python_functions.py* which can be re-used in this pr
         )
         fig.show()
 
+Let's define a function called *plot_pricing_candlestick* takes a daily pricing dataframe, Ticker name and period type as parameters. Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a daily pricing dataframe, Ticker name and period type as parameters but also a price type.
 
         import matplotlib.pyplot as plt
         
