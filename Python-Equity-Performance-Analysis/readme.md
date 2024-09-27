@@ -317,9 +317,11 @@ Now we call the calculate_return function with a copy of the *df_pricing_yr* dat
 
 Let's plot the Yearly returns for **MSFT** using our custom function *plot_returns_bar_chart*
 
-    plot_returns_bar_chart(df_yearly_ret_ticker, ticker, 'Year', ‘Year % Return’)
+    plot_returns_bar_chart(df_yearly_ret_ticker, ticker, 'Year', 'Year % Return')
 
  ![MSFT_Yearly_Return_Bar_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Return_Bar_Chart.jpg?raw=true)
+
+ 
 
 
      
