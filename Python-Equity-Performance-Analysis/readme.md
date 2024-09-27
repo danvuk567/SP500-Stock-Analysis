@@ -104,7 +104,7 @@ We'll also want to plot **Candlestick Charts** of pricing data and to do that, y
         )
         fig.show()
 
-Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a daily pricing dataframe, Ticker name and period type as parameters but also a price type.
+Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a pricing dataframe, Ticker name and period type as parameters but also a price type.
 
         import matplotlib.pyplot as plt
         
@@ -189,7 +189,48 @@ In order to calculate returns, we define a function called *calculate_return* wh
     
         return df_tmp
 
+
+Here we define a function called *plot_returns_bar_chart* to create a **Bar Chart** using the **matplotlib** package. It also takes a return dataframe, Ticker name and period type as parameters but also a return type.
+
+        def plot_returns_bar_chart(df_tmp, ticker, period, return_type):
+    
+        """
+        Plots a bar chart of returns based on the specified period.
+    
+        Parameters:
+        - df_tmp: DataFrame containing return data.
+        - ticker: Stock ticker symbol.
+        - period: Time period for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+        """
+    
+        # Create a Label column based on the period
+        if period == 'Year':
+            df_tmp['Label'] = df_tmp['Year'].astype(str)
+        elif period == 'Quarter':
+            df_tmp['Label'] = df_tmp['Year'].astype(str) + "-Q" + df_tmp['Quarter'].astype(str)
+        elif period == 'Month':
+            # Ensure month is zero-padded if needed
+            df_tmp['Label'] = df_tmp['Year'].astype(str) + "-" + df_tmp['Month'].apply(lambda x: str(x).zfill(2))
+        else:
+            df_tmp['Label'] = df_tmp['Date']
         
+
+        # Check if return_type exists in df_tmp
+        if return_type not in df_tmp.columns:
+            raise ValueError(f"Column '{return_type}' does not exist in the DataFrame.")
+    
+        # Plot returns as a bar chart
+        colors = ['red' if x < 0 else 'blue' for x in df_tmp[return_type]]
+        plt.figure(figsize=(10, 8))
+        plt.axhline(0, color='red', linestyle='--', linewidth=2.0)
+        plt.bar(df_tmp['Label'], df_tmp[return_type], color=colors, edgecolor='black')
+        plt.title(f'{ticker} {return_type}')
+        plt.xlabel(period)
+        plt.ylabel(return_type)
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.xticks(rotation=45)  # Rotate labels if needed for readability
+        plt.show()
+
 
         
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
@@ -273,6 +314,13 @@ Now we call the calculate_return function with a copy of the *df_pricing_yr* dat
      print(df_yearly_ret_ticker.to_string(index=False))
 
  ![MSFT_Yearly_Return_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Return_Data_Python.jpg?raw=true)
+
+Let's plot the Yearly returns for **MSFT** using our custom function *plot_returns_bar_chart*
+
+    plot_returns_bar_chart(df_yearly_ret_ticker, ticker, 'Year', ‘Year % Return’)
+
+ ![MSFT_Yearly_Return_Bar_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Return_Bar_Chart.jpg?raw=true)
+
 
      
 
