@@ -372,7 +372,7 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
                     ax[j].axis('off')
         
                 # Adjust layout of subplots
-                plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1, wspace=0.3, hspace=0.3)
+                plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1, wspace=0.3, hspace=0.5)
 
             # Show the plot
             plt.show()
