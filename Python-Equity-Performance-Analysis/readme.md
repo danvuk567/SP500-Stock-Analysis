@@ -584,6 +584,9 @@ Now let’s examine Yearly returns for multiple stocks and get the top 5 perform
 ![SP500_Equity_Top_5_Returns_by_Year_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Data_Python.jpg?raw=true)
 
 
+![SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg?raw=true)
+
+
             
 
 
