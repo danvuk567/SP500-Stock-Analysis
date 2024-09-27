@@ -321,7 +321,21 @@ Let's plot the Yearly returns for **MSFT** using our custom function *plot_retur
 
  ![MSFT_Yearly_Return_Bar_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Return_Bar_Chart.jpg?raw=true)
 
- 
+Let’s juxtapose the Yearly returns with Quarterly returns. We'll use our custom *get_pricing_data* function for Quarter period and create a new dataframe *df_pricing_qtr* to house Quarterly pricing data. We then derive another dataframe df_pricing_qtr_ticker for **MSFT**.  We’ll then use our custom function *calculate_return* to calculate the return based on Quarterly logic. And then we merge df_yearly_ret with df_quarterly_ret using Ticker and Year and we print the dataframe without the index for the columns we want to retain.
+
+     df_pricing_qtr = get_pricing_data(df_pricing.copy(), 'Quarter')
+     df_quarterly_ret = calculate_return(df_pricing_qtr.copy(), 'Quarter')
+     df_comb_ret = pd.merge(df_yearly_ret, df_quarterly_ret, on=['Ticker', 'Year'])
+     df_comb_ret.rename(columns={'Date_y': 'Date'}, inplace=True)
+     df_comb_ret.sort_values(by=['Ticker', 'Year', 'Quarter'], inplace=True)
+    
+     df_comb_ret_ticker = df_comb_ret[df_comb_ret['Ticker'] == ticker].copy()
+     df_comb_ret_ticker = df_comb_ret_ticker[['Ticker', 'Year', 'Year % Return', 'Quarter', 'Date', 'Quarter % Return']]
+
+     print(df_comb_ret_ticker.to_string(index=False))
+     
+ ![MSFT_Yearly_Return_Quarterly_Return_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Return_Quarterly_Return_Data_Python.jpg?raw=true)
+
 
 
      
