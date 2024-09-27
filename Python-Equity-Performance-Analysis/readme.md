@@ -700,6 +700,8 @@ Now let’s examine Yearly returns for multiple stocks and get the top 5 perform
 
 Let's call our custom function *plot_top_returns_bar_chart* to plot our top 5 performers by year using the *df_yearly_ret_top* dataframe.
 
+      plot_top_returns_bar_chart(df_yearly_ret_top, 'Year')
+
 ![SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg?raw=true)
 
 
