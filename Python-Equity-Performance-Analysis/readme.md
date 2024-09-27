@@ -500,8 +500,7 @@ Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_
 
       plot_year_stats_bar_charts(df_comb_stats_ticker, 'MSFT')
  
-![MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg
-?raw=true) 
+![MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg?raw=true) 
 
 
 
