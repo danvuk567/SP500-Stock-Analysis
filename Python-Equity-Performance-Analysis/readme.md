@@ -151,7 +151,7 @@ We will add this to *custom_python_functions.py* which can be re-used in this pr
             plt.show()
 
         
-## Equity Year Prices Query: *[Equity-Year-Prices-Query.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Year-Prices-Query.ipynb)*
+## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
 
 Let's connect to the database, store the yearly pricing data in the dataframe, get the yearly pricing data for **MSFT**, print the results and plot the Candlestick chart.
 
