@@ -3,7 +3,7 @@ Let's do the same type of analysis we did using SQL in Python. We will adding ne
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-We'll start by defining a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as parameters. The data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL.
+We'll start by defining a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as parameters. The dataframe data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL.
 
     def get_pricing_data(df_tmp, period):
     
@@ -44,7 +44,7 @@ We'll start by defining a pricing function called *get_pricing_data* that will t
         # Return the processed DataFrame
         return df_tmp2
 
-We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* takes a daily pricing dataframe, Ticker name and period type as parameters.
+We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* which takes a daily pricing dataframe, Ticker name and period type as parameters.
 
      import plotly as pltly
      import plotly.io as pio
@@ -148,6 +148,50 @@ Let's define a function called *plot_pricing_candlestick* takes a daily pricing 
             plt.grid(axis='y', linestyle='--', alpha=0.7)
             plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
             plt.show()
+
+In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as parameters and returns a dataframe with Ticker returns. 
+
+    def calculate_return(df_tmp, period):
+
+        """
+        Calculate the return percentage based on the 'Close' and 'Open' prices for a given period type.
+    
+        Parameters:
+        - df_tmp: The DataFrame containing the historical data.
+        - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
+
+        Returns:
+        - A DataFrame with a new column '% Return' containing the percentage return, or None if not applicable.
+        """
+        # Shift the 'Close' prices by 1 for the entire DataFrame
+        df_tmp['Prev_Close'] = df_tmp.groupby('Ticker')['Close'].shift(1)
+    
+        # Get Min Date for Ticker
+        df_tmp['Min_Date'] = df_tmp.groupby('Ticker')['Date'].transform('min')
+
+        # Create a condition for the first Date (based on the provided period)
+        is_first_period = (df_tmp['Date'] == df_tmp['Min_Date'])
+    
+        # Initialize the return column
+        df_tmp['% Return'] = 0
+
+        # Calculate the return for the first period based on 'Open' and 'Close'
+        df_tmp.loc[is_first_period, '% Return'] = round(((df_tmp['Close'] / df_tmp['Open']) - 1.0) * 100, 2)
+    
+        # Calculate the return for subsequent periods based on the previous close price
+        same_ticker = df_tmp['Ticker'] == df_tmp['Ticker'].shift(1)
+        df_tmp.loc[~is_first_period & same_ticker, '% Return'] = round(((df_tmp['Close'] / df_tmp['Prev_Close']) - 1.0) * 100, 2)
+
+        # Drop the 'Min_Date' and 'Prev_Close' columns after calculation if not needed
+        df_tmp.drop(columns=['Min_Date', 'Prev_Close'], inplace=True)
+    
+        # Rename the % Return column based on period type
+        if period != 'Daily':
+            df_tmp.rename(columns={'% Return': period + ' % Return'}, inplace=True)    
+    
+        return df_tmp
+
+        
 
         
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
