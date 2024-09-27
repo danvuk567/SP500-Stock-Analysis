@@ -380,7 +380,7 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
 
 This custom function called *plot_period_returns_by_year_box_plot* will use seaborn to plot **Box Plots**. Box plots are one of my favorite visualizations that tell a lot of the story in numerical data. The boxes themselves represent the interquartile range (IQR), which is the range between the first quartile (Q1, or 25th percentile) and the third quartile (Q3, or 75th percentile). The IQR contains the middle 50% of the data. The Median is a line inside the box represents the median (or second quartile, Q2, or 50th percentile) of the data which is the center of the dataset. The whiskers extend from the edges of the box to the smallest and largest values within 1.5 times the IQR from Q1 and Q3, respectively. Data points that fall outside the whiskers (beyond 1.5 times the IQR from Q1 and Q3) are considered outliers and are typically plotted as individual points.
 
-This function requires a returns dataframe and Ticker name and period type as input parameters.
+This function uses the seaborn package to plot the box plots and requires a returns dataframe, Ticker name and period type as input parameters.
 
         import seaborn as sns
         
@@ -439,8 +439,8 @@ This function requires a returns dataframe and Ticker name and period type as in
 
 This function called *plot_top_returns_bar_chart* that uses the plotly package will plot period returns as bar charts within subplots. This function is quite complex to achive the desired result and format. It uses a pivot function to create a pivot table dataframe that shifts returns under Tickers. It also uses the math package to calculate the number of subplots. It requires a returns dataframe and period type as input parameters.
 
-It requires a return dataframe and period type as input parameters.
-
+        import math
+        
         def plot_top_returns_bar_chart(df_tmp, period):
         
             """
