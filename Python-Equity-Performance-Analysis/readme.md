@@ -378,8 +378,12 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
             plt.show()
 
 
-This custom function called *plot_period_returns_by_year_box_plot* will use seaborn to plot boxplots of period returns based on  *'Year'*. It requires a return dataframe and Ticker name and period type as input parameters.
+This custom function called *plot_period_returns_by_year_box_plot* will use seaborn to plot **Box Plots**. Box plots are one of my favorite visualizations that tell a lot of the story in numerical data. The boxes themselves represent the interquartile range (IQR), which is the range between the first quartile (Q1, or 25th percentile) and the third quartile (Q3, or 75th percentile). The IQR contains the middle 50% of the data. The Median is a line inside the box represents the median (or second quartile, Q2, or 50th percentile) of the data which is the center of the dataset. The whiskers extend from the edges of the box to the smallest and largest values within 1.5 times the IQR from Q1 and Q3, respectively. Data points that fall outside the whiskers (beyond 1.5 times the IQR from Q1 and Q3) are considered outliers and are typically plotted as individual points.
 
+This function requires a return dataframe and Ticker name and period type as input parameters.
+
+        import seaborn as sns
+        
         def plot_period_returns_by_year_box_plot(df_ret, ticker, period):
     
             """
@@ -557,9 +561,7 @@ Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_
 
 Based on all the Statistics it looks like 2021 was the top consistently trending year. It was showing a positive Lowest Quarterly return where all other years have negatives, the Quarterly Variance of returns was lower for 2021 than in 2023, and Highest Quarterly returns for 2021 was almost as high as 2023. Both Median and Average Quarterly returns were 2nd highest compared to 2023. 
 
-Now let’s explore what happened using monthly returns by year in **Box Plots**. Box plots are one of my favorite visualizations that tell a lot of the story in numerical data. The boxes themselves represent the interquartile range (IQR), which is the range between the first quartile (Q1, or 25th percentile) and the third quartile (Q3, or 75th percentile). The IQR contains the middle 50% of the data. The Median is a line inside the box represents the median (or second quartile, Q2, or 50th percentile) of the data which is the center of the dataset. The whiskers extend from the edges of the box to the smallest and largest values within 1.5 times the IQR from Q1 and Q3, respectively. Data points that fall outside the whiskers (beyond 1.5 times the IQR from Q1 and Q3) are considered outliers and are typically plotted as individual points.
-
-We fetch the Monthly returns using our custom functions and then call our custom function *plot_period_returns_by_year_box_plot* to plot the box plot.
+Now let’s explore what happened using monthly returns by year using box plots. We fetch the Monthly returns using our custom functions and then call our custom function *plot_period_returns_by_year_box_plot* to plot the box plot for **MSFT**.
 
       df_pricing_mth = get_pricing_data(df_pricing.copy(), 'Month')
       df_monthly_ret = calculate_return(df_pricing_mth.copy(), 'Month')
@@ -567,7 +569,20 @@ We fetch the Monthly returns using our custom functions and then call our custom
       df_monthly_ret_ticker = df_monthly_ret_ticker[['Ticker', 'Year', 'Month', 'Month % Return']]
       plot_period_returns_by_year_box_plot(df_monthly_ret_ticker, ticker, 'Month')
 
-![MSFT_Monthly_Return_by_Year_Box_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Monthly_Return_by_Year_Box_Chart.jpg?raw=true) 
+![MSFT_Monthly_Return_by_Year_Box_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Monthly_Return_by_Year_Box_Chart.jpg?raw=true)
+
+Now let’s examine Yearly returns for multiple stocks and get the top 5 performers by year. We will use our *df_yearly_ret* dataframe to create a new column using the *rank* function in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_yearly_ret_top* from slicing df_yearly_ret by *'Year % Return Rank' <= num_of_ranks* where *num_of_ranks = 5*. We then sort *df_yearly_ret_top* and print the results.
+
+      df_yearly_ret['Year % Return Rank'] = df_yearly_ret.groupby('Year')['Year % Return'].rank(ascending=False, method='dense').astype(int)
+      num_of_ranks = 5
+      df_yearly_ret_top = df_yearly_ret[df_yearly_ret['Year % Return Rank'] <= num_of_ranks].copy()
+      df_yearly_ret_top = df_yearly_ret_top [['Ticker', 'Year', 'Year % Return', 'Year % Return Rank']]
+      df_yearly_ret_top.sort_values(by=['Year', 'Year % Return Rank'], inplace=True)
+
+      print(df_yearly_ret_top.to_string(index=False))
+
+![SP500_Equity_Top_5_Returns_by_Year_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Data_Python.jpg?raw=true)
+
 
             
 
