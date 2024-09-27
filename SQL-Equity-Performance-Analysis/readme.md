@@ -344,7 +344,7 @@ Comparing simple returns by year by Ticker gives you a good idea of which stocks
 	WHERE q5."Cumulative % Return Rank" <= 10
 	ORDER BY q5."Cumulative % Return Rank";
 
-![SP500_Equity_Top_5_Cumulative_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Cumulative_Returns_Data.jpg?raw=true)
+![SP500_Equity_Top_5_Cumulative_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data.jpg?raw=true)
 
 Here we see that **SMCI** had the highest cumulative return across the span of 4 years even though **NVDA** was in the top 5 performing stock using simple returns in most years. Of course, cumulative returns don't take into account any drawdowns that could have occured on a monthly, quarterly or yearly basis. Usually, the best performing stocks come with a risk to volatility and it's a price to pay for higher returns over time. What's interesting is the **LLY** did not appear in the top 5 in any of the past 4 years. This indicates that **LLY** was trending with less volatility than the top perfroming stocks.
 
