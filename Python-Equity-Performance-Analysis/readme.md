@@ -107,6 +107,8 @@ We will add this to *custom_python_functions.py* which can be re-used in this pr
         fig.show()
 
 
+        import matplotlib.pyplot as plt
+        
         def plot_pricing_line(df_tmp, ticker, period, price):
 
             """
