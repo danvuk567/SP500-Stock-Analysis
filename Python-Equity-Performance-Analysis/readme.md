@@ -338,7 +338,11 @@ Let’s juxtapose the Yearly returns with Quarterly returns. We'll use our custo
 
 Let's plot a bar chart of the Quarterly returns for **MSFT** using our custom function *plot_returns_bar_chart*.
 
- ![MSFT_Quarterly_Return_Bar_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_Bar_Chart.jpg?raw=true)     
+ ![MSFT_Quarterly_Return_Bar_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_Bar_Chart.jpg?raw=true)   
+
+
+
+ MSFT_Yearly_Return_Quarterly_Return_Statistics_Data_Python.jpg
 
 
 
