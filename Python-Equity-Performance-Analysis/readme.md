@@ -149,8 +149,10 @@ Next we'll define a function called *plot_pricing_line* to create a **Line Chart
             plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
             plt.show()
 
-In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We will first derive the previous close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous close is null, otherwise we use (Close / Prev Close) – 1.0. We then drop the previous close column and modify the return column label based on period type.
+In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We will first derive the previous Close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous Close is null, otherwise we use (Close / Prev Close) – 1.0. We also us log returns, aggreagate them and de-normalize them to calculate cumulative returns. We use the same logic as simple returns to calculate log returns. We then drop the previous Close column, the Log Return column, and the Cumulative Log Return column, and modify the return and cumulative return labels based on period type. We import the *numpy* package to use the *exp* function to de-normalize the aggregate log returns. We return the dataframe wit returns data.
 
+    import numpy as np
+    
     def calculate_return(df_tmp, period):
 
         """
@@ -180,14 +182,27 @@ In order to calculate returns, we define a function called *calculate_return* wh
         same_ticker = df_tmp['Ticker'] == df_tmp['Ticker'].shift(1)
         df_tmp.loc[~is_first_period & same_ticker, '% Return'] = round(((df_tmp['Close'] / df_tmp['Prev_Close']) - 1.0) * 100, 2)
 
-        # Drop the 'Prev_Close' column after calculation if not needed
-        df_tmp.drop(columns=['Prev_Close'], inplace=True)
+        # Calculate the log return for the first period based on 'Open' and 'Close'
+        df_tmp.loc[is_first_period, 'Log Return'] = np.log(df_tmp['Close'] / df_tmp['Open']) 
+        
+        # Calculate the log return for subsequent periods based on the previous close price
+        df_tmp.loc[~is_first_period & same_ticker, 'Log Return'] = np.log(df_tmp['Close'] / df_tmp['Prev Close'])
+    
+        # Calculate the cumulative log return
+        df_tmp['Cumulative Log Return'] = df_tmp.groupby('Ticker')['Log Return'].cumsum()
+    
+        # Convert cumulative log returns to percentage return
+        df_tmp['Cumulative % Return'] = round((np.exp(df_tmp['Cumulative Log Return']) - 1.0) * 100, 2)
+    
+        # Drop the 'Prev_Close', 'Log Return' and 'Cumulative Log Return' columns after calculation if not needed
+        df_tmp.drop(columns=['Prev Close', 'Log Return', 'Cumulative Log Return'], inplace=True)
     
         # Rename the % Return column based on period type
         if period != 'Daily':
             df_tmp.rename(columns={'% Return': period + ' % Return'}, inplace=True)    
-    
-        return df_tmp
+            df_tmp.rename(columns={'Cumulative % Return': period + ' Cumulative % Return'}, inplace=True)
+        
+    return df_tmp
 
 
 Here we define a function called *plot_returns_bar_chart* to create a **Bar Chart** using the **matplotlib** package. It also takes a return dataframe, Ticker name and period type as input parameters as well as a return type.
@@ -437,7 +452,7 @@ This function uses the seaborn package to plot the box plots and requires a retu
             plt.show()
             
 
-This function called *plot_top_returns_bar_chart* that uses the plotly package will plot period returns as bar charts within subplots. This function is quite complex to achive the desired result and format. It uses a pivot function to create a pivot table dataframe that shifts returns under Tickers. It also uses the math package to calculate the number of subplots. It requires a returns dataframe and period type as input parameters.
+This function called *plot_top_returns_bar_chart* that uses the plotly package will plot period returns as bar charts within subplots using a plotly color scheme *'Blues'*. This function is quite complex to achive the desired result and format. It uses a pivot function to create a pivot table dataframe that shifts returns under Tickers. It also uses the math package to calculate the number of subplots. It requires a returns dataframe and period type as input parameters.
 
         import math
         
@@ -703,6 +718,8 @@ Let's call our custom function *plot_top_returns_bar_chart* to plot our top 5 pe
       plot_top_returns_bar_chart(df_yearly_ret_top, 'Year')
 
 ![SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg?raw=true)
+
+
 
 
             
