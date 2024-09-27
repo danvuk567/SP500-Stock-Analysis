@@ -340,9 +340,8 @@ Let's plot a bar chart of the Quarterly returns for **MSFT** using our custom fu
 
  ![MSFT_Quarterly_Return_Bar_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_Bar_Chart.jpg?raw=true)   
 
+ ![MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg?raw=true) 
 
-
- MSFT_Yearly_Return_Quarterly_Return_Statistics_Data_Python.jpg
 
 
 
