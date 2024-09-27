@@ -701,7 +701,7 @@ Now let’s explore what happened using monthly returns by year using box plots.
 
 ![MSFT_Monthly_Return_by_Year_Box_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Monthly_Return_by_Year_Box_Chart.jpg?raw=true)
 
-Now let’s examine Yearly returns for multiple stocks and get the top 5 performers by year. We will use our *df_yearly_ret* dataframe to create a new column using the *rank* function in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_yearly_ret_top* from slicing df_yearly_ret by *'Year % Return Rank' <= num_of_ranks* where *num_of_ranks = 5*. We then sort *df_yearly_ret_top* and print the results.
+Now let’s examine Yearly returns for multiple stocks and get the top 5 performers by year. We will use our *df_yearly_ret* dataframe to create a new column using the *rank* function to rank returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_yearly_ret_top* from slicing *df_yearly_ret* by *'Year % Return Rank' <= num_of_ranks* where *num_of_ranks = 5*. We then sort *df_yearly_ret_top* and print the results.
 
       df_yearly_ret['Year % Return Rank'] = df_yearly_ret.groupby('Year')['Year % Return'].rank(ascending=False, method='dense').astype(int)
       num_of_ranks = 5
@@ -718,6 +718,22 @@ Let's call our custom function *plot_top_returns_bar_chart* to plot our top 5 pe
       plot_top_returns_bar_chart(df_yearly_ret_top, 'Year')
 
 ![SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg?raw=true)
+
+Let's examine the top 10 performers for cumulative returns for the past 4 years. We retrieve the *df_ret_last* dataframe using the last row of our *df_ret* dataframe. We then create a new column using the *rank* function to rank cumulative returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_ret_last_top* from slicing *df_ret_last* by *'Cumulative % Return Rank' <= num_of_ranks* where *num_of_ranks = 10*. We then sort *df_ret_last_top* and print the results.
+
+     df_ret = calculate_return(df_pricing.copy(), 'Daily')
+     df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
+     df_ret_last.loc[:, 'Cumulative % Return Rank'] = df_ret_last.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
+     num_of_ranks = 10
+     df_ret_last_top = df_ret_last[df_ret_last['Cumulative % Return Rank'] <= num_of_ranks].copy()
+     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Cumulative % Return Rank']]
+     df_ret_last_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
+
+     print(df_ret_last_top.to_string(index=False))
+
+![SP500_Equity_Top_10_Cumulative_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data.jpg?raw=true)
+
+
 
 
 
