@@ -91,6 +91,7 @@ def get_dates_for_years(yrs_back, yrs_forward):
 
 
 def get_pricing_data(df_pricing, period):
+    
     """
     This function processes pricing data from a DataFrame based on the specified period ('Year', 'Quarter', or 'Month').
     
@@ -126,5 +127,47 @@ def get_pricing_data(df_pricing, period):
     ).reset_index()  # Reset the index to make 'Ticker' and 'Year' columns
 
 
+def plot_pricing_line(df_tmp, ticker, period, price):
+
+        """
+        Plots a line chart for the given DataFrame, ticker, and period.
+
+        Parameters:
+        - df_tmp: DataFrame containing pricing data (e.g., with 'Date', 'Open', 'High', 'Low', 'Close').
+        - ticker: The stock ticker symbol.
+        - period: The period type for the x-axis ('Year', 'Quarter', 'Month', or 'Daily').
+        - price: The column name for the y-axis values to plot (e.g., 'Close', 'Open').
+
+        This function creates a simple line chart for a given financial asset 
+        over the specified period, with properly formatted x and y axis labels, 
+        a grid, and rotated x-axis labels for better readability.
+        """
+
+        # Check if the period is 'Daily'
+        if period == 'Daily':
+            x = 'Date'
+            period = ''
+            label = x
+        # If period is not 'Daily', use the period itself for the x-axis
+        else:
+            x = period
+            label = period
+            period = period + ' '
+
+
+        # Create a line chart
+        plt.plot(df_tmp[x], df_tmp[price])
+    
+        # Adding title and labels
+        plt.title(f"{ticker} {period}Price Chart")
+        plt.xlabel(label)
+        plt.ylabel(price)
+    
+        # Show the plot
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
+        plt.show()
+
     # Return the processed DataFrame
     return df_tmp2
+
