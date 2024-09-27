@@ -489,14 +489,20 @@ Let's plot a bar chart of the Quarterly returns for **MSFT** using the df_comb_r
 
  ![MSFT_Quarterly_Return_Bar_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_Bar_Chart.jpg?raw=true)   
 
-Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_ret_ticker dataframe and print the results.
+Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_ret_ticker dataframe to retrieve the Quarterly return statistics by year and print the results.
 
      df_comb_stats_ticker = calculate_stats(df_comb_ret_ticker.copy(), 'Quarter')
      print(df_comb_stats_ticker.to_string(index=False))
 
  ![MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg?raw=true) 
 
+ We can plot all the Quarterly return statistics by year using our custom function *plot_year_stats_bar_charts* for **MSFT**.
+
+      plot_year_stats_bar_charts(df_comb_stats_ticker, 'MSFT')
  
+![MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg
+?raw=true) 
+
 
 
 
