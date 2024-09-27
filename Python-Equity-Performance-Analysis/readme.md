@@ -380,7 +380,7 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
 
 This custom function called *plot_period_returns_by_year_box_plot* will use seaborn to plot **Box Plots**. Box plots are one of my favorite visualizations that tell a lot of the story in numerical data. The boxes themselves represent the interquartile range (IQR), which is the range between the first quartile (Q1, or 25th percentile) and the third quartile (Q3, or 75th percentile). The IQR contains the middle 50% of the data. The Median is a line inside the box represents the median (or second quartile, Q2, or 50th percentile) of the data which is the center of the dataset. The whiskers extend from the edges of the box to the smallest and largest values within 1.5 times the IQR from Q1 and Q3, respectively. Data points that fall outside the whiskers (beyond 1.5 times the IQR from Q1 and Q3) are considered outliers and are typically plotted as individual points.
 
-This function requires a return dataframe and Ticker name and period type as input parameters.
+This function requires a returns dataframe and Ticker name and period type as input parameters.
 
         import seaborn as sns
         
@@ -436,7 +436,122 @@ This function requires a return dataframe and Ticker name and period type as inp
             # Display the plot
             plt.show()
             
+
+This function called *plot_top_returns_bar_chart* that uses the plotly package will plot period returns as bar charts within subplots. This function is quite complex to achive the desired result and format. It uses a pivot function to create a pivot table dataframe that shifts returns under Tickers. It also uses the math package to calculate the number of subplots. It requires a returns dataframe and period type as input parameters.
+
+It requires a return dataframe and period type as input parameters.
+
+        def plot_top_returns_bar_chart(df_tmp, period):
         
+            """
+            Plots a bar chart of returns based on the specified period for multiple tickers.
+    
+            Parameters:
+            - df_tmp: DataFrame containing return data.
+            - period: Time period for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+            """
+            if period == 'Daily':
+                raise ValueError("Too many periods to support number of subplots.")
+        
+            tickers = df_tmp['Ticker'].unique()
+
+            # Create a Label column based on the period
+            if period == 'Year':
+                df_tmp['Year'] = df_tmp['Year'].astype(int)
+                df_tmp['Label'] = df_tmp['Year']
+                df_tmp.sort_values(by='Year', inplace=True)
+            elif period == 'Quarter':
+                df_tmp['Label'] = df_tmp['Year'].astype(str) + "-Q" + df_tmp['Quarter'].astype(str)
+                df_tmp['Quarter'] = df_tmp['Quarter'].astype(int)
+                df_tmp.sort_values(by=['Year', 'Quarter'], inplace=True)
+            elif period == 'Month':
+                df_tmp['Label'] = df_tmp['Month'].apply(lambda x: pd.Timestamp(f'2024-{x}-01').strftime('%b')) + "-" + df_tmp['Year'].astype(str)
+                df_tmp['Month'] = df_tmp['Month'].astype(int)
+                df_tmp.sort_values(by=['Year', 'Month'], inplace=True)
+            else:
+                df_tmp['Label'] = df_tmp['Date'].astype(str)
+            
+            return_type = period + ' % Return'
+    
+            # Check if return_type exists in df_tmp
+            if return_type not in df_tmp.columns:
+                raise ValueError(f"Column '{return_type}' does not exist in the DataFrame.")
+
+            unique_periods = df_tmp['Label'].unique()
+            num_periods = len(unique_periods)
+
+            # Determine the grid size based on the number of periods
+            plots = int(math.sqrt(num_periods)) + (1 if (math.sqrt(num_periods) % 1 != 0) else 0)
+    
+            if num_periods > 48:
+                raise ValueError("Number of periods exceeds the supported grid size.")    
+    
+            rows, cols = plots, plots
+    
+            if period == 'Year':
+                width_size = 800
+                height_size = 600
+                horiz_space = 0.15
+                vert_space = 0.05
+            else:
+                width_size = 1900
+                height_size = 900
+                horiz_space=0.05
+                vert_space=0.01
+    
+            fig = make_subplots(rows=rows, cols=cols, vertical_spacing=vert_space, horizontal_spacing=horiz_space)
+    
+            # Generate a color scale from dark to light blue
+            num_tickers = len(tickers)
+            color_scale = px.colors.sequential.Blues
+            colors = color_scale[:num_tickers] if num_tickers <= len(color_scale) else color_scale * (num_tickers // len(color_scale) + 1)
+    
+            num_top_tickers = round(len(df_tmp) / num_periods)
+    
+            # Loop through each period and plot the returns for all tickers
+            for i, period_val in enumerate(unique_periods):
+                df_period = df_tmp[df_tmp['Label'] == period_val]
+        
+                # Create a pivot table dataframe to shift returns under 'Label' column for Tickers
+                df_pivot = df_period.pivot(index='Ticker', columns='Label', values=return_type)
+        
+                # Sort by the first column (the only column in this case) in descending order
+                df_pivot = df_pivot.sort_values(by=df_pivot.columns[0], ascending=False)
+
+                # Create a bar chart for each period, showing returns of all tickers
+                # Add traces for each ticker with distinct colors
+                for j, ticker in enumerate(df_pivot.index):
+                    y_values = df_pivot.loc[ticker].values
+                    fig.add_trace(
+                        pltly.graph_objects.Bar(
+                            x=[period_val],  # Use the period value as x-tick for that subplot
+                            y=y_values,  # Use the pivoted values
+                            name=ticker,
+                            marker_color=colors[j % len(colors)],  # Apply color
+                            text=ticker,  # Display ticker on bars
+                            textposition='inside'  # Label on bars
+                        ),
+                        row=(i // cols) + 1,
+                        col=(i % cols) + 1
+                    )
+    
+            fig.update_layout(
+                height=height_size * rows,  # Adjust height based on number of rows
+                width=width_size,
+                title_text=f'Top {num_top_tickers} Tickers by {period} % Return',
+                plot_bgcolor='lightgrey',  # Background color
+                paper_bgcolor='white',  # Paper background color
+                showlegend=False  # Hide legend
+            )
+    
+            # Update y-axis labels for each subplot
+            for i, label in enumerate(unique_periods):
+                fig.update_yaxes(title_text=return_type, row=(i // cols) + 1, col=(i % cols) + 1)
+    
+            fig.show()
+
+
+    
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
 
 Let's connect to the database and store the yearly pricing data in the dataframe *df_pricing*. We raise a ValueError exception if the dataframe is empty. We then get the yearly pricing data for **MSFT**, print the results and plot the Candlestick chart.
@@ -583,6 +698,7 @@ Now let’s examine Yearly returns for multiple stocks and get the top 5 perform
 
 ![SP500_Equity_Top_5_Returns_by_Year_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Data_Python.jpg?raw=true)
 
+Let's call our custom function *plot_top_returns_bar_chart* to plot our top 5 performers by year using the *df_yearly_ret_top* dataframe.
 
 ![SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg?raw=true)
 
