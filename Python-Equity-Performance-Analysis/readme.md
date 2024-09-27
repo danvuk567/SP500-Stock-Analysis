@@ -149,7 +149,7 @@ Next we'll define a function called *plot_pricing_line* to create a **Line Chart
             plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
             plt.show()
 
-In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as parameters and returns a dataframe with Ticker returns. 
+In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as parameters and returns a dataframe with Ticker returns. We will first derive the previous close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous close is null, otherwise we use (Close / Prev Close) – 1.0. We then drop the previous close column and modify the return column label based on period type.
 
     def calculate_return(df_tmp, period):
 
@@ -165,25 +165,23 @@ In order to calculate returns, we define a function called *calculate_return* wh
         """
         # Shift the 'Close' prices by 1 for the entire DataFrame
         df_tmp['Prev_Close'] = df_tmp.groupby('Ticker')['Close'].shift(1)
-    
-        # Get Min Date for Ticker
-        df_tmp['Min_Date'] = df_tmp.groupby('Ticker')['Date'].transform('min')
 
-        # Create a condition for the first Date (based on the provided period)
-        is_first_period = (df_tmp['Date'] == df_tmp['Min_Date'])
+        # Create a condition for the first period where Prev_Close is NaN
+        is_first_period = df_tmp['Prev_Close'].isna()
     
         # Initialize the return column
         df_tmp['% Return'] = 0
 
-        # Calculate the return for the first period based on 'Open' and 'Close'
+        # Calculate % Return for the first period where 'Prev_Close' is NaN
+        # Assuming the return is calculated based on 'Close' and 'Open' for these rows
         df_tmp.loc[is_first_period, '% Return'] = round(((df_tmp['Close'] / df_tmp['Open']) - 1.0) * 100, 2)
     
         # Calculate the return for subsequent periods based on the previous close price
         same_ticker = df_tmp['Ticker'] == df_tmp['Ticker'].shift(1)
         df_tmp.loc[~is_first_period & same_ticker, '% Return'] = round(((df_tmp['Close'] / df_tmp['Prev_Close']) - 1.0) * 100, 2)
 
-        # Drop the 'Min_Date' and 'Prev_Close' columns after calculation if not needed
-        df_tmp.drop(columns=['Min_Date', 'Prev_Close'], inplace=True)
+        # Drop the 'Prev_Close' column after calculation if not needed
+        df_tmp.drop(columns=['Prev_Close'], inplace=True)
     
         # Rename the % Return column based on period type
         if period != 'Daily':
@@ -196,7 +194,7 @@ In order to calculate returns, we define a function called *calculate_return* wh
         
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
 
-Let's connect to the database, store the yearly pricing data in the dataframe, get the yearly pricing data for **MSFT**, print the results and plot the Candlestick chart.
+Let's connect to the database and store the yearly pricing data in the dataframe *df_pricing*. We raise a ValueError exception if the dataframe is empty. We then get the yearly pricing data for **MSFT**, print the results and plot the Candlestick chart.
 
         # Define SQL query to retrieve tickers from the Yahoo_Equity_Prices table
         sql_stat = """SELECT 
@@ -224,26 +222,24 @@ Let's connect to the database, store the yearly pricing data in the dataframe, g
             raise
 
         if df_pricing.empty:
-            print("DataFrame is empty after SQL query.")
-    
-        else:
-            df_pricing['Date'] = pd.to_datetime(df_pricing['Date'])
-            df_pricing['Year'] = df_pricing['Date'].dt.year
-            df_pricing.sort_values(by=['Ticker', 'Date'], inplace=True)
+            raise ValueError("DataFrame is empty after SQL query.")
 
-            # Default Ticker used in single ticker analysis
-            ticker = 'MSFT'
+        df_pricing['Date'] = pd.to_datetime(df_pricing['Date'])
+        df_pricing['Year'] = df_pricing['Date'].dt.year
+        df_pricing.sort_values(by=['Ticker', 'Date'], inplace=True)
 
-            df_pricing_yr = get_pricing_data(df_pricing, 'Year') 
-            df_pricing_yr_ticker = df_pricing_yr[df_pricing_yr['Ticker'] == ticker].copy()
-            df_pricing_yr_ticker.sort_values(by=['Date'], inplace=True)
+        # Default Ticker used in single ticker analysis
+        ticker = 'MSFT'
 
-            # Print yearly pricing data
-            print(df_pricing_yr_ticker.to_string(index=False))
+        df_pricing_yr = get_pricing_data(df_pricing, 'Year') 
+        df_pricing_yr_ticker = df_pricing_yr[df_pricing_yr['Ticker'] == ticker].copy()
+        df_pricing_yr_ticker.sort_values(by=['Date'], inplace=True)
 
-            plot_pricing_candlestick(df_pricing_yr_ticker, ticker, 'Year')
+        # Print yearly pricing data
+        print(df_pricing_yr_ticker.to_string(index=False))
 
-       s1.close() 
+        plot_pricing_candlestick(df_pricing_yr_ticker, ticker, 'Year')
+
 
  ![MSFT_Yearly_Pricing_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Pricing_Data_Python.jpg?raw=true)
 
@@ -267,6 +263,21 @@ We can see that **MSFT** has a positive trend with a smaller positive trend in 2
 ![MSFT_Daily_Pricing_Line_Chart_2021_last_2_months.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Daily_Pricing_Line_Chart_2021_last_2_months.jpg?raw=true)
 
 Here we clearly see that the **MSFT** declined from its peak, had 2 attempts at reaching its highest price and then started its decline into 2022.
+
+
+Now we call the calculate_return function with a copy of the *df_pricing_yr* dataframe and use *'Year'* as period type to return the *df_yearly_ret* dataframe. We slice the *df_yearly_ret* dataframe for **MSFT** ticker and we print the dataframe without the index for the columns we want to retain.
+
+     df_yearly_ret = calculate_return(df_pricing_yr.copy(), 'Year')
+     df_yearly_ret_ticker = df_yearly_ret[df_yearly_ret['Ticker'] == ticker].copy()
+     df_yearly_ret_ticker = df_yearly_ret_ticker[['Ticker', 'Year', 'Date', 'Year % Return']]
+     print(df_yearly_ret_ticker.to_string(index=False))
+
+ ![MSFT_Yearly_Return_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Return_Data_Python.jpg?raw=true)
+
+     
+
+
+
 
 
 
