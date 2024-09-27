@@ -1,5 +1,10 @@
 
-Let's do the same type of analysis we did using SQL in Python. To do that, we'll define a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month*. The data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL. We will add this to *custom_python_functions.py* which can be re-used in this project. We'll also plot **Candlestick** charts of pricing data and to do that, you'll need to have the plotly package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp)
+Let's do the same type of analysis we did using SQL in Python. To do that, we'll define a pricing function called *get_pricing_data* that will take a daily pricing dataframe and period type such as *Year*, *Quarter* or *Month* as parameters. The data retrieved is similar to the data coming from the Yearly pricing or Quarterly pricing views we created in SQL. We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the plotly package installed. We'll use the plotly.io module for handling the output which we will set to render to the web browser by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* takes a daily pricing dataframe, Ticker name and period type as parameters. Next we'll define a function called *plot_pricing_line* to create a **Line Chart**. It also takes a daily pricing dataframe, Ticker name and period type as parameters but also a price type.
+
+
+the pLet's also define a function called *plot_pricing_line* to create a **Line Chart**. We'll 
+
+We will add this to *custom_python_functions.py* which can be re-used in this project. 
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
@@ -100,6 +105,49 @@ Let's do the same type of analysis we did using SQL in Python. To do that, we'll
             height=height_size
         )
         fig.show()
+
+
+        def plot_pricing_line(df_tmp, ticker, period, price):
+
+            """
+            Plots a line chart for the given DataFrame, ticker, and period.
+
+            Parameters:
+            - df_tmp: DataFrame containing pricing data (e.g., with 'Date', 'Open', 'High', 'Low', 'Close').
+            - ticker: The stock ticker symbol.
+            - period: The period type for the x-axis ('Year', 'Quarter', 'Month', or 'Daily').
+            - price: The column name for the y-axis values to plot (e.g., 'Close', 'Open').
+
+            This function creates a simple line chart for a given financial asset 
+            over the specified period, with properly formatted x and y axis labels, 
+            a grid, and rotated x-axis labels for better readability.
+            """
+
+            # Check if the period is 'Daily'
+            if period == 'Daily':
+                x = 'Date'
+                period = ''
+                label = x
+            # If period is not 'Daily', use the period itself for the x-axis
+            else:
+                x = period
+                label = period
+                period = period + ' '
+
+
+            # Create a line chart
+            plt.plot(df_tmp[x], df_tmp[price])
+    
+            # Adding title and labels
+            plt.title(f"{ticker} {period}Price Chart")
+            plt.xlabel(label)
+            plt.ylabel(price)
+    
+            # Show the plot
+            plt.grid(axis='y', linestyle='--', alpha=0.7)
+            plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
+            plt.show()
+
         
 ## Equity Year Prices Query: *[Equity-Year-Prices-Query.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Year-Prices-Query.ipynb)*
 
