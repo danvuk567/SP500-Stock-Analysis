@@ -210,12 +210,16 @@ What we can observe here is that **MSFT** has a positive trend overall from 2021
 
 Now let’s look at the daily Close prices for **MSFT** to get a more granular picture. Let's call the *plot_pricing_line* function we defined.
 
-df_pricing_daily_ticker = df_pricing[df_pricing['Ticker'] == ticker].copy() 
-plot_pricing_line(df_pricing_daily_ticker, ticker, 'Daily', 'Close')
+      df_pricing_daily_ticker = df_pricing[df_pricing['Ticker'] == ticker].copy() 
+      plot_pricing_line(df_pricing_daily_ticker, ticker, 'Daily', 'Close')
 
  ![MSFT_Daily_Pricing_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Daily_Pricing_Line_Chart.jpg?raw=true)
 
 We can see that MSFT has a positive trend with a smaller positive trend in 2021, a negative trend in 2021, and longer positive trend from 2023 to 2024. In 2021, it looks like MSFT declined from its peak in November of 2021 as we speculated in our earlier observation of the 2021 Yearly price candle. Let’s filter the data further for the last 2 months of 2021 and call the *plot_pricing_line* function again.
+
+     date_filter = (df_pricing_daily_ticker['Date'] >= '2021-11-01') & (df_pricing_daily_ticker['Date'] <= '2021-12-31')
+     df_pricing_daily_ticker = df_pricing_daily_ticker.loc[date_filter]
+     plot_pricing_line(df_pricing_daily_ticker, ticker, 'Daily', 'Close')
 
 ![MSFT_Daily_Pricing_Line_Chart_2021_last_2_months.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Daily_Pricing_Line_Chart_2021_last_2_months.jpg?raw=true)
 
