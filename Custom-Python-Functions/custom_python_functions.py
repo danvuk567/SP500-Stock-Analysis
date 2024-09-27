@@ -8,6 +8,8 @@ from sqlalchemy.orm import sessionmaker
 import urllib.parse as url
 import datetime as dt
 
+import matplotlib.pyplot as plt
+
 
 def create_connection(serv, dbase, uid, passwd):
     """
