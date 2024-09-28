@@ -688,6 +688,9 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
     return df_tmp
 
 
+We can annualize cumulative returns by using this formula: **(1 + Return) ^ (1 / N) - 1 for N periods**. This gives us an idea of what the compounded returns would be per year. For more information on **Annualized Returns**, refer to this link: [Annualized Total Return Formula and Calculation](https://www.investopedia.com/terms/a/annualized-total-return.asp). Let's define a function 
+
+
     
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
 
@@ -863,7 +866,7 @@ Let's extract the top 10 tickers from our *df_ret* dataframe as *df_ret_top* and
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg?raw=true)
 
-We see that the green line that represents ‘SMCI’ has the highest cumulative return in the last day but has taken a massive drawdown as of February 2024.
+We see that the green line that represents **SMCI** has the highest cumulative return in the last day but has taken a massive drawdown as of February 2024.
 
 Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 2022 instead to show the drawdowns. We will simply filter the dates after and including '2022-01-01' and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
 
@@ -880,7 +883,6 @@ Let's now look at drawdowns compared to the cumulative returns for the top 10 Ti
 
 We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **80.24%** max drawdown at some point in the past 3 years. **VST** had the 2nd highest max drawdown and yet the cumulative return was almost 3 times less than **SMCI**.
 
-We can annualize cumulative returns by using this formula: 
 
 
             
