@@ -865,6 +865,24 @@ Let's extract the top 10 tickers from our *df_ret* dataframe as *df_ret_top* and
 
 We see that the green line that represents ‘SMCI’ has the highest cumulative return in the last day but has taken a massive drawdown as of February 2024.
 
+Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 2022 instead to show the drawdowns. We will simply filter the dates after and including '2022-01-01' and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
+
+     date_filter = (df_ret_top['Date'] >= '2022-01-01')
+     df_ret_top = df_ret_top.loc[date_filter]
+     df_ret_top = calculate_drawdowns(df_ret_top)
+     df_ret_last_top = df_ret_top.copy().groupby('Ticker').tail(1)
+     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', '% Drawdown', 'Max % Drawdown']]
+     df_ret_last_top.sort_values(by=['Cumulative % Return'], ascending=False, inplace=True)
+
+     print(df_ret_last_top.to_string(index=False))
+
+![SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg?raw=true)
+
+We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **80.24%** max drawdown at some point in the past 3 years. **VST** had the 2nd highest max drawdown and yet the cumulative return was almost 3 times less than **SMCI**.
+
+We can annualize cumulative returns by using this formula: 
+
+
             
 
 
