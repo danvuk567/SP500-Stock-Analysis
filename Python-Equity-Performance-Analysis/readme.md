@@ -641,7 +641,53 @@ This function called *plot_returns_line_chart* will plot simple or cumulative re
             fig.update_xaxes(tickangle=45)  # Rotate x-axis labels for better readability if necessary
             fig.show()
 
-            
+We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is the difference between the peak value and the trough vlaue that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input and return the same dataframe with Drawdown columns.
+
+        def calculate_drawdowns(df_tmp):
+    
+            """
+            Calculate drawdowns and maximum drawdown based on cumulative returns.
+    
+            Parameters:
+            - df_tmp: The DataFrame containing the cumulative return data.
+
+            Returns:
+            - A DataFrame with new columns for drawdown and maximum drawdown.
+            """
+    
+            # Ensure the DataFrame is sorted by Date for proper calculations
+            df_tmp.sort_values(by=['Ticker', 'Date'], inplace=True)
+
+            # Check for 'Cumulative % Return' presence
+            if 'Cumulative % Return' not in df_tmp.columns:
+                raise ValueError("Cumulative % Return column is missing. Please calculate returns first.")
+    
+            # Calculate Peak for each Ticker
+            df_tmp['Peak'] = df_tmp.groupby('Ticker')['Cumulative % Return'].cummax()
+    
+            # Calculate Drawdown as the difference between Peak and Cumulative Return
+            df_tmp['Drawdown'] = np.where(
+                df_tmp['Cumulative % Return'] >= 0,  # If cumulative return is positive or zero
+                df_tmp['Peak'] - df_tmp['Cumulative % Return'],  # Calculate drawdown normally
+                df_tmp['Peak'] + abs(df_tmp['Cumulative % Return'])  # Account for negative cumulative return
+            )
+    
+            # Calculate % Drawdown
+            df_tmp['% Drawdown'] = np.where(
+                df_tmp['Peak'] != 0,
+                round((df_tmp['Drawdown'] / df_tmp['Peak']) * 100, 2),
+                0
+            )
+
+            # Calculate Cumulative Max % Drawdown for each Ticker (worst drawdown observed up to each date)
+            df_tmp['Cumulative Max % Drawdown'] = df_tmp.groupby('Ticker')['% Drawdown'].cummax()
+    
+            # Max % Drawdown column represents max drawdown of all dates
+            df_tmp['Max % Drawdown'] = df_tmp.groupby('Ticker')['% Drawdown'].transform('max')
+
+    return df_tmp
+
+
     
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
 
