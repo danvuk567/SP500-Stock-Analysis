@@ -566,6 +566,82 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
             fig.show()
 
 
+This function called *plot_returns_line_chart* will plot simple or cumulative returns using the plotly package for single or multiple Tickers. It requires a returns dataframe, a period type and return type as input parameters. 
+
+        def plot_returns_line_chart(df_tmp, period, return_type):
+    
+            """
+            Plots a line chart for multiple tickers based on the specified period using Plotly.
+
+            Parameters:
+            - df_tmp: DataFrame containing return data.
+            - period: A string indicating the period ('Year', 'Quarter', 'Month', 'Daily').
+
+            Returns:
+            - None
+            """
+            
+            # Create a Label column based on the period
+            if period == 'Year':
+                df_tmp['Label'] = df_tmp['Year'].astype(str)
+            elif period == 'Quarter':
+                df_tmp['Label'] = df_tmp['Year'].astype(str) + "-Q" + df_tmp['Quarter'].astype(str)
+            elif period == 'Month':
+                # Ensure month is zero-padded if needed
+                df_tmp['Label'] = df_tmp['Year'].astype(str) + "-" + df_tmp['Month'].apply(lambda x: str(x).zfill(2))
+            else:
+                df_tmp['Label'] = df_tmp['Date'].astype(str)
+        
+            if period == 'Daily':
+                label = 'Date'
+                period = ''
+            else:
+                label = period
+
+            tickers = df_tmp['Ticker'].unique()
+    
+            if len(tickers) == 0:
+                print("No tickers found in the DataFrame.")
+                return
+            elif len(tickers) == 1:
+                ticker_label = tickers[0]
+            else:
+                ticker_label = 'Ticker'
+    
+            if return_type not in df_tmp.columns:
+                print(f"Column '{return_type} not found in the DataFrame.")
+                return
+    
+            fig = pltly.graph_objects.Figure()
+    
+            for ticker in tickers:
+                df_ticker = df_tmp[df_tmp['Ticker'] == ticker]
+                if df_ticker.empty:
+                    print(f"No data found for ticker {ticker}.")
+                continue
+        
+            fig.add_trace(
+                pltly.graph_objects.Scatter(
+                    x=df_ticker['Label'],
+                    y=df_ticker[return_type],
+                    mode='lines',
+                    name=ticker
+                )
+            )
+    
+            fig.update_layout(
+                title=f'{return_type} for {ticker_label}',
+                xaxis_title=label,
+                yaxis_title=f'{return_type}',
+                legend_title='Ticker',
+                plot_bgcolor='#f5f5f5',  # Lightest grey
+                paper_bgcolor='white'
+            )
+    
+            fig.update_xaxes(tickangle=45)  # Rotate x-axis labels for better readability if necessary
+            fig.show()
+
+            
     
 ## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
 
