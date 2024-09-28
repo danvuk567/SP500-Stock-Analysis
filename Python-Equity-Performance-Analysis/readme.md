@@ -817,7 +817,7 @@ Let's extract the top 10 tickers from our *df_ret* dataframe as *df_ret_top* and
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg?raw=true)
 
-
+We see that the green line that represents ‘SMCI’ has the highest cumulative return in the last day but has taken a massive drawdown as of February 2024.
 
             
 
