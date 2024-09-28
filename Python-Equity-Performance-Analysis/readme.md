@@ -641,7 +641,7 @@ This function called *plot_returns_line_chart* will plot simple or cumulative re
             fig.update_xaxes(tickangle=45)  # Rotate x-axis labels for better readability if necessary
             fig.show()
 
-We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is the difference between the peak value and the trough vlaue that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input and return the same dataframe with Drawdown columns.
+We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is the difference between the peak value and the trough value that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input and return the same dataframe with drawdown columns: *'Peak'*, *'Drawdown'*, *'% Drawdown'*, *'Cumulative Max % Drawdown'*, and *'Max % Drawdown'*.
 
         def calculate_drawdowns(df_tmp):
     
