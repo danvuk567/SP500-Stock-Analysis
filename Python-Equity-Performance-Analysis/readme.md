@@ -566,7 +566,7 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
             fig.show()
 
 
-This function called *plot_returns_line_chart* will plot simple or cumulative returns using the plotly package for single or multiple Tickers. It requires a returns dataframe, a period type and return type as input parameters. 
+This function called *plot_returns_line_chart* will plot simple or cumulative returns in a **Line Chart** using the plotly package for single or multiple Tickers. It requires a returns dataframe, a period type and return type as input parameters. 
 
         def plot_returns_line_chart(df_tmp, period, return_type):
     
@@ -809,8 +809,13 @@ Let's examine the top 10 performers for cumulative returns for the past 4 years.
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data.jpg?raw=true)
 
+Let's extract the top 10 tickers from our *df_ret* dataframe as *df_ret_top* and compare them in a line chart calling our custom function *plot_returns_line_chart*.
 
+    top_tickers = df_ret_last_top['Ticker'].unique()
+    df_ret_top = df_ret[df_ret['Ticker'].isin(top_tickers)].copy()
+    plot_returns_line_chart(df_ret_top, 'Daily', 'Cumulative % Return')
 
+![SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg?raw=true)
 
 
 
