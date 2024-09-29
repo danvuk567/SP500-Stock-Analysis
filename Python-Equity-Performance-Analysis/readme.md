@@ -891,7 +891,7 @@ Let's examine the top 10 performers for cumulative returns for the past 4 years.
     
     print(df_ret_last_top.to_string(index=False))
 
-![SP500_Equity_Top_10_Cumulative_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data.jpg?raw=true)
+![SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg?raw=true)
 
 Let's extract the top 10 tickers from our *df_ret* dataframe as *df_ret_top* and compare them in a line chart calling our custom function *plot_returns_line_chart*.
 
