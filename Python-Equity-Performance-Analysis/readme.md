@@ -999,9 +999,34 @@ Next, let's look at the top 10 risk-adjusted performers based on Sortino Ratio.
 
 Most of the same Tickers appear in this list and **LLY** had the top **Annualized Sortino Ratio** of **3.1** and anything above 2.0 is considered excellent.
 
+Another measure of risk vs. reward is the **Calmar Ratio**. This measures **Annualized Returns / Max Drawdowns** for the past 36 months. Let's filter the returns for the past 3 years, retrieve all the Tickers that were common for past 4 years and calculate the Calmar Ratio by Ticker. We'll then calculate the top 10 risk-adjusted performers based on Calmar Ratio and print the results.  
 
-            
+     date_filter = (df_ret['Date'] >= '2021-09-20')
+     df_ret_filter = df_ret.loc[date_filter].copy()  # Adding .copy() here to avoid the warning
+     df_ret_filter = calculate_drawdowns(df_ret_filter)
+     df_ret_filter_last = df_ret_filter.groupby('Ticker').tail(1).copy()  # Use .copy() here
+     first_dates = df_ret.groupby('Ticker')['Date'].min().reset_index()
+     first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
+     df_ret_filter_last = df_ret_filter_last.merge(first_dates, on='Ticker')
+     common_first_date = df_ret_filter_last['First Date'].mode()[0]
+     df_ret_last_common = df_ret_filter_last[df_ret_filter_last['First Date'] == common_first_date].copy() 
+     df_ret_last_common['Calmar Ratio'] = np.where(
+         df_ret_last_common['Max % Drawdown'] == 0, 
+         0, 
+         round(df_ret_last_common['Annualized % Return'] / df_ret_last_common['Max % Drawdown'], 2)
+     )
 
+     df_ret_last_common.loc[:, 'Calmar Ratio Rank'] = df_ret_last_common.groupby('Date')['Calmar Ratio'].rank(ascending=False, method='dense').astype(int)
+     num_of_ranks = 10
+     df_ret_last_top = df_ret_last_common[df_ret_last_common['Calmar Ratio Rank'] <= num_of_ranks].copy()
+     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Calmar Ratio', 'Calmar Ratio Rank']]
+     df_ret_last_top.sort_values(by=['Calmar Ratio Rank'], inplace=True)
+
+     print(df_ret_last_top.to_string(index=False))
+           
+![SP500_Equity_Top_10_Annualized_Calmar_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Calmar_Ratio_Data_Python.jpg?raw=true)
+
+Again, **LLY** came in at the top with a **Calmar Ratio** of **1.57** and anything above 1.5.0 is considered strong performance.
 
 
 
