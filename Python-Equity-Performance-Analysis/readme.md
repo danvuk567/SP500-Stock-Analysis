@@ -874,17 +874,22 @@ Let's call our custom function *plot_top_returns_bar_chart* to plot our top 5 pe
 
 ![SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg?raw=true)
 
-Let's examine the top 10 performers for cumulative returns for the past 4 years. We retrieve the *df_ret_last* dataframe using the last row of our *df_ret* dataframe. We then create a new column using the *rank* function to rank cumulative returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_ret_last_top* from slicing *df_ret_last* by *'Cumulative % Return Rank' <= num_of_ranks* where *num_of_ranks = 10*. We then sort *df_ret_last_top* and print the results.
+Let's examine the top 10 performers for cumulative returns for the past 4 years. We retrieve the *df_ret_last* dataframe using the last row of our *df_ret* dataframe. We want to ensure that the Tickers span the past 4 years so we find the 1st date that is common among all Tickers and derive the dataframe *df_ret_last_common* where the 1st date is common. We then create a new column using the *rank* function to rank cumulative returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_ret_last_top* from slicing *df_ret_last* by *'Cumulative % Return Rank' <= num_of_ranks* where *num_of_ranks = 10*. We then sort *df_ret_last_top* and print the results.
 
-     df_ret = calculate_return(df_pricing.copy(), 'Daily')
-     df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
-     df_ret_last.loc[:, 'Cumulative % Return Rank'] = df_ret_last.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
-     num_of_ranks = 10
-     df_ret_last_top = df_ret_last[df_ret_last['Cumulative % Return Rank'] <= num_of_ranks].copy()
-     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Cumulative % Return Rank']]
-     df_ret_last_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
-
-     print(df_ret_last_top.to_string(index=False))
+    df_ret = calculate_return(df_pricing.copy(), 'Daily')
+    df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
+    first_dates = df_ret.groupby('Ticker')['Date'].min().reset_index()
+    first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
+    df_ret_last = df_ret_last.merge(first_dates, on='Ticker')
+    common_first_date = df_ret_last['First Date'].mode()[0]
+    df_ret_last_common = df_ret_last[df_ret_last['First Date'] == common_first_date].copy()
+    df_ret_last_common.loc[:, 'Cumulative % Return Rank'] = df_ret_last_common.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
+    num_of_ranks = 10
+    df_ret_last_top = df_ret_last_common[df_ret_last_common['Cumulative % Return Rank'] <= num_of_ranks].copy()
+    df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Cumulative % Return Rank']]
+    df_ret_last_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
+    
+    print(df_ret_last_top.to_string(index=False))
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data.jpg?raw=true)
 
