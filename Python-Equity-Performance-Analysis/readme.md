@@ -149,7 +149,7 @@ Next we'll define a function called *plot_pricing_line* to create a **Line Chart
             plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
             plt.show()
 
-In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We will first derive the previous Close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous Close is null, otherwise we use (Close / Prev Close) – 1.0. We also us log returns, aggreagate them and de-normalize them to calculate cumulative returns. We use the same logic as simple returns to calculate log returns. We then drop the previous Close column, the Log Return column, and the Cumulative Log Return column, and modify the return and cumulative return labels based on period type. We import the *numpy* package to use the *exp* function to de-normalize the aggregate log returns. We return the dataframe wit returns data.
+In order to calculate returns, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We retrieve the number of periods as *no_of_periods* based on the period type. We will first derive the previous Close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous Close is null, otherwise we use (Close / Prev Close) – 1.0. We also use **Log Returns**, aggregate them and de-normalize them to calculate **Cumulative Returns**. For more information on log returns, refer to this link: [What Are Logarithmic Returns and How to Calculate Them in Pandas Dataframe](https://saturncloud.io/blog/what-are-logarithmic-returns-and-how-to-calculate-them-in-pandas-dataframe/). We use the same logic as simple returns to calculate log returns. We then drop the previous Close column, the Log Return column, and the Cumulative Log Return column, and modify the return and cumulative return labels based on period type. We import the *numpy* package to use the *exp* function to de-normalize the aggregate log returns. We will also annualize simple returns by using this formula: **(1 + Return) ^ (1 / N) - 1 for N periods**. This gives us an idea of what the compounded returns would be per year. For more information on **Annualized Returns**, refer to this link: [Annualized Total Return Formula and Calculation](https://www.investopedia.com/terms/a/annualized-total-return.asp). In our code, we will divide the *no_of_periods* by the return count for each Ticker. This will give us 1 / N for N years. For example, if we have daily data, we usually have 252 trading days per year and for say 3 years, we will have 252 * 3 returns, and so 252 / (252 * 3) is the same as 1 / 3. Lastly, we convert our returns to percentages, drop the unneeded columns and return the dataframe with returns data.
 
     import numpy as np
     
@@ -165,6 +165,17 @@ In order to calculate returns, we define a function called *calculate_return* wh
         Returns:
         - A DataFrame with a new column '% Return' containing the percentage return, or None if not applicable.
         """
+
+        # Assign the number of periods based on period type
+        if period == 'Year':
+            no_of_periods = 1
+        elif period == 'Quarter':
+            no_of_periods = 4
+        elif period == 'Month':
+            no_of_periods = 12
+        else:
+            no_of_periods = 252
+        
         # Shift the 'Close' prices by 1 for the entire DataFrame
         df_tmp['Prev_Close'] = df_tmp.groupby('Ticker')['Close'].shift(1)
 
@@ -176,11 +187,11 @@ In order to calculate returns, we define a function called *calculate_return* wh
 
         # Calculate % Return for the first period where 'Prev_Close' is NaN
         # Assuming the return is calculated based on 'Close' and 'Open' for these rows
-        df_tmp.loc[is_first_period, '% Return'] = round(((df_tmp['Close'] / df_tmp['Open']) - 1.0) * 100, 2)
+        df_tmp.loc[is_first_period, '% Return'] = ((df_tmp['Close'] / df_tmp['Open']) - 1.0)
     
         # Calculate the return for subsequent periods based on the previous close price
         same_ticker = df_tmp['Ticker'] == df_tmp['Ticker'].shift(1)
-        df_tmp.loc[~is_first_period & same_ticker, '% Return'] = round(((df_tmp['Close'] / df_tmp['Prev_Close']) - 1.0) * 100, 2)
+        df_tmp.loc[~is_first_period & same_ticker, '% Return'] = ((df_tmp['Close'] / df_tmp['Prev Close']) - 1.0)
 
         # Calculate the log return for the first period based on 'Open' and 'Close'
         df_tmp.loc[is_first_period, 'Log Return'] = np.log(df_tmp['Close'] / df_tmp['Open']) 
@@ -191,16 +202,31 @@ In order to calculate returns, we define a function called *calculate_return* wh
         # Calculate the cumulative log return
         df_tmp['Cumulative Log Return'] = df_tmp.groupby('Ticker')['Log Return'].cumsum()
     
-        # Convert cumulative log returns to percentage return
-        df_tmp['Cumulative % Return'] = round((np.exp(df_tmp['Cumulative Log Return']) - 1.0) * 100, 2)
+        # De-nomralize cumulative log returns
+        df_tmp['Cumulative % Return'] = (np.exp(df_tmp['Cumulative Log Return']) - 1.0)
+
+        # Calculate the Cumulative Simple Return
+        df_tmp['Cumulative Simple % Return'] = (1 + df_tmp['% Return']).groupby(df_tmp['Ticker']).cumprod() - 1
+
+        # Calculate the rolling count of returns by Ticker for each date using groupby and rolling together
+        df_tmp['Rolling Return Count'] = df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).count().reset_index(level=0, drop=True)
+
+        # Calculate the Annualized % Return based on Cumulative Simple Return
+        df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative Simple % Return'])**(no_of_periods / df_tmp['Rolling Return Count']) - 1.0)
+
+        # Convert Returns to percentages
+        df_tmp['% Return'] = round(df_tmp['% Return'] * 100, 2)
+        df_tmp['Cumulative % Return'] = round(df_tmp['Cumulative % Return'] * 100, 2)
+        df_tmp['Annualized % Return'] = round(df_tmp['Annualized % Return'] * 100, 2) 
+
+        # Drop the 'Prev_Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return' and 'Rolling Return Count' columns after calculation
+        df_tmp.drop(columns=['Prev Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return', 'Rolling Return Count'], inplace=True)
     
-        # Drop the 'Prev_Close', 'Log Return' and 'Cumulative Log Return' columns after calculation if not needed
-        df_tmp.drop(columns=['Prev Close', 'Log Return', 'Cumulative Log Return'], inplace=True)
-    
-        # Rename the % Return column based on period type
+        # Rename the Return column based on period type
         if period != 'Daily':
             df_tmp.rename(columns={'% Return': period + ' % Return'}, inplace=True)    
             df_tmp.rename(columns={'Cumulative % Return': period + ' Cumulative % Return'}, inplace=True)
+            df_tmp.rename(columns={'Annualized % Return': period + ' Annualized % Return'}, inplace=True)
         
     return df_tmp
 
@@ -692,7 +718,7 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
     return df_tmp
 
 
-We can annualize cumulative returns by using this formula: **(1 + Return) ^ (1 / N) - 1 for N periods**. This gives us an idea of what the compounded returns would be per year. For more information on **Annualized Returns**, refer to this link: [Annualized Total Return Formula and Calculation](https://www.investopedia.com/terms/a/annualized-total-return.asp). Let's define a function 
+
 
 
     
