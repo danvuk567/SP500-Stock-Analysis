@@ -926,7 +926,7 @@ Let's now look at drawdowns compared to the cumulative returns for the top 10 Ti
      df_ret_top = df_ret_top.loc[date_filter]
      df_ret_top = calculate_drawdowns(df_ret_top)
      df_ret_last_top = df_ret_top.copy().groupby('Ticker').tail(1)
-     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', '% Drawdown', 'Max % Drawdown', 'Max Drawdown Date']]
+     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Annualized % Return', '% Drawdown', 'Max % Drawdown', 'Max Drawdown Date']]
      df_ret_last_top.sort_values(by=['Cumulative % Return'], ascending=False, inplace=True)
 
      print(df_ret_last_top.to_string(index=False))
