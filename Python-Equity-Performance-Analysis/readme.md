@@ -149,7 +149,15 @@ Next we'll define a function called *plot_pricing_line* to create a **Line Chart
             plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
             plt.show()
 
-In order to calculate **Returns**, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We retrieve the number of periods as *no_of_periods* based on the period type. We will first derive the previous Close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous Close is null, otherwise we use (Close / Prev Close) – 1.0. We also use **Log Returns**, aggregate them and de-normalize them to calculate **Cumulative Returns**. For more information on log returns, refer to this link: [What Are Logarithmic Returns and How to Calculate Them in Pandas Dataframe](https://saturncloud.io/blog/what-are-logarithmic-returns-and-how-to-calculate-them-in-pandas-dataframe/). We use the same logic as simple returns to calculate log returns. We then drop the previous Close column, the Log Return column, and the Cumulative Log Return column, and modify the return and cumulative return labels based on period type. We import the *numpy* package to use the *exp* function to de-normalize the aggregate log returns. We will also annualize simple returns by using a variation of this basic formula: **(1 + Return) ^ (1 / N) - 1 for N periods**. This gives us an idea of what the compounded returns would be per year. For more information on **Annualized Returns**, refer to this link: [Annualized Total Return Formula and Calculation](https://www.investopedia.com/terms/a/annualized-total-return.asp). In our code, we will divide the *no_of_periods* by the return count for each Ticker. This will give us 1 / N for N years. For example, if we have daily data, we usually have 252 trading days per year and for say 3 years, we will have 252 * 3 returns, and so 252 / (252 * 3) is the same as 1 / 3. Lastly, we convert our returns to percentages, drop the unneeded columns and return the dataframe with returns data.
+In order to calculate **Returns**, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We retrieve the number of periods as *no_of_periods* based on the period type. We will first derive the previous Close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous Close is null, otherwise we use (Close / Prev Close) – 1.0.
+
+We also use **Log Returns**, aggregate them and de-normalize them to calculate **Cumulative Returns**. For more information on log returns, refer to this link: [What Are Logarithmic Returns and How to Calculate Them in Pandas Dataframe](https://saturncloud.io/blog/what-are-logarithmic-returns-and-how-to-calculate-them-in-pandas-dataframe/). We use the same logic as simple returns to calculate log returns. We then drop the previous Close column, the Log Return column, and the Cumulative Log Return column, and modify the return and cumulative return labels based on period type. We import the *numpy* package to use the *exp* function to de-normalize the aggregate log returns. 
+
+We will also annualize simple returns by using a variation of this basic formula: **(1 + Return) ^ (1 / N) - 1 for N periods**. This gives us an idea of what the compounded returns would be per year. For more information on **Annualized Returns**, refer to this link: [Annualized Total Return Formula and Calculation](https://www.investopedia.com/terms/a/annualized-total-return.asp). In our code, we will divide the *no_of_periods* by the return count for each Ticker. This will give us 1 / N for N years. For example, if we have daily data, we usually have 252 trading days per year and for say 3 years, we will have 252 * 3 returns, and so 252 / (252 * 3) is the same as 1 / 3.
+
+A measure that defines risk with respect to returns is volatility. For more information about volatility, refer to this link: [Volatility: Meaning in Finance and How It Works With Stocks](https://www.investopedia.com/terms/v/volatility.asp) We can define **Annualized Volatility** as **Standard Deviation of Returns * N for N periods**. For downside risk, we can calculate **Downside Annualized Volatility** as **Standard Deviation of Negative Returns * N for N periods**. 
+
+Lastly, we convert our returns and volatility measures into percentages, drop the unwanted columns and return the dataframe with returns data.
 
     import numpy as np
     
@@ -214,10 +222,18 @@ In order to calculate **Returns**, we define a function called *calculate_return
         # Calculate the Annualized % Return based on Cumulative Simple Return
         df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative Simple % Return'])**(no_of_periods / df_tmp['Rolling Return Count']) - 1.0)
 
+        # Calculate the Annualized Volatility based on Simple Return
+        df_tmp['Annualized Volatility'] = df_tmp.groupby('Ticker')['% Return'].transform(lambda x: x.std() * np.sqrt(no_of_periods))
+    
+        # Calculate Downside Annualized Volatility based on Negative Simple Return
+        df_tmp['Downside Annualized Volatility'] = df_tmp.groupby('Ticker')['% Return'].transform(lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if not x[x < 0].empty else 0)
+
         # Convert Returns to percentages
         df_tmp['% Return'] = round(df_tmp['% Return'] * 100, 2)
         df_tmp['Cumulative % Return'] = round(df_tmp['Cumulative % Return'] * 100, 2)
         df_tmp['Annualized % Return'] = round(df_tmp['Annualized % Return'] * 100, 2) 
+        df_tmp['Annualized Volatility'] = round(df_tmp['Annualized Volatility'] * 100, 2)
+        df_tmp['Downside Annualized Volatility'] = round(df_tmp['Annualized Volatility'] * 100, 2)
 
         # Drop the 'Prev_Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return' and 'Rolling Return Count' columns after calculation
         df_tmp.drop(columns=['Prev Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return', 'Rolling Return Count'], inplace=True)
@@ -227,6 +243,8 @@ In order to calculate **Returns**, we define a function called *calculate_return
             df_tmp.rename(columns={'% Return': period + ' % Return'}, inplace=True)    
             df_tmp.rename(columns={'Cumulative % Return': period + ' Cumulative % Return'}, inplace=True)
             df_tmp.rename(columns={'Annualized % Return': period + ' Annualized % Return'}, inplace=True)
+            df_tmp.rename(columns={'Annualized Volatility': period + ' Annualized Volatility'}, inplace=True)
+            df_tmp.rename(columns={'Downside Annualized Volatility': period + ' Downside Annualized Volatility'}, inplace=True)
         
     return df_tmp
 
@@ -667,7 +685,7 @@ This function called *plot_returns_line_chart* will plot simple or cumulative re
             fig.update_xaxes(tickangle=45)  # Rotate x-axis labels for better readability if necessary
             fig.show()
 
-We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is the difference between the peak value and the trough value that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input and return the same dataframe with drawdown columns: *'Peak'*, *'Drawdown'*, *'% Drawdown'*, *'Cumulative Max % Drawdown'*, *'Max % Drawdown'*, and *'Max Drawdown Date'*.
+We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is another measure of risk and is the difference between the peak value and the trough value that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input and return the same dataframe with drawdown columns: *'Peak'*, *'Drawdown'*, *'% Drawdown'*, *'Cumulative Max % Drawdown'*, *'Max % Drawdown'*, and *'Max Drawdown Date'*.
 
         def calculate_drawdowns(df_tmp):
     
@@ -919,7 +937,6 @@ Now let's examine the Top 10 Annualized returns using similar ranking logic.
 
 This gives us the same top performers with what was expected to be earned on average on a yearly basis.
 
-
 Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 2022 instead to show the drawdowns. We will simply filter the dates after and including '2022-01-01' and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
 
      date_filter = (df_ret_top['Date'] >= '2022-01-01')
@@ -934,6 +951,22 @@ Let's now look at drawdowns compared to the cumulative returns for the top 10 Ti
 ![SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg?raw=true)
 
 We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **80.24%** maximum drawdown in **2022-04-12**. **VST** had the 2nd highest maximum drawdown and yet the cumulative return was almost 3 times less than **SMCI**. All the top 10 performers had the biggest drawdowns in 2022.
+
+Now let's examine the Top 10 most volatile stocks using Annualized Volatility and ranking logic.
+
+     df_ret_last_common.loc[:, 'Annualized Volatility Rank'] = df_ret_last_common.groupby('Date')['Annualized Volatility'].rank(ascending=False, method='dense').astype(int)
+     num_of_ranks = 10
+     df_ret_last_top = df_ret_last_common[df_ret_last_common['Annualized Volatility Rank'] <= num_of_ranks].copy()
+     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Annualized Volatility', 'Annualized Volatility Rank']]
+     df_ret_last_top.sort_values(by=['Annualized Volatility Rank'], inplace=True)
+
+     print(df_ret_last_top.to_string(index=False))
+
+![SP500_Equity_Top_10_Annualized_Volatility_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Volatility_Data_Python.jpg?raw=true)
+
+**SMCI** came out as the most volatile stock which can be observed also in the drawdown data and cumulative returns line chart. None of the other top 10 performing stocks were in the top 10 most volatile.
+
+
 
 
 
