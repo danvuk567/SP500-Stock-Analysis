@@ -641,7 +641,7 @@ This function called *plot_returns_line_chart* will plot simple or cumulative re
             fig.update_xaxes(tickangle=45)  # Rotate x-axis labels for better readability if necessary
             fig.show()
 
-We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is the difference between the peak value and the trough value that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input and return the same dataframe with drawdown columns: *'Peak'*, *'Drawdown'*, *'% Drawdown'*, *'Cumulative Max % Drawdown'*, and *'Max % Drawdown'*.
+We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is the difference between the peak value and the trough value that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input and return the same dataframe with drawdown columns: *'Peak'*, *'Drawdown'*, *'% Drawdown'*, *'Cumulative Max % Drawdown'*, *'Max % Drawdown'*, and *'Max Drawdown Date'*.
 
         def calculate_drawdowns(df_tmp):
     
@@ -684,6 +684,10 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
     
             # Max % Drawdown column represents max drawdown of all dates
             df_tmp['Max % Drawdown'] = df_tmp.groupby('Ticker')['% Drawdown'].transform('max')
+            # Create a mask where % Drawdown equals Max % Drawdown
+            df_tmp['Is_Max_Drawdown'] = df_tmp['% Drawdown'] == df_tmp['Max % Drawdown']
+            # Extract the last date where the Max % Drawdown occurs
+            df_tmp['Max Drawdown Date'] = df_tmp['Date'].where(df_tmp['Is_Max_Drawdown']).groupby(df_tmp['Ticker']).transform('last')
 
     return df_tmp
 
