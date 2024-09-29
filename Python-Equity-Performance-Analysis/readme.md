@@ -885,7 +885,7 @@ Let's now look at drawdowns compared to the cumulative returns for the top 10 Ti
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg?raw=true)
 
-We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **80.24%** max drawdown at some point in the past 3 years. **VST** had the 2nd highest max drawdown and yet the cumulative return was almost 3 times less than **SMCI**.
+We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **80.24%** maximum drawdown in **2022-04-12**. **VST** had the 2nd highest maximum drawdown and yet the cumulative return was almost 3 times less than **SMCI**. All the top 10 performers had the biggest drawdowns in 2022.
 
 
 
