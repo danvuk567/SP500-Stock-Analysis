@@ -966,8 +966,38 @@ Now let's examine the Top 10 most volatile stocks using Annualized Volatility an
 
 **SMCI** came out as the most volatile stock which can be observed also in the drawdown data and cumulative returns line chart. None of the other top 10 performing stocks were in the top 10 most volatile.
 
+A well known **Risk vs. Reward** measure is the Sharpe Ratio. For more information on this, refer to this link: [Sharpe Ratio: Definition, Formula, and Examples](https://www.investopedia.com/terms/s/sharperatio.asp). It is best to use the **Annualized Sharpe Ratio** which uses annualized returns instead of average returns as it provides a clearer and more reliable measure of risk-adjusted performance. Average returns can be misleading and do not fully capture the dynamics of investment performance over time. The formula can be defined as **(Annualized Return − Risk-Free Rate) / Annulaized Volatility**. Another measure of Risk vs. Reward is the Sortino Ratio. Unlike the Sharpe Ratio, which penalizes both upside and downside volatility, the Sortino Ratio only considers the standard deviation of negative returns, making it more appropriate for assessing investments that may experience high volatility but also provide significant upside potential. For more information, please refer to this link: [Sortino Ratio: Definition, Formula, Calculation, and Example](https://www.investopedia.com/terms/s/sortinoratio.asp). We will also use the **Annualized Sortino Ratio** which is defined as **(Annualized Return − Risk-Free Rate) / Annualized Downside Volatility**. 
 
+Let's first calculate the Annualized Sharpe Ratio and the Annulaized Sortino Ratio. We will first find the top 10 risk-adjusted performers based on Sharpe Ratio. The Risk-Free Rate is based on the 3 month T-Bill rate. We would have to retrieve the daily data for past 4 years to produce a more accurate calculation but we can simply use an average as a rough estimate which is 2.5%.
 
+    df_ret = calculate_return(df_pricing.copy(), 'Daily')
+    risk_free_rate = 2.5
+    df_ret['Annualized Sharpe Ratio'] = (df_ret['Annualized % Return'] - risk_free_rate) / df_ret['Annualized Volatility']
+    df_ret['Annualized Sortino Ratio'] = (df_ret['Annualized % Return'] - risk_free_rate) / df_ret['Annualized Downside Volatility']
+    df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
+    first_dates = df_ret.groupby('Ticker')['Date'].min().reset_index()
+    first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
+    df_ret_last = df_ret_last.merge(first_dates, on='Ticker')
+    common_first_date = df_ret_last['First Date'].mode()[0]
+    df_ret_last_common = df_ret_last[df_ret_last['First Date'] == common_first_date].copy()
+                                             
+    df_ret_last_common.loc[:, 'Annualized Sharpe Ratio Rank'] = df_ret_last_common.groupby('Date')['Annualized Sharpe Ratio'].rank(ascending=False, method='dense').astype(int)
+    num_of_ranks = 10
+    df_ret_last_top = df_ret_last_common[df_ret_last_common['Annualized Sharpe Ratio Rank'] <= num_of_ranks].copy()
+    df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Annualized Sharpe Ratio', 'Annualized Sharpe Ratio Rank']]
+    df_ret_last_top.sort_values(by=['Annualized Sharpe Ratio Rank'], inplace=True)
+
+    print(df_ret_last_top.to_string(index=False))
+
+![SP500_Equity_Top_10_Annualized_Sharpe_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Sharpe_Ratio_Data_Python.jpg?raw=true)
+
+**LLY** had the top Annualized Sharpe Ratio of 1.87 and anything above 1.5 is considered pretty good.
+
+Next, let's look at the top 10 risk-adjusted performers based on Sortino Ratio.
+
+![SP500_Equity_Top_10_Annualized_Sortino_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Sortino_Ratio_Data_Python.jpg?raw=true)
+
+Most of the same Tickers appear in this list and **LLY** had the top Annualized Sortino Ratio of 3.1 and anything above 2.0 is considered excellent.
 
 
             
