@@ -991,13 +991,13 @@ Let's first calculate the Annualized Sharpe Ratio and the Annulaized Sortino Rat
 
 ![SP500_Equity_Top_10_Annualized_Sharpe_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Sharpe_Ratio_Data_Python.jpg?raw=true)
 
-**LLY** had the top Annualized Sharpe Ratio of 1.87 and anything above 1.5 is considered pretty good.
+**LLY** had the top **Annualized Sharpe Ratio** of **1.87** and anything above 1.5 is considered pretty good.
 
 Next, let's look at the top 10 risk-adjusted performers based on Sortino Ratio.
 
 ![SP500_Equity_Top_10_Annualized_Sortino_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Sortino_Ratio_Data_Python.jpg?raw=true)
 
-Most of the same Tickers appear in this list and **LLY** had the top Annualized Sortino Ratio of 3.1 and anything above 2.0 is considered excellent.
+Most of the same Tickers appear in this list and **LLY** had the top **Annualized Sortino Ratio** of **3.1** and anything above 2.0 is considered excellent.
 
 
             
