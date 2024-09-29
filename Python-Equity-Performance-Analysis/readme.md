@@ -893,6 +893,8 @@ Let's examine the top 10 performers for cumulative returns for the past 4 years.
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg?raw=true)
 
+The results are the same for the same Tickers when using SQL queries except that we filtered out the Tickers that did not exist 4 years back and so **'CEG'**, which was 3rd in the SQL results, was not in this result. **'MPC'** ended up appearing in the list as 10th.
+
 Let's extract the top 10 tickers from our *df_ret* dataframe as *df_ret_top* and compare them in a line chart calling our custom function *plot_returns_line_chart*.
 
     top_tickers = df_ret_last_top['Ticker'].unique()
@@ -902,6 +904,21 @@ Let's extract the top 10 tickers from our *df_ret* dataframe as *df_ret_top* and
 ![SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg?raw=true)
 
 We see that the green line that represents **SMCI** has the highest cumulative return in the last day but has taken a massive drawdown as of February 2024.
+
+Now let's examine the Top 10 Annualized returns using similar ranking logic.
+
+    df_ret_last_common.loc[:, 'Annualized % Return Rank'] = df_ret_last_common.groupby('Date')['Annualized % Return'].rank(ascending=False, method='dense').astype(int)
+    num_of_ranks = 10
+    df_ret_last_top = df_ret_last_common[df_ret_last_common['Annualized % Return Rank'] <= num_of_ranks].copy()
+    df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Annualized % Return', 'Annualized % Return Rank']]
+    df_ret_last_top.sort_values(by=['Annualized % Return Rank'], inplace=True)
+
+    print(df_ret_last_top.to_string(index=False))
+
+![SP500_Equity_Top_10_Annualized_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Returns_Data_Python.jpg?raw=true)
+
+This gives us the same top performers with what was expected to be earned on average on a yearly basis.
+
 
 Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 2022 instead to show the drawdowns. We will simply filter the dates after and including '2022-01-01' and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
 
