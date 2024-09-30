@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Sep 23 13:23:10 2024
-
-@author: Daniel
+@author: Daniel Vukota
 """
 
 import sqlalchemy as sa
@@ -796,7 +794,6 @@ def calculate_drawdowns(df_tmp):
     df_tmp['Is_Max_Drawdown'] = df_tmp['% Drawdown'] == df_tmp['Max % Drawdown']
     # Extract the last date where the Max % Drawdown occurs
     df_tmp['Max Drawdown Date'] = df_tmp['Date'].where(df_tmp['Is_Max_Drawdown']).groupby(df_tmp['Ticker']).transform('last')
-
 
     return df_tmp
 
