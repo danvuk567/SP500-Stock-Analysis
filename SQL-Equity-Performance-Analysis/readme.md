@@ -32,21 +32,38 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 		FROM q1
 		WHERE q1.Row_Num = 1;
 
-  ## Yearly Pricing Query: *[Yearly-Ticker-Pricing-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Pricing-Query.sql)*
 
-  Let's query the yearly pricing view for the **MSFT** Ticker and observe the results.
+## Yearly Ticker Pricing Query: *[Yearly-Ticker-Pricing-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Pricing-Query.sql)*
 
-  	SELECT 
-      	    Ticker,
-      	    "Year",
-      	    "Date",
-      	    "Open",
-      	    "High",
-      	    "Low",
-      	    "Close",
-      	    "Volume"
-	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
+Let's create a function called *Q_Yahoo_Ticker_Year_Prices* that will query the yearly pricing view for any Ticker we want.
+
+  		CREATE OR ALTER FUNCTION [Equities].[Q_Yahoo_Ticker_Year_Prices](@input nchar(10))
+		RETURNS TABLE
+		AS
+		RETURN
+			SELECT 
+  	    			Ticker,
+  	    			"Year",
+  	    			"Date",
+  	    			"Open",
+  	    			"High",
+  	    			"Low",
+  	    			"Close",
+  	    			"Volume"
+			FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
+			WHERE Ticker = @input;
+
+   
+
+  	SELECT *
+	FROM [Financial_Securities].[Equities].[Q_Yahoo_Ticker_Year_Prices]
 	WHERE Ticker = 'MSFT'
+	ORDER BY "Year";
+ 
+  Let's query the yearly pricing data for the **MSFT** Ticker using our function *Q_Yahoo_Ticker_Year_Prices* and observe the results.
+
+  	SELECT *
+	FROM [Financial_Securities].[Equities].[Q_Yahoo_Ticker_Year_Prices]('MSFT')
 	ORDER BY "Year";
 
  ![MSFT Yearly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Pricing_Data.jpg?raw=true)
