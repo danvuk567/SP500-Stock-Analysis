@@ -968,8 +968,16 @@ Let's first calculate the Annualized Sharpe Ratio and the Annulaized Sortino Rat
 
     df_ret = calculate_return(df_pricing.copy(), 'Daily')
     risk_free_rate = 2.5
-    df_ret['Annualized Sharpe Ratio'] = (df_ret['Annualized % Return'] - risk_free_rate) / df_ret['Annualized Volatility']
-    df_ret['Annualized Sortino Ratio'] = (df_ret['Annualized % Return'] - risk_free_rate) / df_ret['Annualized Downside Volatility']
+    df_ret['Annualized Sharpe Ratio'] = np.where(
+        df_ret['Annualized Volatility'] == 0, 
+        0, 
+        round((df_ret['Annualized % Return'] - risk_free_rate) / df_ret['Annualized Volatility'], 2)
+    )
+    df_ret['Annualized Sortino Ratio'] = np.where(
+        df_ret['Annualized Volatility'] == 0, 
+        0, 
+        round((df_ret['Annualized % Return'] - risk_free_rate) / df_ret['Annualized Downside Volatility'], 2)
+    )
     df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
     first_dates = df_ret.groupby('Ticker')['Date'].min().reset_index()
     first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
