@@ -107,120 +107,77 @@ Let's now examine Quarter returns for **MSFT** to see if we can identify the rea
 
  We can observe **MSFT** had **3 Quarters** in **2023** with high returns of roughly **18% to 20%** which impacted to the high return of **58.19%** in **2023**. And we had low returns in the **1st** and **3rd Quarter** of **2022** and a significant return of **-16.5%** in the **2nd Quarter** of **2022**. This impacted the low return of **-28.02%** in **2022**.
 
-## Quarterly % Return by Year Statistics Query: *[Quarterly-Ticker-Return-by-Year-Statistics-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Quarterly-Ticker-Return-by-Year-Statistics-Query.sql)*
 
-Now let’s explore some statistical measures in SQL using Quarterly Returns. One statisitical measure, called the **Median**, does not have a direct function in SQL Server. For more information on the Meidan, refer to this link: [Median: What It Is and How to Calculate It, With Examples](https://www.investopedia.com/terms/m/median.asp). Let's derive the Median Quarterly Return by year for **MSFT**. We can use the concept of counting how many Quarters exist in a given year and if there are an even number of Quarters, we retrieve the 2 middle rows and if there is an odd number of Quarters, we retrieve the singular middle row. We then apply the average which works in both cases to the find the Median. Here is the complex query that demonstrates how this can be calculated.
+## Quarterly Ticker % Return by Year Statistics Query Function: *[Create-FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics.sql)*
 
-	WITH q1 AS
-	(SELECT
-  	  Ticker_ID,
-  	  Ticker,
-  	  "Year",
-  	  "Quarter",
- 	  "Date",
-  	  CASE
-   	   WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ("Close" / "Open") - 1.0
-   	   ELSE ("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0
-  	  END AS "% Return"
-	  FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Quarter_Prices]),
-	  q2 AS (
-	    SELECT
-	        q1.Ticker_ID,
-		q1.Ticker,
-	        q1."Year",
-	        q1."Quarter",
-	        q1."% Return",
-	        ROW_NUMBER() OVER (PARTITION BY q1.Ticker_ID, q1."Year" ORDER BY q1."% Return") AS Row_Num,
-	        COUNT(*) OVER (PARTITION BY q1.Ticker_ID, q1."Year") AS Cnt
-	    FROM q1)
-	 SELECT
-	    q2.Ticker_ID,
-	    q2.Ticker,
-	    q2."Year",
-	    ROUND(AVG
-	      (CASE 
-	         WHEN q2.Cnt % 2 = 1 THEN 
-                   CASE 
-		     WHEN q2.Row_Num = (q2.Cnt + 1) / 2 THEN q2."% Return"
-		     ELSE NULL 
-		   END
-               ELSE 
-		  CASE 
-		    WHEN q2.Row_Num IN ((q2.Cnt / 2), (q2.Cnt / 2) + 1) THEN q2."% Return"
-		    ELSE NULL 
-		  END
-                END
-	       ) * 100, 2) AS "Median % Return"
-	 FROM q2
-         WHERE q2.Row_Num IN ((q2.Cnt + 1) / 2, (q2.Cnt / 2) + 1)
-         AND q2.Ticker = 'MSFT'
-         GROUP BY q2.Ticker_ID, q2.Ticker, q2."Year";
+Now let’s explore some statistical measures in SQL using Quarterly Returns. One statisitical measure, called the **Median**, does not have a direct function in SQL Server. For more information on the Meidan, refer to this link: [Median: What It Is and How to Calculate It, With Examples](https://www.investopedia.com/terms/m/median.asp). Let's derive the Median Quarterly Return by year for the Ticker that is specified. We can use the concept of counting how many Quarters exist in a given year and if there are an even number of Quarters, we retrieve the 2 middle rows and if there is an odd number of Quarters, we retrieve the singular middle row. We then apply the average which works in both cases to the find the Median. Here is the complex query that demonstrates how this can be calculated.
 
-Let's find out what the lowest Quarterly Return, the highest Quarterly Return, average Quarterly Return, median Quarterly return and Quarterly return variance is for **MSFT** combining Yearly returns with Quarterly Returns, calculating the Median using the logic we explored and using the built-in SQL aggregate functions:  **MIN**, **MAX**, **AVG** and **STDEVP** (standard deviation). Here is the complex query that will produce the Quarterly Return Statistics by Year.
-
+	CREATE OR ALTER FUNCTION [Equities].[FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics](@input nchar(10))
+	RETURNS TABLE
+	AS
+	RETURN
 		WITH q1 AS
 		(SELECT
-		  Ticker_ID,
-		  Ticker,
-		  "Year",
-		  "Date",
-		  CASE
-		    WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ("Close" / "Open") - 1.0
-		    ELSE ("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0
-		  END AS "% Return"
+			Ticker_ID,
+			Ticker,
+			"Year",
+			"Date",
+			CASE
+				WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ("Close" / "Open") - 1.0
+				ELSE ("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0
+			END AS "% Return"
 		FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]),
 		q2 AS
 		(SELECT
-		  Ticker_ID,
-		  Ticker,
-		  "Year",
-		  "Quarter",
-		  "Date",
-		  CASE
-		    WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ("Close" / "Open") - 1.0
-		    ELSE ("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0
-		  END AS "% Return"
+			Ticker_ID,
+			Ticker,
+			"Year",
+			"Quarter",
+			"Date",
+		 	CASE
+				WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ("Close" / "Open") - 1.0
+				ELSE ("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0
+		 	END AS "% Return"
 		FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Quarter_Prices]),
-		q3 AS (
-		    SELECT
-		        q2.Ticker_ID,
+		q3 AS 
+                (SELECT
+			q2.Ticker_ID,
 			q2.Ticker,
-		        q2."Year",
-		        q2."Quarter",
-		        q2."% Return",
-		        ROW_NUMBER() OVER (PARTITION BY q2.Ticker_ID, q2."Year" ORDER BY q2."% Return") AS Row_Num,
-		        COUNT(*) OVER (PARTITION BY q2.Ticker_ID, q2."Year") AS Cnt
-		    FROM q2
-		),
+			q2."Year",
+			q2."Quarter",
+			q2."% Return",
+			ROW_NUMBER() OVER (PARTITION BY q2.Ticker_ID, q2."Year" ORDER BY q2."% Return") AS Row_Num,
+			COUNT(*) OVER (PARTITION BY q2.Ticker_ID, q2."Year") AS Cnt
+		FROM q2),
 		q4 AS (
 		SELECT
-		    q3.Ticker_ID,
-		    q3.Ticker,
-		    q3."Year",
-		    AVG(CASE 
- 		          WHEN q3.Cnt % 2 = 1 THEN 
-  		            CASE 
-			      WHEN q3.Row_Num = (q3.Cnt + 1) / 2 THEN q3."% Return"
-			      ELSE NULL 
-			    END
-  		          ELSE 
-			    CASE 
-			      WHEN q3.Row_Num IN ((q3.Cnt / 2), (q3.Cnt / 2) + 1) THEN q3."% Return"
-			      ELSE NULL 
-			    END
- 		        END) AS "Median % Return"
+			q3.Ticker_ID,
+			q3.Ticker,
+			q3."Year",
+			AVG(CASE 
+			    	WHEN q3.Cnt % 2 = 1 THEN 
+					CASE 
+						WHEN q3.Row_Num = (q3.Cnt + 1) / 2 THEN q3."% Return"
+						ELSE NULL 
+					END
+				ELSE 
+					CASE 
+						WHEN q3.Row_Num IN ((q3.Cnt / 2), (q3.Cnt / 2) + 1) THEN q3."% Return"
+						ELSE NULL 
+					END
+			    END) AS "Median % Return"
 		FROM q3
 		WHERE q3.Row_Num IN ((q3.Cnt + 1) / 2, (q3.Cnt / 2) + 1)
 		GROUP BY q3.Ticker_ID, q3.Ticker, q3."Year")
 		SELECT
-		    q1.Ticker,
-		    q1."Year",
-		    ROUND(q1."% Return" * 100, 2) AS "Yearly % Return",
-		    ROUND(MIN(q2."% Return") * 100, 2) AS "Lowest Quarterly % Return",
-		    ROUND(MAX(q2."% Return") * 100, 2) AS "Highest Quarterly % Return",
-		    ROUND(AVG(q2."% Return") * 100, 2) AS "Avg Quarterly % Return",
-		    ROUND(q4."Median % Return" * 100, 2) AS "Median Quarterly % Return",
-		    ROUND(STDEVP(q2."% Return") * 100, 2) AS "Quarterly % Variance"
+			q1.Ticker,
+			q1."Year",
+			ROUND(q1."% Return" * 100, 2) AS "Yearly % Return",
+			ROUND(MIN(q2."% Return") * 100, 2) AS "Lowest Quarterly % Return",
+			ROUND(MAX(q2."% Return") * 100, 2) AS "Highest Quarterly % Return",
+			ROUND(AVG(q2."% Return") * 100, 2) AS "Avg Quarterly % Return",
+			ROUND(q4."Median % Return" * 100, 2) AS "Median Quarterly % Return",
+			ROUND(STDEVP(q2."% Return") * 100, 2) AS "Quarterly % Variance"
 		FROM q1
 		INNER JOIN q2
 		ON q1.Ticker_ID = q2.Ticker_ID
@@ -228,13 +185,18 @@ Let's find out what the lowest Quarterly Return, the highest Quarterly Return, a
 		INNER JOIN q4
 		ON q1.Ticker_ID = q4.Ticker_ID
 		AND q1."Year" = q4."Year"
-		AND q1.Ticker = 'MSFT'
+		AND q1.Ticker = @input
 		GROUP BY 
- 		   q1.Ticker,
- 		   q1."Year",
-  		   q1."% Return",
-  		   q4."Median % Return"
-		ORDER BY q1."Year";
+			q1.Ticker,
+			q1."Year",
+			q1."% Return",
+			q4."Median % Return"
+
+Let's find out what the lowest Quarterly Return, the highest Quarterly Return, average Quarterly Return, median Quarterly return and Quarterly return variance is for **MSFT** combining Yearly returns with Quarterly Returns, calculating the Median using the logic we explored and using the built-in SQL aggregate functions:  **MIN**, **MAX**, **AVG** and **STDEVP** (standard deviation). Here is the complex query that will produce the Quarterly Return Statistics by Year.
+
+	SELECT *
+	FROM [Financial_Securities].[Equities].[FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics]('MSFT')
+	ORDER BY "Year";
 
 ![MSFT_Quarterly_Return_by_Year_Statistics_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data.jpg?raw=true)
 
