@@ -153,9 +153,9 @@ In order to calculate **Returns**, we define a function called *calculate_return
 
 We also use **Log Returns**, aggregate them and de-normalize them to calculate **Cumulative Returns**. For more information on log returns, refer to this link: [What Are Logarithmic Returns and How to Calculate Them in Pandas Dataframe](https://saturncloud.io/blog/what-are-logarithmic-returns-and-how-to-calculate-them-in-pandas-dataframe/). We use the same logic as simple returns to calculate log returns. We then drop the previous Close column, the Log Return column, and the Cumulative Log Return column, and modify the return and cumulative return labels based on period type. We import the *numpy* package to use the *exp* function to de-normalize the aggregate log returns. 
 
-We will also annualize simple returns by using a variation of this basic formula: **(1 + Return) ^ (1 / N) - 1 for N periods**. This gives us an idea of what the compounded returns would be per year. For more information on **Annualized Returns**, refer to this link: [Annualized Total Return Formula and Calculation](https://www.investopedia.com/terms/a/annualized-total-return.asp). In our code, we will divide the *no_of_periods* by the return count for each Ticker. This will give us 1 / N for N years. For example, if we have daily data, we usually have 252 trading days per year and for say 3 years, we will have 252 * 3 returns, and so 252 / (252 * 3) is the same as 1 / 3.
+We will also annualize simple returns by using a variation of this basic formula: **(1 + Return) ^ (1 / N) - 1 for N periods**. This gives us an idea of what the compounded returns would be per year. For more information on **Annualized Returns**, refer to this link: [Annualized Total Return Formula and Calculation](https://www.investopedia.com/terms/a/annualized-total-return.asp). In our code, we will divide the *no_of_periods* by the return count for each Ticker. This will give us 1 / N for N years. For example, if we have daily data, we usually have 252 trading days per year and for say 3 years, we will have 252 * 3 returns, and so 252 / (252 * 3) is the same as 1 / 3. We are essentially calculating a rolling Annualized Return.
 
-A measure that defines risk with respect to returns is volatility. For more information about volatility, refer to this link: [Volatility: Meaning in Finance and How It Works With Stocks](https://www.investopedia.com/terms/v/volatility.asp) We can define **Annualized Volatility** as **Standard Deviation of Returns * N for N periods**. For downside risk, we can calculate **Downside Annualized Volatility** as **Standard Deviation of Negative Returns * N for N periods**. 
+A measure that defines risk with respect to returns is volatility. For more information about volatility, refer to this link: [Volatility: Meaning in Finance and How It Works With Stocks](https://www.investopedia.com/terms/v/volatility.asp) We can define **Annualized Volatility** as **Standard Deviation of Returns * N for N periods**. For downside risk, we can calculate **Downside Annualized Volatility** as **Standard Deviation of Negative Returns * N for N periods**. In our code below, we calculate a rolling Annualized Voaltility and a rolling Downside Annualized Volatility.
 
 Lastly, we convert our returns and volatility measures into percentages, drop the unwanted columns and return the dataframe with returns data.
 
@@ -219,14 +219,15 @@ Lastly, we convert our returns and volatility measures into percentages, drop th
         # Calculate the rolling count of returns by Ticker for each date using groupby and rolling together
         df_tmp['Rolling Return Count'] = df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).count().reset_index(level=0, drop=True)
 
-        # Calculate the Annualized % Return based on Cumulative Simple Return
+        # Calculate the rolling Annualized % Return based on Cumulative Simple Return and using no_of_periods and Rolling Return Count
         df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative Simple % Return'])**(no_of_periods / df_tmp['Rolling Return Count']) - 1.0)
 
-        # Calculate the Annualized Volatility based on Simple Return
-        df_tmp['Annualized Volatility'] = df_tmp.groupby('Ticker')['% Return'].transform(lambda x: x.std() * np.sqrt(no_of_periods))
-    
-        # Calculate Downside Annualized Volatility based on Negative Simple Return
-        df_tmp['Downside Annualized Volatility'] = df_tmp.groupby('Ticker')['% Return'].transform(lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if not x[x < 0].empty else 0)
+        # Calculate the rolling Annualized Volatility based on Simple Return and using no_of_periods
+        df_tmp['Annualized Volatility'] = (df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).apply(lambda x: x.std() * np.sqrt(no_of_periods)).reset_index(level=0, drop=True))
+
+        # Calculate the rolling Downside Annualized Volatility based on Negative Simple Return and using no_of_periods
+        df_tmp['Annualized Downside Volatility'] = (df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).apply(lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if not x[x < 0].empty else 
+        0).reset_index(level=0, drop=True))
 
         # Convert Returns to percentages
         df_tmp['% Return'] = round(df_tmp['% Return'] * 100, 2)
@@ -986,7 +987,6 @@ A well known **Risk vs. Reward** measure is the Sharpe Ratio. For more informati
 
 Let's first calculate the Annualized Sharpe Ratio and the Annulaized Sortino Ratio. We will first find the top 10 risk-adjusted performers based on Sharpe Ratio. The Risk-Free Rate is based on the 3 month T-Bill rate. We would have to retrieve the daily data for past 4 years to produce a more accurate calculation but we can simply use an average as a rough estimate which is 2.5%.
 
-    df_ret = calculate_return(df_pricing.copy(), 'Daily')
     risk_free_rate = 2.5
     df_ret['Annualized Sharpe Ratio'] = np.where(
         df_ret['Annualized Volatility'] == 0, 
