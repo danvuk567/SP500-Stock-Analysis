@@ -53,7 +53,7 @@ Let's create a function called *FN_Yahoo_Ticker_Year_Prices* that will query the
 		FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
 		WHERE Ticker = @input;
  
-  Let's query the yearly pricing data for the **MSFT** Ticker using our function *Q_Yahoo_Ticker_Year_Prices* and observe the results.
+  Let's query the yearly pricing data for the **MSFT** Ticker using our function *FN_Yahoo_Ticker_Year_Prices* and observe the results.
 
   	SELECT *
 	FROM [Financial_Securities].[Equities].[FN_Yahoo_Ticker_Year_Prices]('MSFT')
