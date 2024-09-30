@@ -248,8 +248,8 @@ def calculate_return(df_tmp, period):
     - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
 
     Returns:
-    - A DataFrame with a new column '% Return' containing the percentage return, 'Cumulative % Return' 
-      containing the cumulative percentage return, or None if not applicable.
+    - A DataFrame with new columns: '% Return','Cumulative % Return','Annualized % Return','Annualized Volatility', 
+    - 'Annualized Downside Volatility', or None if not applicable.
     """
     
     # Assign the number of periods based on period type
