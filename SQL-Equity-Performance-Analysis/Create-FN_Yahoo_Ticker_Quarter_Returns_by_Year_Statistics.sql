@@ -25,16 +25,16 @@ RETURN
 			ELSE ("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0
 		 END AS "% Return"
 	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Quarter_Prices]),
-	q3 AS (
-		SELECT
-			q2.Ticker_ID,
-			q2.Ticker,
-			q2."Year",
-			q2."Quarter",
-			q2."% Return",
-			ROW_NUMBER() OVER (PARTITION BY q2.Ticker_ID, q2."Year" ORDER BY q2."% Return") AS Row_Num,
-			COUNT(*) OVER (PARTITION BY q2.Ticker_ID, q2."Year") AS Cnt
-		FROM q2),
+	q3 AS 
+	(SELECT
+		q2.Ticker_ID,
+		q2.Ticker,
+		q2."Year",
+		q2."Quarter",
+		q2."% Return",
+		ROW_NUMBER() OVER (PARTITION BY q2.Ticker_ID, q2."Year" ORDER BY q2."% Return") AS Row_Num,
+		COUNT(*) OVER (PARTITION BY q2.Ticker_ID, q2."Year") AS Cnt
+	FROM q2),
 	q4 AS (
 	SELECT
 		q3.Ticker_ID,
