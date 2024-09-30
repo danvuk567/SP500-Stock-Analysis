@@ -966,7 +966,7 @@ Let's now look at drawdowns compared to the cumulative returns for the top 10 Ti
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg?raw=true)
 
-We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **69.33%** maximum drawdown in **2022-04-12**. **VST** had the 2nd highest maximum drawdown and yet the cumulative return was almost 3 times less than **SMCI**. All the top 10 performers had the biggest drawdowns in 2022.
+We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **69.33%** maximum drawdown in **2024-09-06**. **NVDA** had the highest maximum drawdown and yet the cumulative return was almost 2 times less than **SMCI**. Some of the biggest drawdowns for the top 10 performers were in 2022.
 
 Now let's examine the Top 10 most volatile stocks using Annualized Volatility and ranking logic.
 
@@ -1054,7 +1054,7 @@ Another measure of risk vs. reward is the **Calmar Ratio**. For more information
            
 ![SP500_Equity_Top_10_Annualized_Calmar_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Calmar_Ratio_Data_Python.jpg?raw=true)
 
-Again, **LLY** came in at the top with a **Calmar Ratio** of **1.57** and anything above 1.5.0 is considered strong performance.
+Again, **LLY** came in at the top with a **Calmar Ratio** of **1.41** which is close to 1.5 and anything above 1.5 is considered strong performance.
 
 
 
