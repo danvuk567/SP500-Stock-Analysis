@@ -750,32 +750,39 @@ def plot_returns_line_chart(df_tmp, period, return_type):
     
     
 
-def calculate_drawdowns(df_tmp):
+def calculate_drawdowns(df_tmp, period):
     
     """
     Calculate drawdowns and maximum drawdown based on cumulative returns.
     
     Parameters:
     - df_tmp: The DataFrame containing the cumulative return data.
+    - period: The period type (e.g., 'Daily', 'Monthly', etc.), which is used to label the columns.
 
     Returns:
     - A DataFrame with new columns for drawdown and maximum drawdown.
     """
     
+    # Determine the label for the columns based on the period type
+    if period == 'Daily':
+        label = ''
+    else:
+        label = period + ' '
+    
     # Ensure the DataFrame is sorted by Date for proper calculations
     df_tmp.sort_values(by=['Ticker', 'Date'], inplace=True)
 
     # Check for 'Cumulative % Return' presence
-    if 'Cumulative % Return' not in df_tmp.columns:
-        raise ValueError("Cumulative % Return column is missing. Please calculate returns first.")
+    if label + 'Cumulative % Return' not in df_tmp.columns:
+        raise ValueError(f"{label}Cumulative % Return column is missing. Please calculate returns first.")
     
     # Calculate Peak for each Ticker
-    df_tmp['Peak'] = df_tmp.groupby('Ticker')['Cumulative % Return'].cummax()
+    df_tmp['Peak'] = df_tmp.groupby('Ticker')[label + 'Cumulative % Return'].cummax()
     
     df_tmp['Drawdown'] = np.where(
-        df_tmp['Cumulative % Return'] >= 0,  # If cumulative return is positive or zero
-        df_tmp['Peak'] - df_tmp['Cumulative % Return'],  # Calculate drawdown normally
-        df_tmp['Peak'] + abs(df_tmp['Cumulative % Return'])  # Account for negative cumulative return
+        df_tmp[label + 'Cumulative % Return'] >= 0,  # If cumulative return is positive or zero
+        df_tmp['Peak'] - df_tmp[label + 'Cumulative % Return'],  # Calculate drawdown normally
+        df_tmp['Peak'] + abs(df_tmp[label + 'Cumulative % Return'])  # Account for negative cumulative return
         )
    
     # Calculate % Drawdown
@@ -795,7 +802,17 @@ def calculate_drawdowns(df_tmp):
     # Extract the last date where the Max % Drawdown occurs
     df_tmp['Max Drawdown Date'] = df_tmp['Date'].where(df_tmp['Is_Max_Drawdown']).groupby(df_tmp['Ticker']).transform('last')
 
+    # If the period is not 'Daily', rename the columns with the period label prefix
+    if period != 'Daily':
+        df_tmp.rename(columns={'Peak': label + 'Peak'}, inplace=True)
+        df_tmp.rename(columns={'Drawdown': label + 'Drawdown'}, inplace=True)
+        df_tmp.rename(columns={'% Drawdown': label + '% Drawdown'}, inplace=True)
+        df_tmp.rename(columns={'Cumulative Max % Drawdown': label + 'Cumulative Max % Drawdown'}, inplace=True)
+        df_tmp.rename(columns={'Max % Drawdown': label + 'Max % Drawdown'}, inplace=True)
+        df_tmp.rename(columns={'Max Drawdown Date': label + 'Max Drawdown Date'}, inplace=True)
+        
     return df_tmp
+
 
     
         
