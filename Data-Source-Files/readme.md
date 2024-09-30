@@ -1,13 +1,13 @@
 # Data Sources and File Transformation Overview
 
-## Finding and transforming Sub-Industry data for S&P 500 Equities
+## Finding and formatting Sub-Industry data for S&P 500 Equities
 
 Before we can create a Dimension relational hierarchy that is linked to Equities, we'll need the S&P 500 tickers with their GICS Sub-Industry classification. Most paid financial services such as Bloomberg and Factset will have this capability and there are ways to piece together this information using free services. For the sake of simplicity and time, We can use Wikipedia and reference the List of S&P 500 companies page: [List of S&P 500 companies](https://en.wikipedia.org/w/index.php?title=List_of_S%26P_500_companies&oldid=1246399544) that was updated in September 2024. We then copy-paste and format this data in excel and save it as *SP500_GICS_Sub-Industries.csv* in the *Data_Files* folder.
 
 ![S&P500 GICS Sub-Industries Excel](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sub-Industries.jpg?raw=true)
 
 
-## Finding and transforming Sector, Industry and Sub-Industry data
+## Finding and transforming Sector, Industry and Sub-Industry data with Power Query
 
 Let's reference this Wikipedia link: [Global Industry Classification Standard](https://en.wikipedia.org/w/index.php?title=Global_Industry_Classification_Standard&oldid=1243171079) that was last updated in August 2024. We then copy-paste the data into excel and use **Power Query** to clean up and transform the data and save the file as *GICS_Industries.csv* in the *Data_Files* folder.
 
