@@ -35,7 +35,7 @@ Let's start by doing some analysis on yearly pricing data. We can aggregate the 
 
 ## Yearly Ticker Pricing Query Function: *[Create-FN_Yahoo_Ticker_Year_Prices.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-FN_Yahoo_Ticker_Year_Prices.sql)*
 
-Let's create a function called *FN_Yahoo_Ticker_Year_Prices* that will query the yearly pricing view for any Ticker we want.
+Let's create a function called *FN_Yahoo_Ticker_Year_Prices* that will query the yearly pricing view for a Ticker that is passed as a parameter.
 
   	CREATE OR ALTER FUNCTION [Equities].[FN_Yahoo_Ticker_Year_Prices](@input nchar(10))
 	RETURNS TABLE
@@ -62,21 +62,30 @@ Let's create a function called *FN_Yahoo_Ticker_Year_Prices* that will query the
  ![MSFT Yearly Pricing Data](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Pricing_Data.jpg?raw=true)
 
 
-## Yearly % Returns Query: *[Yearly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Ticker-Returns-Query.sql)*
+## Yearly Ticker % Return Query Function: *[Create-FN_Yahoo_Ticker_Year_Returns.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-FN_Yahoo_Ticker_Year_Returns.sql)*
 
-Let’s examine the Yearly returns for **Microsoft (MSFT)** to see which year had the lowest and highest returns. Here we use the **LAG** WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns. Let's query the Yearly Returns for **MSFT**.
+Let's create a function called *FN_Yahoo_Ticker_Year_Returns* that will query the yearly returns using the yearly pricing view for a Ticker that is passed as a parameter. Here we use the **LAG** WINDOW function to get prior year Close price and we don't have a prior Close price such as for 2021, we will use the Open price to calculate returns.
 
-	SELECT
-        Ticker,
-	    "Year",
-	    "Date",
-	     CASE
-		WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
-		ELSE ROUND((("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
-	     END AS "% Return"
-	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
-	WHERE Ticker = 'MSFT'
-    ORDER BY "Year";
+	CREATE OR ALTER FUNCTION [Equities].[FN_Yahoo_Ticker_Year_Returns](@input nchar(10))
+	RETURNS TABLE
+	AS
+	RETURN
+		SELECT
+			Ticker,
+			"Year",
+			"Date",
+			CASE
+				WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
+				ELSE ROUND((("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
+			END AS "% Return"
+		FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Year_Prices]
+		WHERE Ticker = @input;
+
+Let’s examine the Yearly returns for **Microsoft (MSFT)** to see which year had the lowest and highest returns.
+
+  	SELECT *
+	FROM [Financial_Securities].[Equities].[FN_Yahoo_Ticker_Year_Returns]('MSFT')
+	ORDER BY "Year";
 
  ![MSFT_Yearly_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Returns_Data.jpg?raw=true)
  
