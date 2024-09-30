@@ -41,17 +41,17 @@ RETURN
 		q3.Ticker,
 		q3."Year",
 		AVG(CASE 
-				WHEN q3.Cnt % 2 = 1 THEN 
-					CASE 
-						WHEN q3.Row_Num = (q3.Cnt + 1) / 2 THEN q3."% Return"
-						ELSE NULL 
-					END
-				ELSE 
-					CASE 
-						WHEN q3.Row_Num IN ((q3.Cnt / 2), (q3.Cnt / 2) + 1) THEN q3."% Return"
-						ELSE NULL 
-					END
-			END) AS "Median % Return"
+			WHEN q3.Cnt % 2 = 1 THEN 
+				CASE 
+					WHEN q3.Row_Num = (q3.Cnt + 1) / 2 THEN q3."% Return"
+					ELSE NULL 
+				END
+			ELSE 
+				CASE 
+					WHEN q3.Row_Num IN ((q3.Cnt / 2), (q3.Cnt / 2) + 1) THEN q3."% Return"
+					ELSE NULL 
+				END
+		    END) AS "Median % Return"
 	FROM q3
 	WHERE q3.Row_Num IN ((q3.Cnt + 1) / 2, (q3.Cnt / 2) + 1)
 	GROUP BY q3.Ticker_ID, q3.Ticker, q3."Year")
