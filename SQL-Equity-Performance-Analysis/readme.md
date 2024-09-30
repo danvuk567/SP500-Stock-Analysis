@@ -93,23 +93,14 @@ We can observe that in the past 4 years, **MSFT** had the lowest return of **-28
 
 ## Create Equity Yearly Price View: *[Create-VW_Yahoo_Equity_Quarter_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-VW_Yahoo_Equity_Quarter_Prices-View.sql)*
 
-We create a Quarterly pricing view similar to the logic in the Yearly pricing view but based on Year and Quarter.
+We create a Quarterly Returns function similar to the logic in the Yearly Returns function but based on Year and Quarter.
 
-## Quarterly % Returns Query: *[Quarterly-Ticker-Returns-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Quarterly-Ticker-Returns-Query.sql)*
+## Quarterly Ticker % Return Query Function: *[Create-FN_Yahoo_Ticker_Quarter_Returns.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-FN_Yahoo_Ticker_Quarter_Returns.sql)*
 
 Let's now examine Quarter returns for **MSFT** to see if we can identify the reasons for worst year and best year returns.
 
-	SELECT
-      Ticker,
-      "Year",
-      "Quarter"
-      "Date",
-      CASE
-        WHEN COALESCE(LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date"), 0) = 0 THEN ROUND((("Close" / "Open") - 1.0) * 100, 2)
-        ELSE ROUND((("Close" / LAG("Close", 1) OVER (PARTITION BY Ticker_ID ORDER BY "Date")) - 1.0) * 100, 2)
-      END AS "% Return"
-	FROM [Financial_Securities].[Equities].[VW_Yahoo_Equity_Quarter_Prices]
-	WHERE Ticker = 'MSFT'
+	SELECT *
+	FROM [Financial_Securities].[Equities].[FN_Yahoo_Ticker_Quarter_Returns]('MSFT')
 	ORDER BY "Year", "Quarter";
 
  ![MSFT_Quarterly_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Returns_Data.jpg?raw=true)
