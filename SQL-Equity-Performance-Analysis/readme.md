@@ -110,7 +110,7 @@ Let's now examine Quarter returns for **MSFT** to see if we can identify the rea
 
 ## Quarterly Ticker % Return by Year Statistics Query Function: *[Create-FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics.sql)*
 
-Now let’s explore some statistical measures in SQL using Quarterly Returns. One statisitical measure, called the **Median**, does not have a direct function in SQL Server. For more information on the Meidan, refer to this link: [Median: What It Is and How to Calculate It, With Examples](https://www.investopedia.com/terms/m/median.asp). Let's derive the Median Quarterly Return by year for the Ticker that is specified. We can use the concept of counting how many Quarters exist in a given year and if there are an even number of Quarters, we retrieve the 2 middle rows and if there is an odd number of Quarters, we retrieve the singular middle row. We then apply the average which works in both cases to the find the Median. Here is the complex query that demonstrates how this can be calculated.
+Now let’s explore some statistical measures in SQL using Quarterly Returns. One statisitical measure, called the **Median**, does not have a direct function in SQL Server. For more information on the Meidan, refer to this link: [Median: What It Is and How to Calculate It, With Examples](https://www.investopedia.com/terms/m/median.asp). Let's derive the Median Quarterly Return by year for the Ticker that is specified. We can use the concept of counting how many Quarters exist in a given year and if there are an even number of Quarters, we retrieve the 2 middle rows and if there is an odd number of Quarters, we retrieve the singular middle row. We then apply the average which works in both cases to the find the Median. We can also retrieve the lowest Quarterly Return, the highest Quarterly Return, average Quarterly Return, median Quarterly return and Quarterly return variance for a Ticker specified combining Yearly returns with Quarterly Returns, calculating the Median using the logic we explored and using the built-in SQL aggregate functions:  **MIN**, **MAX**, **AVG** and **STDEVP** (standard deviation). Here is the complex query that will produce the Quarterly Return Statistics by Year.
 
 	CREATE OR ALTER FUNCTION [Equities].[FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics](@input nchar(10))
 	RETURNS TABLE
@@ -192,7 +192,7 @@ Now let’s explore some statistical measures in SQL using Quarterly Returns. On
 			q1."% Return",
 			q4."Median % Return"
 
-Let's find out what the lowest Quarterly Return, the highest Quarterly Return, average Quarterly Return, median Quarterly return and Quarterly return variance is for **MSFT** combining Yearly returns with Quarterly Returns, calculating the Median using the logic we explored and using the built-in SQL aggregate functions:  **MIN**, **MAX**, **AVG** and **STDEVP** (standard deviation). Here is the complex query that will produce the Quarterly Return Statistics by Year.
+Let's find out what the lowest Quarterly Return, the highest Quarterly Return, average Quarterly Return, median Quarterly return and Quarterly return variance by year is for **MSFT**.
 
 	SELECT *
 	FROM [Financial_Securities].[Equities].[FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics]('MSFT')
