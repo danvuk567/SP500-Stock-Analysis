@@ -949,7 +949,7 @@ Now let's examine the Top 10 Annualized returns using similar ranking logic.
 
 This gives us the same top performers with what was expected to be earned on average on a yearly basis.
 
-Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 3 years ago instead to show the drawdowns. We will simply filter the dates after and including '2022-01-01' and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
+Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 3 years ago instead to show the drawdowns. We will simply filter the dates after and including last 3 years and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
 
      last_dates = df_quarterly_ret['Date'].max()
      three_years_ago = last_dates - pd.DateOffset(days=365 * 3)
