@@ -736,13 +736,9 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
     return df_tmp
 
 
+## Equity Performance Analysis: *[Equity-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Performance-Analysis.ipynb)*
 
-
-
-    
-## Equity Yearly Pricing Analysis: *[Equity-Yearly-Pricing-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Yearly-Pricing-Analysis.ipynb)*
-
-Let's connect to the database and store the yearly pricing data in the dataframe *df_pricing*. We raise a ValueError exception if the dataframe is empty. We then get the yearly pricing data for **MSFT**, print the results and plot the Candlestick chart.
+Let's explore the data and do some performance analysis with the custom functions we created within the python code defined in this file. We'll start out by we connecting to the database and store the yearly pricing data in the dataframe *df_pricing*. We raise a ValueError exception if the dataframe is empty. We'll set our default Ticker to be **MSFT** when doing individual equity analysis. We then get the yearly pricing data for **MSFT**, print the results and plot the Candlestick chart.
 
         # Define SQL query to retrieve tickers from the Yahoo_Equity_Prices table
         sql_stat = """SELECT 
