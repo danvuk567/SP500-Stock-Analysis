@@ -999,7 +999,7 @@ Next, let's look at the top 10 risk-adjusted performers based on Sortino Ratio.
 
 Most of the same Tickers appear in this list and **LLY** had the top **Annualized Sortino Ratio** of **3.1** and anything above 2.0 is considered excellent.
 
-Another measure of risk vs. reward is the **Calmar Ratio**. This measures **Annualized Returns / Max Drawdowns** for the past 36 months. Let's filter the returns for the past 3 years, retrieve all the Tickers that were common for past 4 years and calculate the Calmar Ratio by Ticker. We'll then calculate the top 10 risk-adjusted performers based on Calmar Ratio and print the results.  
+Another measure of risk vs. reward is the **Calmar Ratio**. For more information on the Calmar Ratio, refer to this link: [What Is the Calmar Ratio, Its Strenths & Weaknesses?](https://www.investopedia.com/terms/c/calmarratio.asp). It is derived by **Annualized Returns / Max Drawdowns** for the past 36 months. Let's filter the returns for the past 3 years, retrieve all the Tickers that were common for past 4 years and calculate the Calmar Ratio by Ticker. We'll then calculate the top 10 risk-adjusted performers based on Calmar Ratio and print the results.  
 
      date_filter = (df_ret['Date'] >= '2021-09-20')
      df_ret_filter = df_ret.loc[date_filter].copy()  # Adding .copy() here to avoid the warning
