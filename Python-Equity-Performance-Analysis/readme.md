@@ -694,26 +694,33 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
     
             Parameters:
             - df_tmp: The DataFrame containing the cumulative return data.
+            - period: The period type (e.g., 'Daily', 'Monthly', etc.), which is used to label the columns.
 
             Returns:
             - A DataFrame with new columns for drawdown and maximum drawdown.
             """
-    
+
+            # Determine the label for the columns based on the period type
+            if period == 'Daily':
+                label = ''
+            else:
+                label = period + ' '
+        
             # Ensure the DataFrame is sorted by Date for proper calculations
             df_tmp.sort_values(by=['Ticker', 'Date'], inplace=True)
 
             # Check for 'Cumulative % Return' presence
-            if 'Cumulative % Return' not in df_tmp.columns:
-                raise ValueError("Cumulative % Return column is missing. Please calculate returns first.")
+            if label + 'Cumulative % Return' not in df_tmp.columns:
+                raise ValueError(f"{label}Cumulative % Return column is missing. Please calculate returns first.")
     
             # Calculate Peak for each Ticker
             df_tmp['Peak'] = df_tmp.groupby('Ticker')['Cumulative % Return'].cummax()
     
             # Calculate Drawdown as the difference between Peak and Cumulative Return
             df_tmp['Drawdown'] = np.where(
-                df_tmp['Cumulative % Return'] >= 0,  # If cumulative return is positive or zero
-                df_tmp['Peak'] - df_tmp['Cumulative % Return'],  # Calculate drawdown normally
-                df_tmp['Peak'] + abs(df_tmp['Cumulative % Return'])  # Account for negative cumulative return
+                df_tmp[label + 'Cumulative % Return'] >= 0,  # If cumulative return is positive or zero
+                df_tmp['Peak'] - df_tmp[label + 'Cumulative % Return'],  # Calculate drawdown normally
+                df_tmp['Peak'] + abs(df_tmp[label + 'Cumulative % Return'])  # Account for negative cumulative return
             )
     
             # Calculate % Drawdown
@@ -733,7 +740,16 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
             # Extract the last date where the Max % Drawdown occurs
             df_tmp['Max Drawdown Date'] = df_tmp['Date'].where(df_tmp['Is_Max_Drawdown']).groupby(df_tmp['Ticker']).transform('last')
 
-    return df_tmp
+            # If the period is not 'Daily', rename the columns with the period label prefix
+            if period != 'Daily':
+                df_tmp.rename(columns={'Peak': label + 'Peak'}, inplace=True)
+                df_tmp.rename(columns={'Drawdown': label + 'Drawdown'}, inplace=True)
+                df_tmp.rename(columns={'% Drawdown': label + '% Drawdown'}, inplace=True)
+                df_tmp.rename(columns={'Cumulative Max % Drawdown': label + 'Cumulative Max % Drawdown'}, inplace=True)
+                df_tmp.rename(columns={'Max % Drawdown': label + 'Max % Drawdown'}, inplace=True)
+                df_tmp.rename(columns={'Max Drawdown Date': label + 'Max Drawdown Date'}, inplace=True)
+
+        return df_tmp
 
 
 ## Equity Performance Analysis: *[Equity-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Performance-Analysis.ipynb)*
@@ -933,11 +949,15 @@ Now let's examine the Top 10 Annualized returns using similar ranking logic.
 
 This gives us the same top performers with what was expected to be earned on average on a yearly basis.
 
-Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 2022 instead to show the drawdowns. We will simply filter the dates after and including '2022-01-01' and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
+Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 3 years ago instead to show the drawdowns. We will simply filter the dates after and including '2022-01-01' and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
 
-     date_filter = (df_ret_top['Date'] >= '2022-01-01')
+     last_dates = df_quarterly_ret['Date'].max()
+     three_years_ago = last_dates - pd.DateOffset(days=252 * 3)
+     three_years_ago_str = three_years_ago.strftime('%Y-%m-%d')
+
+     date_filter = (df_ret_top['Date'] >= three_years_ago_str)
      df_ret_top = df_ret_top.loc[date_filter]
-     df_ret_top = calculate_drawdowns(df_ret_top)
+     df_ret_top = calculate_drawdowns(df_ret_top, 'Daily')
      df_ret_last_top = df_ret_top.copy().groupby('Ticker').tail(1)
      df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Annualized % Return', '% Drawdown', 'Max % Drawdown', 'Max Drawdown Date']]
      df_ret_last_top.sort_values(by=['Cumulative % Return'], ascending=False, inplace=True)
@@ -1003,9 +1023,13 @@ Next, let's look at the top 10 risk-adjusted performers based on Sortino Ratio.
 
 Most of the same Tickers appear in this list and **LLY** had the top **Annualized Sortino Ratio** of **3.1** and anything above 2.0 is considered excellent.
 
-Another measure of risk vs. reward is the **Calmar Ratio**. For more information on the Calmar Ratio, refer to this link: [What Is the Calmar Ratio, Its Strenths & Weaknesses?](https://www.investopedia.com/terms/c/calmarratio.asp). It is derived by **Annualized Returns / Max Drawdowns** for the past 36 months. Let's filter the returns for the past 3 years, retrieve all the Tickers that were common for past 4 years and calculate the Calmar Ratio by Ticker. We'll then calculate the top 10 risk-adjusted performers based on Calmar Ratio and print the results.  
+Another measure of risk vs. reward is the **Calmar Ratio**. For more information on the Calmar Ratio, refer to this link: [What Is the Calmar Ratio, Its Strenths & Weaknesses?](https://www.investopedia.com/terms/c/calmarratio.asp). It is derived by **Annualized Returns / Max Drawdowns** for the past 36 months which is 3 years. Let's filter the returns for the past 3 years, retrieve all the Tickers that were common for past 4 years and calculate the Calmar Ratio by Ticker. We'll then calculate the top 10 risk-adjusted performers based on Calmar Ratio and print the results.  
 
-     date_filter = (df_ret['Date'] >= '2021-09-20')
+     last_dates = df_ret['Date'].max()
+     three_years_ago = last_dates - pd.DateOffset(days=252 * 3)
+     three_years_ago_str = three_years_ago.strftime('%Y-%m-%d')
+
+     date_filter = (df_ret['Date'] >= three_years_ago_str)
      df_ret_filter = df_ret.loc[date_filter].copy()  # Adding .copy() here to avoid the warning
      df_ret_filter = calculate_drawdowns(df_ret_filter)
      df_ret_filter_last = df_ret_filter.groupby('Ticker').tail(1).copy()  # Use .copy() here
