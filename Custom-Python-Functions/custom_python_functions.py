@@ -297,14 +297,18 @@ def calculate_return(df_tmp, period):
     # Calculate the rolling count of returns by Ticker for each date using groupby and rolling together
     df_tmp['Rolling Return Count'] = df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).count().reset_index(level=0, drop=True)
 
-    # Calculate the Annualized % Return based on Cumulative Simple Return
+    # Calculate the rolling Annualized % Return based on Cumulative Simple Return and using no_of_periods and Rolling Return Count
     df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative Simple % Return'])**(no_of_periods / df_tmp['Rolling Return Count']) - 1.0)
     
-    # Calculate the Annualized Volatility based on Simple Return
-    df_tmp['Annualized Volatility'] = df_tmp.groupby('Ticker')['% Return'].transform(lambda x: x.std() * np.sqrt(no_of_periods))
+    # Calculate the rolling Annualized Volatility based on Simple Return and using no_of_periods
+    df_tmp['Annualized Volatility'] = (df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).apply(lambda x: x.std() * np.sqrt(no_of_periods)).reset_index(level=0, drop=True))
     
-    # Calculate Annualized Downside Volatility in the same step
-    df_tmp['Annualized Downside Volatility'] = df_tmp.groupby('Ticker')['% Return'].transform(lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if not x[x < 0].empty else 0)
+    # Calculate the rolling Downside Annualized Volatility based on Negative Simple Return and using no_of_periods
+    df_tmp['Annualized Downside Volatility'] = (df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).apply(lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if not x[x < 0].empty else 0).reset_index(level=0, drop=True))
+       
+    # Drop the 'Prev_Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return' and 'Rolling Return Count' 
+    # columns after calculation
+    df_tmp.drop(columns=['Prev Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return', 'Rolling Return Count'], inplace=True)
     
     # Convert Returns to percentages
     df_tmp['% Return'] = round(df_tmp['% Return'] * 100, 2)
