@@ -243,5 +243,51 @@ If we want to see how the returns are correlated, we can use the Pearson correla
 
 ## Portfolio Performance Analysis: *[Portfolio-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Portfolio-Performance-Analysis/Portfolio-Performance-Analysis.ipynb)*
 
+Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment portfolio. We will import the necessary packages, connect to the database, query the database for our pricing data bind it to the         df_pricing dataframe. Before we procedd any futher, we want to focus on stocks that existed from the start of the 4 year data we stored so that any aggregated return comparison is not skewed by newer stocks that         were traded later on. We will filter the stocks
+
+
+        # Determine the first date for each ticker
+        first_dates = df_pricing.groupby('Ticker')['Date'].min().reset_index()
+        first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
+
+        # Count how many tickers share the same first date
+        count_first_dates = first_dates['First Date'].value_counts().reset_index()
+        count_first_dates.columns = ['First Date', 'Count']
+
+        # Filter for first dates that have more than one ticker
+        valid_first_dates = count_first_dates[count_first_dates['Count'] > 1]['First Date']
+
+       # Merge back to keep only those tickers with the same first date
+        df_pricing_filtered = df_pricing.merge(first_dates, on='Ticker', suffixes=('', '_y'))  # Specify suffixes here
+        df_pricing_filtered = df_pricing_filtered[df_pricing_filtered['First Date'].isin(min_valid_first_date)].copy()
+
+        df_pricing_filtered.drop(columns=['First Date'], inplace=True)
+    
+        if 'First Date_y' in df_pricing_filtered.columns:
+            df_pricing_filtered.drop(columns=['First Date_y'], inplace=True)
+    
+        df_pricing_filtered.sort_values(by=['Ticker', 'Date'], inplace=True)
+
+        # Show count of original Tickers
+        ticker_cnt = len(df_pricing['Ticker'].unique())
+        ticker_cnt2 = len(df_pricing_filtered['Ticker'].unique())
+        print(f'Original Ticker list count: {ticker_cnt}')
+        print(f'Filtered Ticker list count: {ticker_cnt2}')
+
+We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio.    
+
+Next we extract the daily return dataframe as df_portfolio_pricing for the 10 Tickers that had the highest Annualized Calmar Ratio from our prior Equity perfromance analysis.
+
+        portfolio_tickers= ['LLY','SMCI','TRGP','MCK','MRO','PWR','MPC','XOM','FANG','IRM']
+        df_portfolio_pricing = df_pricing_filtered[df_pricing_filtered['Ticker'].isin(portfolio_tickers)].copy()
+        ticker_cnt3 = len(df_portfolio_pricing['Ticker'].unique())
+        print(f'Portfolio list count: {ticker_cnt3}')
+
+If we want to compare the returns of the S&P 500 Tickers to our portfolio, one way to do this is to use an average return for our portfolio. We will calculate our daily returns as df_ret and calculate the average returns for our portfolio as df_portfolio_ret. We'll assign the Ticker label for our portfolio as 'PFL'.
+
+        df_ret = calculate_return(df_pricing_filtered.copy(), 'Daily')
+        df_ret.drop(columns=['Open', 'High', 'Low', 'Close', 'Volume'], inplace=True)
+        df_ret.sort_values(by=['Ticker', 'Date'], inplace=True)
+        
 
         
