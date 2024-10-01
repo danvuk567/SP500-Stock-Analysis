@@ -276,14 +276,14 @@ Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment 
 
 We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio.    
 
-Next we extract the daily return dataframe as df_portfolio_pricing for the 10 Tickers that had the highest Annualized Calmar Ratio from our prior Equity perfromance analysis.
+Next we extract the daily return dataframe as *df_portfolio_pricing* for the 10 Tickers that had the highest Annualized Calmar Ratio from our prior Equity perfromance analysis.
 
         portfolio_tickers= ['LLY','SMCI','TRGP','MCK','MRO','PWR','MPC','XOM','FANG','IRM']
         df_portfolio_pricing = df_pricing_filtered[df_pricing_filtered['Ticker'].isin(portfolio_tickers)].copy()
         ticker_cnt3 = len(df_portfolio_pricing['Ticker'].unique())
         print(f'Portfolio list count: {ticker_cnt3}')
 
-If we want to compare the returns of the S&P 500 Tickers to our portfolio, one way to do this is to use an average return for our portfolio. We will calculate our daily returns as df_ret and calculate the average returns for our portfolio as df_portfolio_ret. We'll assign the Ticker label for our portfolio as 'PFL'.
+If we want to compare the returns of the S&P 500 Tickers to our portfolio, one way to do this is to use an average return for our portfolio. We will calculate our daily returns as *df_ret* and calculate the average returns for our portfolio as *df_portfolio_ret*. We'll assign the Ticker label for our portfolio as **'PFL'**.
 
         df_ret = calculate_return(df_pricing_filtered.copy(), 'Daily')
         df_ret.drop(columns=['Open', 'High', 'Low', 'Close', 'Volume'], inplace=True)
