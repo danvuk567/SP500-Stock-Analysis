@@ -429,19 +429,20 @@ Now we'll create a bubble chart to show the Annualized % Return as a bubble with
 
 ![SP500_Portfolio_Annualized_Sharpe_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sharpe_Ratio_Bubble_Chart_Python.jpg?raw=true)
 
-**PFL** came in 2nd which means that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
+Our portfolio, **PFL** came in 2nd with 2nd highest **Annualized % Return** of **57.63%** and highest **Annualized Sharpe Ratio** of **2.36**. This indicates that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
 
 We'll also create a bubble chart to show the Annualized % Return as a bubble with Annualized Sortino Ratio as the bubble size. We'll highlight the top 10 tickers based on the top values.
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg?raw=true)
 
-**PFL** also came in 2nd which also emphasizes that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
+Our portfolio, **PFL** also came in 2nd with 2nd highest **Annualized % Return** of **57.63%** and highest **Annualized Sortino Ratio** of **3.52**. This emphasizes that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
 
 And finally, we'll create a 3rd bubble chart to show the Annualized % Return as a bubble with Calmar Ratio as the bubble size. We'll highlight the top 10 tickers based on the top values.
 
 ![SP500_Portfolio_Calmar_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Calmar_Ratio_Bubble_Chart_Python.jpg?raw=true)
 
-**PFL** also came in 2nd again which further emphasizes that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
+Our portfolio, **PFL** also came in 2nd again with 2nd highest **Annualized % Return** of **57.63%** and highest **Calmar Ratio** of **2.08**. This further emphasizes that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
+
 
 
 
