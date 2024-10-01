@@ -77,8 +77,7 @@ If we want to see how the returns are distributed for a particular Ticke, we can
         plt.show() 
 
 
-
-This function called *plot_period_returns_by_ticker_box_plot* creates box plots using the seaborn package of % Returns by period type for Tickers side by side. It takes the return dataframe and period type as input paramters.
+This function called *plot_period_returns_by_ticker_box_plot* creates box plots using the seaborn package. The % Returns are plotted by Ticker for period type. It takes the return dataframe and period type as input parameters.
 
     def plot_period_returns_by_ticker_box_plot(df_ret, period):
     
