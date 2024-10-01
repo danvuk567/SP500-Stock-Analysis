@@ -2,6 +2,98 @@ Let's do some analysis on a portfolio of stocks. We will be adding new functions
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
+Let's define a function called *calculate_avg_return* which will calculate average returns for a group of Tickers similar to *calculate_return* function. The pricing dataframe and period type are passed as input parameters and the returns dataframe is returned with the same columns as the *calculate_return* function.
+
+
+        def calculate_avg_return(df_tmp, period):
+    
+            """
+            Calculate the average return percentage based on the return percentage of 'Close' and 'Open' prices for a given period type.
+    
+            Parameters:
+            - df_tmp: The DataFrame containing the historical data.
+            - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
+
+            Returns:
+            - A DataFrame with new columns: '% Return', 'Cumulative % Return', 'Annualized % Return', 'Annualized Volatility', 
+              'Annualized Downside Volatility', or None if not applicable.
+            """
+    
+            # Assign the number of periods based on period type
+            period_mapping = {'Year': 1, 'Quarter': 4, 'Month': 12, 'Daily': 252}
+            no_of_periods = period_mapping.get(period, 252)
+    
+            # Shift the 'Close' prices by 1 for the entire DataFrame
+            df_tmp['Prev Close'] = df_tmp.groupby('Ticker')['Close'].shift(1)
+    
+            # Initialize the return column
+            df_tmp['% Return'] = np.where(df_tmp['Prev Close'].isna(),
+                                           (df_tmp['Close'] / df_tmp['Open']) - 1.0,
+                                           (df_tmp['Close'] / df_tmp['Prev Close']) - 1.0)
+    
+    
+            # Calculate log returns
+            df_tmp['Log Return'] = np.where(df_tmp['Prev Close'].isna(),
+                                           np.log(df_tmp['Close'] / df_tmp['Open']),
+                                           np.log(df_tmp['Close'] / df_tmp['Prev Close']))
+    
+            # Average Returns
+            df_tmp['Avg % Return'] = df_tmp.groupby('Date')['% Return'].transform('mean')
+            df_tmp['Avg Log Return'] = df_tmp.groupby('Date')['Log Return'].transform('mean')
+    
+
+            # Drop unneeded columns
+            df_tmp.drop(columns=['% Return', 'Log Return', 'Prev Close', 'Ticker', 'Open', 'High', 'Low', 'Close', 'Volume'], inplace=True)
+    
+            df_tmp.rename(columns={
+                    'Avg % Return': '% Return',
+                    'Avg Log Return': 'Log Return'
+                }, inplace=True)
+
+            df_tmp.drop_duplicates(inplace=True)
+
+            # Calculate cumulative returns
+            df_tmp['Cumulative Log Return'] = df_tmp['Log Return'].cumsum()
+            df_tmp['Cumulative % Return'] = (np.exp(df_tmp['Cumulative Log Return']) - 1.0)
+            df_tmp['Cumulative Simple % Return'] = (1 + df_tmp['% Return']).cumprod() - 1
+
+            # Calculate the rolling count of returns by Ticker for each date
+            df_tmp['Rolling Return Count'] = df_tmp['% Return'].expanding(min_periods=1).count()
+
+            # Calculate Annualized % Return
+            df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative Simple % Return'])**(no_of_periods / df_tmp['Rolling Return Count']) - 1.0)
+
+            # Calculate Annualized Volatility
+            df_tmp['Annualized Volatility'] = (df_tmp['% Return'].expanding(min_periods=1).std() * np.sqrt(no_of_periods)).replace(0, np.nan)
+
+            # Calculate Annualized Downside Volatility
+            df_tmp['Annualized Downside Volatility'] = (df_tmp['% Return'].expanding(min_periods=1).apply(
+                lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if len(x[x < 0]) > 1 else 0
+            ))
+
+            # Drop unnecessary columns
+            df_tmp.drop(columns=['Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return', 'Rolling Return Count'], inplace=True)
+
+            # Convert Returns to percentages
+            df_tmp['% Return'] = round(df_tmp['% Return'] * 100, 2)
+            df_tmp['Cumulative % Return'] = round(df_tmp['Cumulative % Return'] * 100, 2)
+            df_tmp['Annualized % Return'] = round(df_tmp['Annualized % Return'] * 100, 2)
+            df_tmp['Annualized Volatility'] = round(df_tmp['Annualized Volatility'] * 100, 2)
+            df_tmp['Annualized Downside Volatility'] = round(df_tmp['Annualized Downside Volatility'] * 100, 2)
+
+            # Rename the Return column based on period type
+            if period != 'Daily':
+                df_tmp.rename(columns={
+                    '% Return': f'{period} % Return',
+                    'Cumulative % Return': f'{period} Cumulative % Return',
+                    'Annualized % Return': f'{period} Annualized % Return',
+                    'Annualized Volatility': f'{period} Annualized Volatility',
+                    'Annualized Downside Volatility': f'{period} Annualized Downside Volatility'
+                }, inplace=True)
+
+            return df_tmp
+
+
 If we want to see how the returns are distributed for a particular Ticke, we can plot it as a **Histogram** using the matplotlib package. This function called *plot_return_histogram* will plot a histogram and calculate the number of bins based on the Freedman-Diaconis rule that uses quartile range. For more information on this rule. refer to this link: [Freedman–Diaconis rule](https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule). We can also compare how the returns measure up against all the returns that are normalized and plotted as a line representing a Normal Distribution. The scipy package would need to be imported. Another line can be drawn that can smooth the Ticker return bins using the Gaussion KDE (Kernel Density Estimation) function from the scipy package. For more informtion on this, refer to this link: [Kernel density estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation). The *plot_return_histogram* function takes the return dataframe, return_type and ticker as input parameters.
 
 
