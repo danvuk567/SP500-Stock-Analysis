@@ -291,7 +291,7 @@ If we want to compare the returns of the S&P 500 Tickers to our portfolio, one w
 
 Let's observe our portfolio returns in Histogram and compare it the Normalized Distribution of all the S&P 500 returns. We can combine our portfolio returns with all daily returns and then call our custom function *plot_return_histogram* to create the chart.
 
-SP500_Portfolio_Histogram_Chart_Python.jpg
-        
+ ![SP500_Portfolio_Histogram_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Histogram_Chart_Python.jpg?raw=true)
+
 
         
