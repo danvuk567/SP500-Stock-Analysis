@@ -2,7 +2,7 @@ Let's do some analysis on a portfolio of stocks. We will be adding new functions
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-Let's define a function called *calculate_avg_return* which will calculate average returns for a group of Tickers similar to *calculate_return* function. The pricing dataframe and period type are passed as input parameters and the returns dataframe is returned with the same columns as the *calculate_return* function.
+Let's define a function called *calculate_avg_return* which will calculate average returns for a group of Tickers similar to the *calculate_return* function. The pricing dataframe and period type are passed as input parameters and the returns dataframe is returned with the same columns as the *calculate_return* function.
 
 
         def calculate_avg_return(df_tmp, period):
