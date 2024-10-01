@@ -283,11 +283,15 @@ Next we extract the daily return dataframe as *df_portfolio_pricing* for the 10 
         ticker_cnt3 = len(df_portfolio_pricing['Ticker'].unique())
         print(f'Portfolio list count: {ticker_cnt3}')
 
-If we want to compare the returns of the S&P 500 Tickers to our portfolio, one way to do this is to use an average return for our portfolio. We will calculate our daily returns as *df_ret* and calculate the average returns for our portfolio as *df_portfolio_ret*. We'll assign the Ticker label for our portfolio as **'PFL'**.
+If we want to compare the returns of the S&P 500 Tickers to our portfolio, one way to do this is to use an average return for our portfolio. We will calculate the daily returns as *df_ret* and calculate the average returns for our portfolio as *df_portfolio_ret*. We'll assign the Ticker label for our portfolio as **'PFL'**.
 
         df_ret = calculate_return(df_pricing_filtered.copy(), 'Daily')
         df_ret.drop(columns=['Open', 'High', 'Low', 'Close', 'Volume'], inplace=True)
         df_ret.sort_values(by=['Ticker', 'Date'], inplace=True)
+
+Let's observe our portfolio returns in Histogram and compare it the Normalized Distribution of all the S&P 500 returns. We can combine our portfolio returns with all daily returns and then call our custom function *plot_return_histogram* to create the chart.
+
+SP500_Portfolio_Histogram_Chart_Python.jpg
         
 
         
