@@ -484,8 +484,19 @@ What would happen if we invested in the top 10 Annualized Sortino Ratio Tickers 
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python2.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python2.jpg?raw=true)
 
+It turns out that our Portfolio is not in the top 10 Annualized Sortino Ratio for the past 2 year returns.
 
+After using percentile ranking logic, we determined that in fact, our portfolio was in the 70th percentile which is not bad but not ideal.
 
+    df_ret_after_second_year_comb_last['Annualized Sortino Ratio Percentile Rank'] = round((1.00 - df_ret_after_second_year_comb_last.groupby('Date')['Annualized Sortino Ratio'].rank(pct=True, ascending=False)) * 100,        0).astype(int)
+    df_ret_after_second_year_comb_last = df_ret_after_second_year_comb_last[['Ticker', 'Date', 'Annualized % Return', 'Annualized Sortino Ratio', 'Annualized Sortino Ratio Percentile Rank']]
+    df_ret_after_second_year_comb_last.sort_values(by=['Annualized Sortino Ratio Percentile Rank'], ascending=False, inplace=True)
+
+    df_ret_after_second_year_comb_last_ticker = df_ret_after_second_year_comb_last[df_ret_after_second_year_comb_last['Ticker'] == 'PFL'].copy()
+
+    print(df_ret_after_second_year_comb_last_ticker.to_string(index=False))
+    
+![SP500_Portfolio_Annualized_Sortino_Ratio_Python3.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python3.jpg?raw=true)
 
 ###
 Next we extract the daily return dataframe as *df_portfolio_pricing* for the 10 Tickers that had the highest Calmar Ratio from our prior Equity perfromance analysis. Of course, we are choosing these Tickers in hindsight and there is no way to know for sure which basket of stocks would have given the highest Calmar Ratio 3 years ago. This portfolio will simply demonstrate what can be observed from a good risk-adjusted performing portfolio.
