@@ -418,10 +418,16 @@ We'll combine the returns of the top 10 and the portfolio and then plot the top 
 
 ![SP500_Portfolio_Cumulative_Returns_Line_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Cumulative_Returns_Line_Chart_Python.jpg?raw=true)
 
+We can see that our portfolio **PFL** (pink line) has returns somewhere around 4th place that are smoother and less volatile than top performing stocks. This is a result of diversification that can reduce risk overall.
 
+Now let's see our top 10 Ticker and Portfolio Annualized Sortino Ratio values
 
-###########################################################################################################################################################
+    df_ret_second_year_comb_last = df_ret_second_year_comb_last[['Ticker', 'Date', 'Annualized % Return', 'Annualized Sortino Ratio']]
+    df_ret_second_year_comb_last.sort_values(by=['Annualized Sortino Ratio'], ascending=False, inplace=True)
 
+    print(df_ret_second_year_comb_last.to_string(index=False))
+
+![SP500_Portfolio_Annualized_Sortino_Ratio_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python.jpg?raw=true)
 
 
 
