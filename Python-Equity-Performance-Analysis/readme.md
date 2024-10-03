@@ -986,18 +986,14 @@ This gives us the same top performers with what was expected to be earned on ave
 
 Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. We will use the custom function *calculate_drawdowns* using our return dataframe *df_ret_filter* to return a dataframe called *df_ret_filter2*. We filter out the top 10 Tickers and fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
 
-     last_dates = df_ret['Date'].max()
-     three_years_ago = last_dates - pd.DateOffset(days=365 * 3)
-     three_years_ago_str = three_years_ago.strftime('%Y-%m-%d')
+     df_ret_filter2 = calculate_drawdowns(df_ret_filter.copy(), 'Daily')
 
-     date_filter = (df_ret_top['Date'] >= three_years_ago_str)
-     df_ret_top = df_ret_top.loc[date_filter]
-     df_ret_top = calculate_drawdowns(df_ret_top, 'Daily')
-     df_ret_last_top = df_ret_top.copy().groupby('Ticker').tail(1)
-     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Annualized % Return', '% Drawdown', 'Max % Drawdown', 'Max Drawdown Date']]
-     df_ret_last_top.sort_values(by=['Cumulative % Return'], ascending=False, inplace=True)
+    df_ret_filter_top = df_ret_filter2[df_ret_filter2['Ticker'].isin(top_tickers)].copy()
+    df_ret_filter_last_top = df_ret_filter_top.copy().groupby('Ticker').tail(1)
+    df_ret_filter_last_top = df_ret_filter_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Annualized % Return', '% Drawdown', 'Max % Drawdown', 'Max Drawdown Date']]
+    df_ret_filter_last_top.sort_values(by=['Cumulative % Return'], ascending=False, inplace=True)
 
-     print(df_ret_last_top.to_string(index=False))
+    print(df_ret_filter_last_top.to_string(index=False))
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg?raw=true)
 
