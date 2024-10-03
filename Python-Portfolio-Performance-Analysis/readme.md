@@ -502,6 +502,8 @@ Another way to view our portfolio returns compared to the broader market is to u
 
 ![SP500_Portfolio_Benchmark_Cumulative_Returns_Line_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Cumulative_Returns_Line_Chart_Python.jpg?raw=true)
 
+We see that our portfolio is generally outperforming the S&P 500 basket of Tickers since August of 2023 but the S&P 500 Tickers are catching up in Sept 2024.
+
 
 ###
 Next we extract the daily return dataframe as *df_portfolio_pricing* for the 10 Tickers that had the highest Calmar Ratio from our prior Equity perfromance analysis. Of course, we are choosing these Tickers in hindsight and there is no way to know for sure which basket of stocks would have given the highest Calmar Ratio 3 years ago. This portfolio will simply demonstrate what can be observed from a good risk-adjusted performing portfolio.
