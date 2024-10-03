@@ -522,8 +522,12 @@ Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_bo
 
 ![SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg?raw=true)
 
-Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the correlation matrix. 
+Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the correlation matrix.
+
+    df_portfolio_tickers_ret_mth_after_second_year = df_ret_mth_after_second_year[df_ret_mth_after_second_year['Ticker'].isin(portfolio_tickers)].copy()
+    plot_ticker_correlations(df_portfolio_tickers_ret_mth_after_second_year, 'Month % Return')
 
 ![SP500_Portfolio_Correlation_Matrix_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Correlation_Matrix_Python.jpg?raw=true)
 
+Stocks that have correlation > 0.5 have moderate to high correlation and move together more closely. Observing our correlation matrix, we see that **LLY** and **MCK** are the only stocks that do not have moderate to high correlation with any other stocks in the portfolio. **DVN**, **MRO**, **OXY**, and **XOM** have moderate to high correlation with at least 5 out of the 10 stocks. Replacing **DVN**, **MRO**, **OXY**, and **XOM** with some other 4 stocks that are not as correlated may have produced better risk-adjusted monthly returns.
 
