@@ -416,7 +416,7 @@ We'll combine the returns of the top 10 and the portfolio and then plot the top 
         df_ret_second_year_comb.sort_values(by=['Ticker','Date'], inplace=True)
         plot_returns_line_chart(df_ret_second_year_comb, 'Daily', 'Cumulative % Return')
 
-
+![SP500_Portfolio_Cumulative_Returns_Line_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Cumulative_Returns_Line_Chart_Python.jpg?raw=true)
 
 
 
