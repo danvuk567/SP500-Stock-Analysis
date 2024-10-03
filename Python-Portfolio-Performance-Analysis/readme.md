@@ -522,5 +522,8 @@ Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_bo
 
 ![SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg?raw=true)
 
+Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the correlation matrix. 
+
+![SP500_Portfolio_Correlation_Matrix_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Correlation_Matrix_Python.jpg?raw=true)
 
 
