@@ -410,11 +410,13 @@ Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate
         df_portfolio_ret_second_year['Ticker'] = 'PFL'
         df_portfolio_ret_second_year.sort_values(by=['Date'], inplace=True)
 
-We'll xombine the returns of the top 10 and the portfolio and then plot the top 10 tickers and the portfolio cumulative returns in a line chart.
+We'll combine the returns of the top 10 and the portfolio and then plot the top 10 tickers and the portfolio cumulative returns in a line chart.
 
         df_ret_second_year_comb = pd.concat([df_portfolio_tickers_ret_second_year, df_portfolio_ret_second_year], axis=0)
         df_ret_second_year_comb.sort_values(by=['Ticker','Date'], inplace=True)
         plot_returns_line_chart(df_ret_second_year_comb, 'Daily', 'Cumulative % Return')
+
+
 
 
 
