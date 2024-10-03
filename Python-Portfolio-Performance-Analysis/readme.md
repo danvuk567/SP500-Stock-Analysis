@@ -448,7 +448,42 @@ We can see that **MCK** had the highest Annualized Sortino Ratio of **3.07** and
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg?raw=true)
 
-What would happen if we invested in the top 10 Annualized Sortino Ratio Tickers at the start of 2023? Would the portfolio still have Let's calculate the individual Ticker returns and the portfolio
+What would happen if we invested in the top 10 Annualized Sortino Ratio Tickers at the start of 2023? Would the portfolio still be in the Annualized Sortino Ratio top 10?
+
+    date_filter2 = (df_pricing_filtered['Date'] >= two_years_after_min_date_str)
+    df_pricing_after_second_year = df_pricing_filtered.loc[date_filter2].copy()  # Adding .copy() here to avoid the warning
+
+    df_ret_after_second_year = calculate_return(df_pricing_after_second_year.copy(), 'Daily')
+    df_portfolio_tickers_ret_after_second_year = df_ret_after_second_year[df_ret_after_second_year['Ticker'].isin(portfolio_tickers)].copy()
+
+    df_portfolio_ret_after_second_year = calculate_portfolio_return(df_portfolio_tickers_ret_after_second_year.copy(), 'Daily')
+    df_portfolio_ret_after_second_year['Ticker'] = 'PFL'
+    df_portfolio_ret_after_second_year.sort_values(by=['Date'], inplace=True)
+
+    df_ret_after_second_year_comb_last = df_ret_after_second_year_comb.copy().groupby('Ticker').tail(1)
+    df_ret_after_second_year_comb_last.sort_values(by=['Ticker'], ascending=True, inplace=True)
+
+    risk_free_rate = 2.5
+    df_ret_after_second_year_comb_last['Annualized Sortino Ratio'] = np.where(
+        df_ret_after_second_year_comb_last['Annualized Volatility'] == 0, 
+        0, 
+        round((df_ret_after_second_year_comb_last['Annualized % Return'] - risk_free_rate) / df_ret_after_second_year_comb_last['Annualized Downside Volatility'], 2)
+    )
+    df_ret_after_second_year_comb_last.sort_values(by=['Ticker'], ascending=True, inplace=True)
+
+    df_ret_after_second_year_comb_last['Annualized Sortino Ratio Rank'] = df_ret_after_second_year_comb_last.groupby('Date')['Annualized Sortino Ratio'].rank(ascending=False).astype(int)
+    df_ret_after_second_year_comb_last = df_ret_after_second_year_comb_last[['Ticker', 'Date', 'Annualized % Return', 'Annualized Sortino Ratio', 'Annualized Sortino Ratio Rank']]
+    df_ret_after_second_year_comb_last.sort_values(by=['Annualized Sortino Ratio Rank'], ascending=True, inplace=True)
+
+    num_of_ranks = 10
+    df_ret_after_second_year_comb_last_top = df_ret_after_second_year_comb_last[df_ret_after_second_year_comb_last['Annualized Sortino Ratio Rank'] <= num_of_ranks].copy()
+    df_ret_after_second_year_comb_last_top = df_ret_after_second_year_comb_last_top[['Ticker', 'Date', 'Annualized Sortino Ratio', 'Annualized Sortino Ratio Rank']]
+    df_ret_after_second_year_comb_last_top.sort_values(by=['Annualized Sortino Ratio Rank'], inplace=True)
+
+    print(df_ret_after_second_year_comb_last_top.to_string(index=False))
+
+![SP500_Portfolio_Annualized_Sortino_Ratio_Python2.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python2.jpg?raw=true)
+
 
 
 
