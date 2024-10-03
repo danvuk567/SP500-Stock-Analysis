@@ -527,6 +527,13 @@ Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_bo
 
 Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the correlation matrix.
 
+    df_pricing_mth = get_pricing_data(df_pricing_filtered.copy(), 'Month')
+    date_filter3 = (df_pricing_mth['Date'] >= two_years_after_min_date_str)
+    df_pricing_mth_after_second_year = df_pricing_mth.loc[date_filter3].copy()
+
+    df_ret_mth_after_second_year = calculate_return(df_pricing_mth_after_second_year.copy(), 'Month')
+    df_ret_mth_after_second_year.sort_values(by=['Ticker', 'Date'], inplace=True)
+    
     df_portfolio_tickers_ret_mth_after_second_year = df_ret_mth_after_second_year[df_ret_mth_after_second_year['Ticker'].isin(portfolio_tickers)].copy()
     plot_ticker_correlations(df_portfolio_tickers_ret_mth_after_second_year, 'Month % Return')
 
