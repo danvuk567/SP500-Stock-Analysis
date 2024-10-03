@@ -906,41 +906,48 @@ Let's call our custom function *plot_top_returns_bar_chart* to plot our top 5 pe
 
 ![SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg?raw=true)
 
-Let's examine the top 10 performers for cumulative returns for the past 4 years. We first get the retrieve the *df_ret_last* dataframe using the last row of our *df_ret* dataframe. We want to ensure that the Tickers span the past 4 years so we find the 1st date that is common among all Tickers and derive the dataframe *df_ret_last_common* where the 1st date is common. We then create a new column using the *rank* function to rank cumulative returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_ret_last_top* from slicing *df_ret_last* by *'Cumulative % Return Rank' <= num_of_ranks* where *num_of_ranks = 10*. We then sort *df_ret_last_top* and print the results.
+Let's examine the top 10 performers for cumulative returns for the past 4 years. Before we proceed any futher, we want to focus on stocks that existed from the start of the 4 year data we stored so that any aggregated return comparison is not skewed by newer stocks that were traded later on.
 
-    df_ret = calculate_return(df_pricing.copy(), 'Daily')
+        # Determine the first date for each ticker
+        first_dates = df_pricing.groupby('Ticker')['Date'].min().reset_index()
+        first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
 
-    # Determine the first date for each ticker
-    first_dates = df_pricing.groupby('Ticker')['Date'].min().reset_index()
-    first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
+        # Count how many tickers share the same first date
+        count_first_dates = first_dates['First Date'].value_counts().reset_index()
+        count_first_dates.columns = ['First Date', 'Count']
 
-    # Count how many tickers share the same first date
-    count_first_dates = first_dates['First Date'].value_counts().reset_index()
-    count_first_dates.columns = ['First Date', 'Count']
+        # Filter for first dates that occur more than once and take the min date
+        valid_first_dates = count_first_dates[count_first_dates['Count'] > 1]['First Date']
+        min_valid_first_date = valid_first_dates.min()
 
-    # Filter for first dates that occur more than once and take the min date
-    valid_first_dates = count_first_dates[count_first_dates['Count'] > 1]['First Date']
-    min_valid_first_date = valid_first_dates.min()
+        # Merge back to keep only those tickers with the same first date
+        df_pricing_filtered = df_pricing.merge(first_dates, on='Ticker', suffixes=('', '_y'))  # Specify suffixes here
+        df_pricing_filtered = df_pricing_filtered[df_pricing_filtered['First Date'].isin([min_valid_first_date])].copy()
 
-    # Merge back to keep only those tickers with the same first date
-    df_pricing_filtered = df_pricing.merge(first_dates, on='Ticker', suffixes=('', '_y'))  # Specify suffixes here
-    df_pricing_filtered = df_pricing_filtered[df_pricing_filtered['First Date'].isin([min_valid_first_date])].copy()
-
-    df_pricing_filtered.drop(columns=['First Date'], inplace=True)
+        df_pricing_filtered.drop(columns=['First Date'], inplace=True)
     
-    if 'First Date_y' in df_pricing_filtered.columns:
-        df_pricing_filtered.drop(columns=['First Date_y'], inplace=True)
+        if 'First Date_y' in df_pricing_filtered.columns:
+            df_pricing_filtered.drop(columns=['First Date_y'], inplace=True)
     
-    df_pricing_filtered.sort_values(by=['Ticker', 'Date'], inplace=True)
+        df_pricing_filtered.sort_values(by=['Ticker', 'Date'], inplace=True)
 
+        # Show count of original Tickers
+        ticker_cnt = len(df_pricing['Ticker'].unique())
+        ticker_cnt2 = len(df_pricing_filtered['Ticker'].unique())
+        print(f'Original Ticker list count: {ticker_cnt}')
+        print(f'Filtered Ticker list count: {ticker_cnt2}')
 
-    # Show count of original Tickers
-    ticker_cnt = len(df_pricing['Ticker'].unique())
-    ticker_cnt2 = len(df_pricing_filtered['Ticker'].unique())
-    print(f'Original Ticker list count: {ticker_cnt}')
-    print(f'Filtered Ticker list count: {ticker_cnt2}')
+We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio. We calculate the simple daily returns on the filtered Tickers. We then retrieve the *df_ret_last* dataframe using the last row of our *df_ret* dataframe. We then create a new column using the *rank* function to rank cumulative returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_ret_last_top* from slicing *df_ret_last* by *'Cumulative % Return Rank' <= num_of_ranks* where *num_of_ranks = 10*. We then sort *df_ret_last_top* and print the results.
 
+    df_ret = calculate_return(df_pricing_filtered.copy(), 'Daily')
+    df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
+    df_ret_last.loc[:, 'Cumulative % Return Rank'] = df_ret_last.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
+    num_of_ranks = 10
+    df_ret_last_top = df_ret_last[df_ret_last['Cumulative % Return Rank'] <= num_of_ranks].copy()
+    df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Cumulative % Return Rank']]
+    df_ret_last_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
     
+    print(df_ret_last_top.to_string(index=False))
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg?raw=true)
 
