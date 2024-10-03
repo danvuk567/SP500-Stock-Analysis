@@ -372,7 +372,7 @@ Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment 
 
 We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio.    
 
-Let's say we want to determine what the top 10 stocks are for the 1st 2 years based on Annualize Sortino Retio. First, We can do this calculating the returns, using a risk free rate of 1.5 which is roughly average at the time and then ranking the top 10.
+Let's say we want to determine what the top 10 stocks are for the 1st 2 years (2021 to 2022) based on Annualize Sortino Retio. First, We can do this calculating the returns, using a risk free rate of 1.5 which is roughly average at the time and then ranking the top 10.
 
         two_years_after_min_date = min_valid_first_date + pd.DateOffset(days=(365)*2)
         two_years_after_min_date_str = two_years_after_min_date.strftime('%Y-%m-%d')
@@ -429,10 +429,30 @@ Now let's see our top 10 Ticker and Portfolio Annualized Sortino Ratio values
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python.jpg?raw=true)
 
+We can see that **MCK** had the highest Annualized Sortino Ratio of **3.07** and that our Portfolio **PFL** had the 2nd highest at **3.04**. We can also plot and compare the Annualized Sortino Ratio for all Tickerts and the portfolio in a Bubble Chart with the following code:
+
+    df_ret_second_year_comb2 = pd.concat([df_ret_second_year_last, df_portfolio_ret_second_year], axis=0)
+    df_ret_second_year_comb2.sort_values(by=['Ticker','Date'], inplace=True)
+
+    df_ret_second_year_comb2_last = df_ret_second_year_comb2.copy().groupby('Ticker').tail(1)
+
+    risk_free_rate = 1.5
+    df_ret_second_year_comb2_last['Annualized Sortino Ratio'] = np.where(
+        df_ret_second_year_comb2_last['Annualized Volatility'] == 0, 
+        0, 
+        round((df_ret_second_year_comb2_last['Annualized % Return'] - risk_free_rate) / df_ret_second_year_comb2_last['Annualized Downside Volatility'], 2)
+    )
+    df_ret_second_year_comb2_last.sort_values(by=['Ticker'], ascending=True, inplace=True)
+
+    plot_returns_bubble_chart(df_ret_second_year_comb2_last, 'Annualized % Return', 'Annualized Sortino Ratio')
+
+![SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg?raw=true)
+
+What would happen if we invested in the top 10 Annualized Sortino Ratio Tickers at the start of 2023? Would the portfolio still have Let's calculate the individual Ticker returns and the portfolio
 
 
-        
 
+###
 Next we extract the daily return dataframe as *df_portfolio_pricing* for the 10 Tickers that had the highest Calmar Ratio from our prior Equity perfromance analysis. Of course, we are choosing these Tickers in hindsight and there is no way to know for sure which basket of stocks would have given the highest Calmar Ratio 3 years ago. This portfolio will simply demonstrate what can be observed from a good risk-adjusted performing portfolio.
 
         portfolio_tickers= ['LLY','SMCI','TRGP','MCK','MRO','PWR','MPC','XOM','FANG','IRM']
