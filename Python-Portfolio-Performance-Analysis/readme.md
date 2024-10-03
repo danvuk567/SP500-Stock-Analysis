@@ -498,11 +498,23 @@ After using percentile ranking logic, we determined that in fact, our portfolio 
     
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python3.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python3.jpg?raw=true)
 
-Another way to view our portfolio returns compared to the broader market is to use a benchmark. We can calculate the returns for all Tickers as a portfolio and define it as the benchmark labelled **BM**. We then plot the Portfolio **PFL** and benchmark **BM** cumulative returns in a Line Chart.
+Another way to view our portfolio returns compared to the broader market is to use a benchmark. We can calculate the returns for all Tickers as a portfolio and define it as the benchmark labelled **BM**. We then plot the Portfolio **PFL** and benchmark **BM** cumulative returns in a Line Chart using our custom function *plot_returns_line_chart*.
+
+    df_ret_after_second_year_comb2 = pd.concat([df_bench_ret_after_second_year, df_portfolio_ret_after_second_year], axis=0)
+    df_ret_after_second_year_comb2.sort_values(by=['Ticker','Date'], inplace=True)
+    plot_returns_line_chart(df_ret_after_second_year_comb2, 'Daily', 'Cumulative % Return')
 
 ![SP500_Portfolio_Benchmark_Cumulative_Returns_Line_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Cumulative_Returns_Line_Chart_Python.jpg?raw=true)
 
 We see that our portfolio is generally outperforming the S&P 500 basket of Tickers since August of 2023 but the S&P 500 Tickers are catching up in Sept 2024.
+
+Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_box_plot*, we see that the portfoilo returns have more variance an outliers than the benchmark.
+
+    plot_period_returns_by_ticker_box_plot(df_ret_after_second_year_comb2, 'Daily')
+
+![SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg?raw=true)
+
+
 
 
 ###
