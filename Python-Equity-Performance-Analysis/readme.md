@@ -937,18 +937,26 @@ Let's examine the top 10 performers for cumulative returns for the past 4 years.
         print(f'Original Ticker list count: {ticker_cnt}')
         print(f'Filtered Ticker list count: {ticker_cnt2}')
 
-We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio. We calculate the simple daily returns on the filtered Tickers. We then retrieve the *df_ret_last* dataframe using the last row of our *df_ret* dataframe. We then create a new column using the *rank* function to rank cumulative returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_ret_last_top* from slicing *df_ret_last* by *'Cumulative % Return Rank' <= num_of_ranks* where *num_of_ranks = 10*. We then sort *df_ret_last_top* and print the results.
+We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio. We calculate the simple daily returns on the filtered Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns which we will be looking into later on. Let’s use the return data as of 3 years ago as the *df_ret_filter* dataframe and then retrieve the *df_ret_filter_last* dataframe using the last row of *df_ret_filter*. We then create a new column using the *rank* function to rank cumulative returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_ret_last_top* from slicing *df_ret_last* by *'Cumulative % Return Rank' <= num_of_ranks* where *num_of_ranks = 10*. We then sort *df_ret_last_top* and print the results.
+
+    last_dates = df_ret['Date'].max()
+    three_years_ago = last_dates - pd.DateOffset(days=365 * 3)
+    three_years_ago_str = three_years_ago.strftime('%Y-%m-%d')
 
     df_ret = calculate_return(df_pricing_filtered.copy(), 'Daily')
-    df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
-    df_ret_last.loc[:, 'Cumulative % Return Rank'] = df_ret_last.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
-    num_of_ranks = 10
-    df_ret_last_top = df_ret_last[df_ret_last['Cumulative % Return Rank'] <= num_of_ranks].copy()
-    df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Cumulative % Return Rank']]
-    df_ret_last_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
-    
-    print(df_ret_last_top.to_string(index=False))
+    date_filter = (df_ret_top['Date'] >= three_years_ago_str)
+    df_ret_filter = df_ret.loc[date_filter]
 
+    df_ret_filter_last = df_ret_filter.copy().groupby('Ticker').tail(1)
+    df_ret_filter_last.loc[:, 'Cumulative % Return Rank'] = df_ret_filter_last.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
+    num_of_ranks = 10
+    df_ret_filter_last_top = df_ret_filter_last[df_ret_filter_last['Cumulative % Return Rank'] <= num_of_ranks].copy()
+    df_ret_filter_last_top = df_ret_filter_last_top[['Ticker', 'Date', 'Cumulative % Return', 'Cumulative % Return Rank']]
+    df_ret_filter_last_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
+
+    print(df_ret_filter_last_top.to_string(index=False))
+
+print(df_ret_filter_top.to_string(index=False))
 ![SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg?raw=true)
 
 The results are the same for the same Tickers when using SQL queries except that we filtered out the Tickers that did not exist 4 years back and so **'CEG'**, which was 3rd in the SQL results, was not in this result. **'MPC'** ended up appearing in the list as 10th.
@@ -965,9 +973,9 @@ We see that the green line that represents **SMCI** has the highest cumulative r
 
 Now let's examine the Top 10 Annualized returns using similar ranking logic.
 
-    df_ret_last_common.loc[:, 'Annualized % Return Rank'] = df_ret_last_common.groupby('Date')['Annualized % Return'].rank(ascending=False, method='dense').astype(int)
+    df_ret_last.loc[:, 'Annualized % Return Rank'] = df_ret_last.groupby('Date')['Annualized % Return'].rank(ascending=False, method='dense').astype(int)
     num_of_ranks = 10
-    df_ret_last_top = df_ret_last_common[df_ret_last_common['Annualized % Return Rank'] <= num_of_ranks].copy()
+    df_ret_last_top = df_ret_last[df_ret_last['Annualized % Return Rank'] <= num_of_ranks].copy()
     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Annualized % Return', 'Annualized % Return Rank']]
     df_ret_last_top.sort_values(by=['Annualized % Return Rank'], inplace=True)
 
@@ -979,7 +987,7 @@ This gives us the same top performers with what was expected to be earned on ave
 
 Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns. Let’s use the data as of 3 years ago instead to show the drawdowns. We will simply filter the dates after and including last 3 years and use the custom function *calculate_drawdowns* to return a dataframe called *df_ret_last_top*. We fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
 
-     last_dates = df_quarterly_ret['Date'].max()
+     last_dates = df_ret['Date'].max()
      three_years_ago = last_dates - pd.DateOffset(days=365 * 3)
      three_years_ago_str = three_years_ago.strftime('%Y-%m-%d')
 
@@ -994,13 +1002,13 @@ Let's now look at drawdowns compared to the cumulative returns for the top 10 Ti
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg?raw=true)
 
-We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **69.33%** maximum drawdown in **2024-09-06**. **NVDA** had the highest maximum drawdown and yet the cumulative return was almost 2 times less than **SMCI**. Some of the biggest drawdowns for the top 10 performers were in 2022.
+We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **80.24%** maximum drawdown on **2022-04-12**. **VST** had the highest maximum drawdown and yet the cumulative return was almost 3 times less than **SMCI**. All stocks out of the top 10 performers had the biggest drawdowns in 2022 except **VST**.
 
 Now let's examine the Top 10 most volatile stocks using Annualized Volatility and ranking logic.
 
-     df_ret_last_common.loc[:, 'Annualized Volatility Rank'] = df_ret_last_common.groupby('Date')['Annualized Volatility'].rank(ascending=False, method='dense').astype(int)
+     df_ret_last.loc[:, 'Annualized Volatility Rank'] = df_ret_last.groupby('Date')['Annualized Volatility'].rank(ascending=False, method='dense').astype(int)
      num_of_ranks = 10
-     df_ret_last_top = df_ret_last_common[df_ret_last_common['Annualized Volatility Rank'] <= num_of_ranks].copy()
+     df_ret_last_top = df_ret_last[df_ret_last['Annualized Volatility Rank'] <= num_of_ranks].copy()
      df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Annualized Volatility', 'Annualized Volatility Rank']]
      df_ret_last_top.sort_values(by=['Annualized Volatility Rank'], inplace=True)
 
