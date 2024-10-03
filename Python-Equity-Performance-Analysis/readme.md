@@ -939,7 +939,7 @@ Let's examine the top 10 performers for cumulative returns for the past 4 years.
 
 We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio. We calculate the simple daily returns on the filtered Tickers. A good idea is to exclude the beginning periods where the cumulative return is not yet substantial enough and any change may produce a large value for drawdowns which we will be looking into later on. Let’s use the return data as of 3 years ago as the *df_ret_filter* dataframe and then retrieve the *df_ret_filter_last* dataframe using the last row of *df_ret_filter*. We then create a new column using the *rank* function to rank cumulative returns in non-ascending order and cast as an integer. We’ll create a new dataframe called *df_ret_filter_last_top* from slicing *df_ret_filter_last* by *'Cumulative % Return Rank' <= num_of_ranks* where *num_of_ranks = 10*. We then sort *df_ret_filter_last_top* and print the results.
 
-    last_dates = df_ret['Date'].max()
+    last_dates = df_pricing_filtered['Date'].max()
     three_years_ago = last_dates - pd.DateOffset(days=365 * 3)
     three_years_ago_str = three_years_ago.strftime('%Y-%m-%d')
 
