@@ -2,13 +2,13 @@ Let's do some analysis on a portfolio of stocks. We will be adding new functions
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-Let's define a function called *calculate_avg_return* which will calculate average returns for a group of Tickers similar to the *calculate_return* function. The pricing dataframe and period type are passed as input parameters and the returns dataframe is returned with the same columns as the *calculate_return* function.
+Let's define a function called *calculate_portfolio_return* which will calculate returns for a portfolio of Tickers based on average log returns. The returns dataframe and period type are passed as input parameters and the returns dataframe is returned with the same columns as the *calculate_return* function.
 
 
-        def calculate_avg_return(df_tmp, period):
+    def calculate_portfolio_return(df_tmp, period):
     
             """
-            Calculate the average return percentage based on the return percentage of 'Close' and 'Open' prices for a given period type.
+            Calculate the returns of a portfolio of Tickers using an average of cumulative returns.
     
             Parameters:
             - df_tmp: The DataFrame containing the historical data.
@@ -19,79 +19,80 @@ Let's define a function called *calculate_avg_return* which will calculate avera
               'Annualized Downside Volatility', or None if not applicable.
             """
     
-            # Assign the number of periods based on period type
-            period_mapping = {'Year': 1, 'Quarter': 4, 'Month': 12, 'Daily': 252}
-            no_of_periods = period_mapping.get(period, 252)
-    
-            # Shift the 'Close' prices by 1 for the entire DataFrame
-            df_tmp['Prev Close'] = df_tmp.groupby('Ticker')['Close'].shift(1)
-    
-            # Initialize the return column
-            df_tmp['% Return'] = np.where(df_tmp['Prev Close'].isna(),
-                                           (df_tmp['Close'] / df_tmp['Open']) - 1.0,
-                                           (df_tmp['Close'] / df_tmp['Prev Close']) - 1.0)
-    
-    
-            # Calculate log returns
-            df_tmp['Log Return'] = np.where(df_tmp['Prev Close'].isna(),
-                                           np.log(df_tmp['Close'] / df_tmp['Open']),
-                                           np.log(df_tmp['Close'] / df_tmp['Prev Close']))
-    
-            # Average Returns
-            df_tmp['Avg % Return'] = df_tmp.groupby('Date')['% Return'].transform('mean')
+            # Assign the number of periods based on the specified period type
+            if period == 'Year':
+                no_of_periods = 1  # 1 year
+            elif period == 'Quarter':
+                no_of_periods = 4  # 4 quarters in a year
+            elif period == 'Month':
+                no_of_periods = 12  # 12 months in a year
+            else:
+                no_of_periods = 252  # Default to daily data (252 trading days in a year)
+        
+            if period == 'Daily':
+                label = ''
+            else:
+                label = period + ' '
+
+            # Drop unnecessary columns from the DataFrame to simplify calculations
+            df_tmp.drop(columns=['Ticker', 'Open', 'High', 'Low', 'Close', 'Volume', label + 'Annualized % Return', label + 'Annualized Volatility', label + 'Annualized Downside Volatility'], inplace=True)
+
+            # Calculate log returns based on cumulative percentage returns
+            df_tmp['Log Return'] = np.log(1 + (df_tmp[label + 'Cumulative % Return'] / 100))
+
+            # Calculate the average log return for each date
             df_tmp['Avg Log Return'] = df_tmp.groupby('Date')['Log Return'].transform('mean')
-    
 
-            # Drop unneeded columns
-            df_tmp.drop(columns=['% Return', 'Log Return', 'Prev Close', 'Ticker', 'Open', 'High', 'Low', 'Close', 'Volume'], inplace=True)
-    
-            df_tmp.rename(columns={
-                    'Avg % Return': '% Return',
-                    'Avg Log Return': 'Log Return'
-                }, inplace=True)
+            # Calculate the average percentage return for each date and convert to decimal
+            df_tmp['Avg % Return'] = df_tmp.groupby('Date')[label + '% Return'].transform('mean') / 100
 
+            # Drop columns that are no longer needed after calculating averages
+            df_tmp.drop(columns=['Log Return', label + '% Return', label + 'Cumulative % Return'], inplace=True)
+
+            # Calculate cumulative percentage return from average log return
+            df_tmp['Cumulative % Return'] = np.exp(df_tmp['Avg Log Return']) - 1
+
+            # Drop the average log return column as it is no longer needed
+            df_tmp.drop(columns=['Avg Log Return'], inplace=True)
+
+            # Rename the average percentage return column to '% Return' for clarity
+            df_tmp.rename(columns={'Avg % Return': '% Return'}, inplace=True)
+
+            # Remove duplicate entries in the DataFrame
             df_tmp.drop_duplicates(inplace=True)
 
-            # Calculate cumulative returns
-            df_tmp['Cumulative Log Return'] = df_tmp['Log Return'].cumsum()
-            df_tmp['Cumulative % Return'] = (np.exp(df_tmp['Cumulative Log Return']) - 1.0)
-            df_tmp['Cumulative Simple % Return'] = (1 + df_tmp['% Return']).cumprod() - 1
-
-            # Calculate the rolling count of returns by Ticker for each date
+            # Count the number of returns in a rolling manner, starting from the first entry
             df_tmp['Rolling Return Count'] = df_tmp['% Return'].expanding(min_periods=1).count()
+    
+            # Calculate annualized return based on cumulative return and the number of returns
+            df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative % Return']) ** (no_of_periods / df_tmp['Rolling Return Count']) - 1)
 
-            # Calculate Annualized % Return
-            df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative Simple % Return'])**(no_of_periods / df_tmp['Rolling Return Count']) - 1.0)
+            # Calculate annualized volatility based on the standard deviation of percentage returns
+            df_tmp['Annualized Volatility'] = df_tmp['% Return'].expanding().std() * np.sqrt(no_of_periods)
 
-            # Calculate Annualized Volatility
-            df_tmp['Annualized Volatility'] = (df_tmp['% Return'].expanding(min_periods=1).std() * np.sqrt(no_of_periods)).replace(0, np.nan)
+            # Calculate annualized downside volatility (only for negative returns)
+            df_tmp['Annualized Downside Volatility'] = df_tmp['% Return'].expanding().apply(
+                lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if len(x[x < 0]) > 0 else 0)
 
-            # Calculate Annualized Downside Volatility
-            df_tmp['Annualized Downside Volatility'] = (df_tmp['% Return'].expanding(min_periods=1).apply(
-                lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if len(x[x < 0]) > 1 else 0
-            ))
+            # Drop the rolling return count column after its use
+            df_tmp.drop(columns=['Rolling Return Count'], inplace=True)
 
-            # Drop unnecessary columns
-            df_tmp.drop(columns=['Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return', 'Rolling Return Count'], inplace=True)
-
-            # Convert Returns to percentages
+            # Round the values for presentation to two decimal places
             df_tmp['% Return'] = round(df_tmp['% Return'] * 100, 2)
             df_tmp['Cumulative % Return'] = round(df_tmp['Cumulative % Return'] * 100, 2)
             df_tmp['Annualized % Return'] = round(df_tmp['Annualized % Return'] * 100, 2)
             df_tmp['Annualized Volatility'] = round(df_tmp['Annualized Volatility'] * 100, 2)
             df_tmp['Annualized Downside Volatility'] = round(df_tmp['Annualized Downside Volatility'] * 100, 2)
-
-            # Rename the Return column based on period type
+    
+            # Rename return columns based on the specified period type, if not daily
             if period != 'Daily':
-                df_tmp.rename(columns={
-                    '% Return': f'{period} % Return',
-                    'Cumulative % Return': f'{period} Cumulative % Return',
-                    'Annualized % Return': f'{period} Annualized % Return',
-                    'Annualized Volatility': f'{period} Annualized Volatility',
-                    'Annualized Downside Volatility': f'{period} Annualized Downside Volatility'
-                }, inplace=True)
-
-            return df_tmp
+                df_tmp.rename(columns={'% Return': period + ' % Return'}, inplace=True)    
+                df_tmp.rename(columns={'Cumulative % Return': period + ' Cumulative % Return'}, inplace=True)
+                df_tmp.rename(columns={'Annualized % Return': period + ' Annualized % Return'}, inplace=True)
+                df_tmp.rename(columns={'Annualized Volatility': period + ' Annualized Volatility'}, inplace=True)
+                df_tmp.rename(columns={'Annualized Downside Volatility': period + ' Annualized Downside Volatility'}, inplace=True)
+        
+            return df_tmp  # Return the modified DataFrame
 
 
 If we want to see how the returns are distributed for a particular Ticke, we can plot it as a **Histogram** using the matplotlib package. This function called *plot_return_histogram* will plot a histogram and calculate the number of bins based on the Freedman-Diaconis rule that uses quartile range. For more information on this rule. refer to this link: [Freedman–Diaconis rule](https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule). We can also compare how the returns measure up against all the returns that are normalized and plotted as a line representing a Normal Distribution. The scipy package would need to be imported. Another line can be drawn that can smooth the Ticker return bins using the Gaussion KDE (Kernel Density Estimation) function from the scipy package. For more informtion on this, refer to this link: [Kernel density estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation). The *plot_return_histogram* function takes the return dataframe, return_type and ticker as input parameters.
@@ -338,8 +339,7 @@ If we want to see how the returns are correlated, we can use the Pearson correla
 
 ## Portfolio Performance Analysis: *[Portfolio-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Portfolio-Performance-Analysis/Portfolio-Performance-Analysis.ipynb)*
 
-Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment portfolio. We will import the necessary packages, connect to the database, query the database for our pricing data bind it to the         df_pricing dataframe. Before we procedd any futher, we want to focus on stocks that existed from the start of the 4 year data we stored so that any aggregated return comparison is not skewed by newer stocks that         were traded later on.
-
+Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment portfolio. We will import the necessary packages, connect to the database, query the database for our pricing data bind it to the         df_pricing dataframe. Before we proceed any futher, we want to focus on stocks that existed from the start of the 4 year data we stored so that any aggregated return comparison is not skewed by newer stocks that         were traded later on.
 
         # Determine the first date for each ticker
         first_dates = df_pricing.groupby('Ticker')['Date'].min().reset_index()
@@ -349,12 +349,13 @@ Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment 
         count_first_dates = first_dates['First Date'].value_counts().reset_index()
         count_first_dates.columns = ['First Date', 'Count']
 
-        # Filter for first dates that have more than one ticker
+        # Filter for first dates that occur more than once and take the min date
         valid_first_dates = count_first_dates[count_first_dates['Count'] > 1]['First Date']
+        min_valid_first_date = valid_first_dates.min()
 
-       # Merge back to keep only those tickers with the same first date
+        # Merge back to keep only those tickers with the same first date
         df_pricing_filtered = df_pricing.merge(first_dates, on='Ticker', suffixes=('', '_y'))  # Specify suffixes here
-        df_pricing_filtered = df_pricing_filtered[df_pricing_filtered['First Date'].isin(min_valid_first_date)].copy()
+        df_pricing_filtered = df_pricing_filtered[df_pricing_filtered['First Date'].isin([min_valid_first_date])].copy()
 
         df_pricing_filtered.drop(columns=['First Date'], inplace=True)
     
@@ -370,6 +371,59 @@ Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment 
         print(f'Filtered Ticker list count: {ticker_cnt2}')
 
 We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio.    
+
+Let's say we want to determine what the top 10 stocks are for the 1st 2 years based on Annualize Sortino Retio. First, We can do this calculating the returns, using a risk free rate of 1.5 which is roughly average at the time and then ranking the top 10.
+
+        two_years_after_min_date = min_valid_first_date + pd.DateOffset(days=(365)*2)
+        two_years_after_min_date_str = two_years_after_min_date.strftime('%Y-%m-%d')
+
+        period_label = 'Daily'
+        date_filter = (df_pricing_filtered['Date'] < two_years_after_min_date_str)
+        df_pricing_second_year = df_pricing_filtered.loc[date_filter].copy()  # Adding .copy() here to avoid the warning
+        df_pricing_second_year.sort_values(by=['Ticker', 'Date'], inplace=True)
+        df_ret_second_year = calculate_return(df_pricing_second_year.copy(), 'Daily')
+        df_ret_second_year.sort_values(by=['Ticker', 'Date'], inplace=True)
+
+        df_ret_second_year_last = df_ret_second_year.copy().groupby('Ticker').tail(1)
+
+        risk_free_rate = 1.5
+        df_ret_second_year_last['Annualized Sortino Ratio'] = np.where(
+            df_ret_second_year_last['Annualized Volatility'] == 0, 
+            0, 
+            round((df_ret_second_year_last['Annualized % Return'] - risk_free_rate) / df_ret_second_year_last['Annualized Downside Volatility'], 2)
+        )
+
+        df_ret_second_year_last['Annualized Sortino Ratio Rank'] = df_ret_second_year_last.groupby('Date')['Annualized Sortino Ratio'].rank(ascending=False).astype(int)
+        num_of_ranks = 10
+        df_ret_second_year_last_top = df_ret_second_year_last[df_ret_second_year_last['Annualized Sortino Ratio Rank'] <= num_of_ranks].copy()
+
+Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate the portfolio returns and assign a Ticker label as **PFL** to our portfolio returns.
+
+        portfolio_tickers = df_ret_second_year_last_top['Ticker'].unique()
+        print(portfolio_tickers)
+
+        df_portfolio_tickers_ret_second_year = df_ret_second_year[df_ret_second_year['Ticker'].isin(portfolio_tickers)].copy()
+        ticker_cnt = len(df_portfolio_tickers_ret_second_year['Ticker'].unique())
+        print(f'Portfolio list count: {ticker_cnt}')
+
+        df_portfolio_ret_second_year = calculate_portfolio_return(df_portfolio_tickers_ret_second_year.copy(), 'Daily')
+        df_portfolio_ret_second_year['Ticker'] = 'PFL'
+        df_portfolio_ret_second_year.sort_values(by=['Date'], inplace=True)
+
+We'll xombine the returns of the top 10 and the portfolio and then plot the top 10 tickers and the portfolio cumulative returns in a line chart.
+
+        df_ret_second_year_comb = pd.concat([df_portfolio_tickers_ret_second_year, df_portfolio_ret_second_year], axis=0)
+        df_ret_second_year_comb.sort_values(by=['Ticker','Date'], inplace=True)
+        plot_returns_line_chart(df_ret_second_year_comb, 'Daily', 'Cumulative % Return')
+
+
+
+###########################################################################################################################################################
+
+
+
+
+        
 
 Next we extract the daily return dataframe as *df_portfolio_pricing* for the 10 Tickers that had the highest Calmar Ratio from our prior Equity perfromance analysis. Of course, we are choosing these Tickers in hindsight and there is no way to know for sure which basket of stocks would have given the highest Calmar Ratio 3 years ago. This portfolio will simply demonstrate what can be observed from a good risk-adjusted performing portfolio.
 
@@ -425,11 +479,6 @@ Let's go ahead and calculate the *'Max Drawdown'*, *'Annualized Sharpe Ratio'*, 
         )
         df_ret_comb_last.sort_values(by=['Ticker'], ascending=True, inplace=True)
 
-Now we'll create a bubble chart to show the Annualized % Return as a bubble with Annualized Sharpe Ratio as the bubble size. We'll highlight the top 10 tickers based on the top values.
-
-![SP500_Portfolio_Annualized_Sharpe_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sharpe_Ratio_Bubble_Chart_Python.jpg?raw=true)
-
-Our portfolio, **PFL** came in 2nd with 2nd highest **Annualized % Return** of **57.63%** and highest **Annualized Sharpe Ratio** of **2.36**. This indicates that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
 
 We'll also create a bubble chart to show the Annualized % Return as a bubble with Annualized Sortino Ratio as the bubble size. We'll highlight the top 10 tickers based on the top values.
 
@@ -437,11 +486,6 @@ We'll also create a bubble chart to show the Annualized % Return as a bubble wit
 
 Our portfolio, **PFL** also came in 2nd with 2nd highest **Annualized % Return** of **57.63%** and highest **Annualized Sortino Ratio** of **3.52**. This emphasizes that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
 
-And finally, we'll create a 3rd bubble chart to show the Annualized % Return as a bubble with Calmar Ratio as the bubble size. We'll highlight the top 10 tickers based on the top values.
-
-![SP500_Portfolio_Calmar_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Calmar_Ratio_Bubble_Chart_Python.jpg?raw=true)
-
-Our portfolio, **PFL** also came in 2nd again with 2nd highest **Annualized % Return** of **57.63%** and highest **Calmar Ratio** of **2.08**. This further emphasizes that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
 
 
 
