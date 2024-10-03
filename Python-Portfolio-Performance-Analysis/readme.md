@@ -498,6 +498,14 @@ After using percentile ranking logic, we determined that in fact, our portfolio 
     
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python3.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python3.jpg?raw=true)
 
+Let's use a Histogram plot using our custom function *plot_return_histogram* to view our portfolio simple returns compared to all the S&P 500 Ticker simple returns.
+
+    plot_return_histogram(df_ret_after_second_year_comb, '% Return', 'PFL')
+
+![SP500_Portfolio_Histogram_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Histogram_Chart_Python.jpg?raw=true)
+
+Our portfolio **PFL** has a shape that is more narrow and longer with less fatter tails than the normal distribution of the S&P 500 Tickers. The portfolio has a higher frequency of small negative returns between 0% and -1% but also has a higher frequency of small positive returns of 0% to 1.5%.
+
 Another way to view our portfolio returns compared to the broader market is to use a benchmark. We can calculate the returns for all Tickers as a portfolio and define it as the benchmark labelled **BM**. We then plot the Portfolio **PFL** and benchmark **BM** cumulative returns in a Line Chart using our custom function *plot_returns_line_chart*.
 
     df_ret_after_second_year_comb2 = pd.concat([df_bench_ret_after_second_year, df_portfolio_ret_after_second_year], axis=0)
@@ -508,7 +516,7 @@ Another way to view our portfolio returns compared to the broader market is to u
 
 We see that our portfolio is generally outperforming the S&P 500 basket of Tickers since August of 2023 but the S&P 500 Tickers are catching up in Sept 2024.
 
-Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_box_plot*, we see that the portfoilo returns have more variance an outliers than the benchmark.
+Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_box_plot*, we see that the portfoilo returns have more variance and outliers than the benchmark.
 
     plot_period_returns_by_ticker_box_plot(df_ret_after_second_year_comb2, 'Daily')
 
@@ -516,75 +524,3 @@ Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_bo
 
 
 
-
-###
-Next we extract the daily return dataframe as *df_portfolio_pricing* for the 10 Tickers that had the highest Calmar Ratio from our prior Equity perfromance analysis. Of course, we are choosing these Tickers in hindsight and there is no way to know for sure which basket of stocks would have given the highest Calmar Ratio 3 years ago. This portfolio will simply demonstrate what can be observed from a good risk-adjusted performing portfolio.
-
-        portfolio_tickers= ['LLY','SMCI','TRGP','MCK','MRO','PWR','MPC','XOM','FANG','IRM']
-        df_portfolio_pricing = df_pricing_filtered[df_pricing_filtered['Ticker'].isin(portfolio_tickers)].copy()
-        ticker_cnt3 = len(df_portfolio_pricing['Ticker'].unique())
-        print(f'Portfolio list count: {ticker_cnt3}')
-
-If we want to compare the returns of the S&P 500 Tickers to our portfolio, one way to do this is to use an average return for our portfolio. We will calculate the daily returns as *df_ret* and calculate the average returns for our portfolio as *df_portfolio_ret*. We'll assign the Ticker label for our portfolio as **'PFL'**.
-
-        df_ret = calculate_return(df_pricing_filtered.copy(), 'Daily')
-        df_ret.drop(columns=['Open', 'High', 'Low', 'Close', 'Volume'], inplace=True)
-        df_ret.sort_values(by=['Ticker', 'Date'], inplace=True)
-
-Let's observe our portfolio returns in Histogram and compare it the Normalized Distribution of all the S&P 500 returns. We can combine our portfolio returns with all daily returns and then call our custom function *plot_return_histogram* to create the chart.
-
-        df_ret_comb = pd.concat([df_ret, df_portfolio_ret], axis=0)
-        df_ret_comb.sort_values(by=['Ticker','Date'], inplace=True)
-        plot_return_histogram(df_ret_comb, '% Return', 'PFL')
-
- ![SP500_Portfolio_Histogram_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Histogram_Chart_Python.jpg?raw=true)
-
-We can see that portfolio returns are more positively skewed than the S&P 500 returns. The frequency of negative returns tend to be less than the S&P 500 negative returns for those returns that are < 1.5%. The portfolio also tends to have a higher frequency of returns for those returns between 0% and 2%. Although, the portfolio also tends to have a slightly lower frequency of returns for those returns that are > 2.0%.
-
-Let's go ahead and calculate the *'Max Drawdown'*, *'Annualized Sharpe Ratio'*, *'Annualized Sortino Ratio'*, and *'Calmar Ratio'* for all the returns in df_ret_comb.
-
-        last_dates = df_ret_comb['Date'].max()
-        three_years_ago = last_dates - pd.DateOffset(days=252 * 3)
-        three_years_ago_str = three_years_ago.strftime('%Y-%m-%d')
-
-        period_label = 'Daily'
-        date_filter = (df_ret_comb['Date'] >= three_years_ago_str)
-        df_ret_comb_filter = df_ret_comb.loc[date_filter].copy()  # Adding .copy() here to avoid the warning
-        df_ret_comb_filter = calculate_drawdowns(df_ret_comb_filter, period_label)
-        df_ret_comb_last = df_ret_comb_filter.copy().groupby('Ticker').tail(1)
-        df_ret_comb_last.sort_values(by=['Ticker'], ascending=True, inplace=True)
-
-        risk_free_rate = 2.5
-        df_ret_comb_last['Annualized Sharpe Ratio'] = np.where(
-            df_ret_comb_last['Annualized Volatility'] == 0, 
-            0, 
-            round((df_ret_comb_last['Annualized % Return'] - risk_free_rate) / df_ret_comb_last['Annualized Volatility'], 2)
-        )
-        df_ret_comb_last['Annualized Sortino Ratio'] = np.where(
-            df_ret_comb_last['Annualized Volatility'] == 0, 
-            0, 
-            round((df_ret_comb_last['Annualized % Return'] - risk_free_rate) / df_ret_comb_last['Annualized Downside Volatility'], 2)
-        )
-        df_ret_comb_last['Calmar Ratio'] = np.where(
-            df_ret_comb_last['Max % Drawdown'] == 0, 
-            0, 
-            round(df_ret_comb_last['Annualized % Return'] / df_ret_comb_last['Max % Drawdown'], 2)
-        )
-        df_ret_comb_last.sort_values(by=['Ticker'], ascending=True, inplace=True)
-
-
-We'll also create a bubble chart to show the Annualized % Return as a bubble with Annualized Sortino Ratio as the bubble size. We'll highlight the top 10 tickers based on the top values.
-
-![SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg?raw=true)
-
-Our portfolio, **PFL** also came in 2nd with 2nd highest **Annualized % Return** of **57.63%** and highest **Annualized Sortino Ratio** of **3.52**. This emphasizes that the portfolio is optimum in terms of risk vs. reward as opposed to other stocks.
-
-
-
-
-
-
-
-
-
-        
