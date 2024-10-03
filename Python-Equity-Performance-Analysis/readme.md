@@ -968,7 +968,7 @@ Let's extract the top 10 tickers from our *df_ret_filter* dataframe as *df_ret_f
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg?raw=true)
 
-We see that the green line that represents **SMCI** has the highest cumulative return in the last day but has taken a massive drawdown as of February 2024.
+We see that the green line that represents **SMCI** has the highest cumulative return in the last day but has taken a massive drawdown as of March 2024.
 
 Now let's examine the Top 10 Annualized returns using similar ranking logic.
 
@@ -986,7 +986,7 @@ This gives us the same top performers with what was expected to be earned on ave
 
 Let's now look at drawdowns compared to the cumulative returns for the top 10 Tickers. We will use the custom function *calculate_drawdowns* using our return dataframe *df_ret_filter* to return a dataframe called *df_ret_filter2*. We filter out the top 10 Tickers and fetch the last record by ticker and sort the Cumulative % Returns in descending order and print the results.
 
-     df_ret_filter2 = calculate_drawdowns(df_ret_filter.copy(), 'Daily')
+    df_ret_filter2 = calculate_drawdowns(df_ret_filter.copy(), 'Daily')
 
     df_ret_filter_top = df_ret_filter2[df_ret_filter2['Ticker'].isin(top_tickers)].copy()
     df_ret_filter_last_top = df_ret_filter_top.copy().groupby('Ticker').tail(1)
@@ -1001,47 +1001,43 @@ We can observe that for **SMCI**, the most recent drawdown is **63.20%** represe
 
 Now let's examine the Top 10 most volatile stocks using Annualized Volatility and ranking logic.
 
-     df_ret_last.loc[:, 'Annualized Volatility Rank'] = df_ret_last.groupby('Date')['Annualized Volatility'].rank(ascending=False, method='dense').astype(int)
-     num_of_ranks = 10
-     df_ret_last_top = df_ret_last[df_ret_last['Annualized Volatility Rank'] <= num_of_ranks].copy()
-     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Annualized Volatility', 'Annualized Volatility Rank']]
-     df_ret_last_top.sort_values(by=['Annualized Volatility Rank'], inplace=True)
+    df_ret_filter_last = df_ret_filter2.copy().groupby('Ticker').tail(1)
 
-     print(df_ret_last_top.to_string(index=False))
+    df_ret_filter_last.loc[:, 'Annualized Volatility Rank'] = df_ret_filter_last.groupby('Date')['Annualized Volatility'].rank(ascending=False, method='dense').astype(int)
+    num_of_ranks = 10
+    df_ret_filter_last_top = df_ret_filter_last[df_ret_filter_last['Annualized Volatility Rank'] <= num_of_ranks].copy()
+    df_ret_filter_last_top = df_ret_filter_last_top[['Ticker', 'Date', 'Annualized Volatility', 'Annualized Volatility Rank']]
+    df_ret_filter_last_top.sort_values(by=['Annualized Volatility Rank'], inplace=True)
+
+    print(df_ret_filter_last_top.to_string(index=False))
 
 ![SP500_Equity_Top_10_Annualized_Volatility_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Volatility_Data_Python.jpg?raw=true)
 
 **SMCI** came out as the most volatile stock which can be observed also in the drawdown data and cumulative returns line chart. None of the other top 10 performing stocks were in the top 10 most volatile.
 
-A well known **Risk vs. Reward** measure is the Sharpe Ratio. For more information on this, refer to this link: [Sharpe Ratio: Definition, Formula, and Examples](https://www.investopedia.com/terms/s/sharperatio.asp). It is best to use the **Annualized Sharpe Ratio** which uses annualized returns instead of average returns as it provides a clearer and more reliable measure of risk-adjusted performance. Average returns can be misleading and do not fully capture the dynamics of investment performance over time. The formula can be defined as **(Annualized Return − Risk-Free Rate) / Annulaized Volatility**. Another measure of Risk vs. Reward is the Sortino Ratio. Unlike the Sharpe Ratio, which penalizes both upside and downside volatility, the Sortino Ratio only considers the standard deviation of negative returns, making it more appropriate for assessing investments that may experience high volatility but also provide significant upside potential. For more information, please refer to this link: [Sortino Ratio: Definition, Formula, Calculation, and Example](https://www.investopedia.com/terms/s/sortinoratio.asp). We will also use the **Annualized Sortino Ratio** which is defined as **(Annualized Return − Risk-Free Rate) / Annualized Downside Volatility**. 
+A well known **Risk vs. Reward** measure is the Sharpe Ratio. For more information on this, refer to this link: [Sharpe Ratio: Definition, Formula, and Examples](https://www.investopedia.com/terms/s/sharperatio.asp). It is best to use the **Annualized Sharpe Ratio** which uses annualized returns instead of average returns as it provides a clearer and more reliable measure of risk-adjusted performance. Average returns can be misleading and do not fully capture the dynamics of investment performance over time. The formula can be defined as **(Annualized Return − Risk-Free Rate) / Annualized Volatility**. Another measure of Risk vs. Reward is the Sortino Ratio. Unlike the Sharpe Ratio, which penalizes both upside and downside volatility, the Sortino Ratio only considers the standard deviation of negative returns, making it more appropriate for assessing investments that may experience high volatility but also provide significant upside potential. For more information, please refer to this link: [Sortino Ratio: Definition, Formula, Calculation, and Example](https://www.investopedia.com/terms/s/sortinoratio.asp). We will also use the **Annualized Sortino Ratio** which is defined as **(Annualized Return − Risk-Free Rate) / Annualized Downside Volatility**. 
 
 Let's first calculate the Annualized Sharpe Ratio and the Annulaized Sortino Ratio. We will first find the top 10 risk-adjusted performers based on Sharpe Ratio. The Risk-Free Rate is based on the 3 month T-Bill rate. We would have to retrieve the daily data for past 4 years to produce a more accurate calculation but we can simply use an average as a rough estimate which is 2.5%.
 
     risk_free_rate = 2.5
-    df_ret['Annualized Sharpe Ratio'] = np.where(
-        df_ret['Annualized Volatility'] == 0, 
+    df_ret_filter2['Annualized Sharpe Ratio'] = np.where(
+        df_ret_filter2['Annualized Volatility'] == 0, 
         0, 
-        round((df_ret['Annualized % Return'] - risk_free_rate) / df_ret['Annualized Volatility'], 2)
+        round((df_ret_filter2['Annualized % Return'] - risk_free_rate) / df_ret_filter2['Annualized Volatility'], 2)
     )
-    df_ret['Annualized Sortino Ratio'] = np.where(
-        df_ret['Annualized Volatility'] == 0, 
+    df_ret_filter2['Annualized Sortino Ratio'] = np.where(
+        df_ret_filter2['Annualized Volatility'] == 0, 
         0, 
-        round((df_ret['Annualized % Return'] - risk_free_rate) / df_ret['Annualized Downside Volatility'], 2)
+        round((df_ret_filter2['Annualized % Return'] - risk_free_rate) / df_ret_filter2['Annualized Downside Volatility'], 2)
     )
-    df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
-    first_dates = df_ret.groupby('Ticker')['Date'].min().reset_index()
-    first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
-    df_ret_last = df_ret_last.merge(first_dates, on='Ticker')
-    common_first_date = df_ret_last['First Date'].mode()[0]
-    df_ret_last_common = df_ret_last[df_ret_last['First Date'] == common_first_date].copy()
-                                             
-    df_ret_last_common.loc[:, 'Annualized Sharpe Ratio Rank'] = df_ret_last_common.groupby('Date')['Annualized Sharpe Ratio'].rank(ascending=False, method='dense').astype(int)
+    df_ret_filter_last = df_ret_filter2.copy().groupby('Ticker').tail(1)
+    df_ret_filter_last.loc[:, 'Annualized Sharpe Ratio Rank'] = df_ret_filter_last.groupby('Date')['Annualized Sharpe Ratio'].rank(ascending=False, method='dense').astype(int)
     num_of_ranks = 10
-    df_ret_last_top = df_ret_last_common[df_ret_last_common['Annualized Sharpe Ratio Rank'] <= num_of_ranks].copy()
-    df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Annualized Sharpe Ratio', 'Annualized Sharpe Ratio Rank']]
-    df_ret_last_top.sort_values(by=['Annualized Sharpe Ratio Rank'], inplace=True)
+    df_ret_filter_last_top = df_ret_filter_last[df_ret_filter_last['Annualized Sharpe Ratio Rank'] <= num_of_ranks].copy()
+    df_ret_filter_last_top = df_ret_filter_last_top[['Ticker', 'Date', 'Annualized Sharpe Ratio', 'Annualized Sharpe Ratio Rank']]
+    df_ret_filter_last_top.sort_values(by=['Annualized Sharpe Ratio Rank'], inplace=True)
 
-    print(df_ret_last_top.to_string(index=False))
+    print(df_ret_filter_last_top.to_string(index=False))
 
 ![SP500_Equity_Top_10_Annualized_Sharpe_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Sharpe_Ratio_Data_Python.jpg?raw=true)
 
@@ -1049,38 +1045,34 @@ Let's first calculate the Annualized Sharpe Ratio and the Annulaized Sortino Rat
 
 Next, let's look at the top 10 risk-adjusted performers based on Sortino Ratio.
 
+    df_ret_filter_last.loc[:, 'Annualized Sortino Ratio Rank'] = df_ret_filter_last.groupby('Date')['Annualized Sortino Ratio'].rank(ascending=False, method='dense').astype(int)
+    num_of_ranks = 10
+    df_ret_filter_last_top = df_ret_filter_last[df_ret_filter_last['Annualized Sortino Ratio Rank'] <= num_of_ranks].copy()
+    df_ret_filter_last_top = df_ret_filter_last_top[['Ticker', 'Date', 'Annualized Sortino Ratio', 'Annualized Sortino Ratio Rank']]
+    df_ret_filter_last_top.sort_values(by=['Annualized Sortino Ratio Rank'], inplace=True)
+
+    print(df_ret_filter_last_top.to_string(index=False))
+
 ![SP500_Equity_Top_10_Annualized_Sortino_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Sortino_Ratio_Data_Python.jpg?raw=true)
 
 Most of the same Tickers appear in this list and **LLY** had the top **Annualized Sortino Ratio** of **3.1** and anything above 2.0 is considered excellent.
 
-Another measure of risk vs. reward is the **Calmar Ratio**. For more information on the Calmar Ratio, refer to this link: [What Is the Calmar Ratio, Its Strenths & Weaknesses?](https://www.investopedia.com/terms/c/calmarratio.asp). It is derived by **Annualized Returns / Max Drawdowns** for the past 36 months which is 3 years. Let's filter the returns for the past 3 years, retrieve all the Tickers that were common for past 4 years and calculate the Calmar Ratio by Ticker. We'll then calculate the top 10 risk-adjusted performers based on Calmar Ratio and print the results.  
+Another measure of risk vs. reward is the **Calmar Ratio**. For more information on the Calmar Ratio, refer to this link: [What Is the Calmar Ratio, Its Strenths & Weaknesses?](https://www.investopedia.com/terms/c/calmarratio.asp). It is derived by **Annualized Returns / Max Drawdowns** for the past 36 months which is 3 years and we have the data for. Let's calculate the Calmar Ratio by Ticker, retrieve the top 10 risk-adjusted performers based on Calmar Ratio and print the results.  
 
-     last_dates = df_ret['Date'].max()
-     three_years_ago = last_dates - pd.DateOffset(days=365 * 3)
-     three_years_ago_str = three_years_ago.strftime('%Y-%m-%d')
+    df_ret_filter2['Calmar Ratio'] = np.where(
+        df_ret_filter2['Max % Drawdown'] == 0, 
+        0, 
+        round(df_ret_filter2['Annualized % Return'] / df_ret_filter2['Max % Drawdown'], 2)
+    )
 
-     date_filter = (df_ret['Date'] >= three_years_ago_str)
-     df_ret_filter = df_ret.loc[date_filter].copy()  # Adding .copy() here to avoid the warning
-     df_ret_filter = calculate_drawdowns(df_ret_filter)
-     df_ret_filter_last = df_ret_filter.groupby('Ticker').tail(1).copy()  # Use .copy() here
-     first_dates = df_ret.groupby('Ticker')['Date'].min().reset_index()
-     first_dates.rename(columns={'Date': 'First Date'}, inplace=True)
-     df_ret_filter_last = df_ret_filter_last.merge(first_dates, on='Ticker')
-     common_first_date = df_ret_filter_last['First Date'].mode()[0]
-     df_ret_last_common = df_ret_filter_last[df_ret_filter_last['First Date'] == common_first_date].copy() 
-     df_ret_last_common['Calmar Ratio'] = np.where(
-         df_ret_last_common['Max % Drawdown'] == 0, 
-         0, 
-         round(df_ret_last_common['Annualized % Return'] / df_ret_last_common['Max % Drawdown'], 2)
-     )
+    df_ret_filter_last = df_ret_filter2.copy().groupby('Ticker').tail(1)
+    df_ret_filter_last.loc[:, 'Calmar Ratio Rank'] = df_ret_filter_last.groupby('Date')['Calmar Ratio'].rank(ascending=False, method='dense').astype(int)
+    num_of_ranks = 10
+    df_ret_filter_last_top = df_ret_filter_last[df_ret_filter_last['Calmar Ratio Rank'] <= num_of_ranks].copy()
+    df_ret_filter_last_top = df_ret_filter_last_top[['Ticker', 'Date', 'Calmar Ratio', 'Calmar Ratio Rank']]
+    df_ret_filter_last_top.sort_values(by=['Calmar Ratio Rank'], inplace=True)
 
-     df_ret_last_common.loc[:, 'Calmar Ratio Rank'] = df_ret_last_common.groupby('Date')['Calmar Ratio'].rank(ascending=False, method='dense').astype(int)
-     num_of_ranks = 10
-     df_ret_last_top = df_ret_last_common[df_ret_last_common['Calmar Ratio Rank'] <= num_of_ranks].copy()
-     df_ret_last_top = df_ret_last_top[['Ticker', 'Date', 'Calmar Ratio', 'Calmar Ratio Rank']]
-     df_ret_last_top.sort_values(by=['Calmar Ratio Rank'], inplace=True)
-
-     print(df_ret_last_top.to_string(index=False))
+    print(df_ret_filter_last_top.to_string(index=False))
            
 ![SP500_Equity_Top_10_Annualized_Calmar_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Calmar_Ratio_Data_Python.jpg?raw=true)
 
