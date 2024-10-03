@@ -956,7 +956,6 @@ We originally had **503** Tickers and now we have **496** Tickers that we will w
 
     print(df_ret_filter_last_top.to_string(index=False))
 
-print(df_ret_filter_top.to_string(index=False))
 ![SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg?raw=true)
 
 The results are the same for the same Tickers when using SQL queries except that we filtered out the Tickers that did not exist 4 years back and so **'CEG'**, which was 3rd in the SQL results, was not in this result. **'MPC'** ended up appearing in the list as 10th.
