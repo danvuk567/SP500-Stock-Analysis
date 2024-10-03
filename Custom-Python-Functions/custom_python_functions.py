@@ -17,7 +17,7 @@ pio.renderers.default='notebook_connected'
 import matplotlib.pyplot as plt
 import seaborn as sns
 import math
-
+from scipy.stats import norm, gaussian_kde
 
 
 def create_connection(serv, dbase, uid, passwd):
@@ -816,6 +816,326 @@ def calculate_drawdowns(df_tmp, period):
         df_tmp.rename(columns={'Max Drawdown Date': label + 'Max Drawdown Date'}, inplace=True)
         
     return df_tmp
+
+def calculate_portfolio_return(df_tmp, period):
+    
+    """
+    Calculate the returns of a portfolio of Tickers using an average of log returns.
+    
+    Parameters:
+    - df_tmp: The DataFrame containing the historical data.
+    - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
+
+    Returns:
+    - A DataFrame with new columns: '% Return', 'Cumulative % Return', 'Annualized % Return', 'Annualized Volatility', 
+      'Annualized Downside Volatility', or None if not applicable.
+    """
+    
+    # Assign the number of periods based on the specified period type
+    if period == 'Year':
+        no_of_periods = 1  # 1 year
+    elif period == 'Quarter':
+        no_of_periods = 4  # 4 quarters in a year
+    elif period == 'Month':
+        no_of_periods = 12  # 12 months in a year
+    else:
+        no_of_periods = 252  # Default to daily data (252 trading days in a year)
+        
+    if period == 'Daily':
+        label = ''
+    else:
+        label = period + ' '
+
+    # Drop unnecessary columns from the DataFrame to simplify calculations
+    df_tmp.drop(columns=['Ticker', 'Open', 'High', 'Low', 'Close', 'Volume', label + 'Annualized % Return', label + 'Annualized Volatility', label + 'Annualized Downside Volatility'], inplace=True)
+
+    # Calculate log returns based on cumulative percentage returns
+    df_tmp['Log Return'] = np.log(1 + (df_tmp[label + 'Cumulative % Return'] / 100))
+
+    # Calculate the average log return for each date
+    df_tmp['Avg Log Return'] = df_tmp.groupby('Date')['Log Return'].transform('mean')
+
+    # Calculate the average percentage return for each date and convert to decimal
+    df_tmp['Avg % Return'] = df_tmp.groupby('Date')[label + '% Return'].transform('mean') / 100
+
+    # Drop columns that are no longer needed after calculating averages
+    df_tmp.drop(columns=['Log Return', label + '% Return', label + 'Cumulative % Return'], inplace=True)
+
+    # Calculate cumulative percentage return from average log return
+    df_tmp['Cumulative % Return'] = np.exp(df_tmp['Avg Log Return']) - 1
+
+    # Drop the average log return column as it is no longer needed
+    df_tmp.drop(columns=['Avg Log Return'], inplace=True)
+
+    # Rename the average percentage return column to '% Return' for clarity
+    df_tmp.rename(columns={'Avg % Return': '% Return'}, inplace=True)
+
+    # Remove duplicate entries in the DataFrame
+    df_tmp.drop_duplicates(inplace=True)
+
+    # Count the number of returns in a rolling manner, starting from the first entry
+    df_tmp['Rolling Return Count'] = df_tmp['% Return'].expanding(min_periods=1).count()
+    
+    # Calculate annualized return based on cumulative return and the number of returns
+    df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative % Return']) ** (no_of_periods / df_tmp['Rolling Return Count']) - 1)
+
+    # Calculate annualized volatility based on the standard deviation of percentage returns
+    df_tmp['Annualized Volatility'] = df_tmp['% Return'].expanding().std() * np.sqrt(no_of_periods)
+
+    # Calculate annualized downside volatility (only for negative returns)
+    df_tmp['Annualized Downside Volatility'] = df_tmp['% Return'].expanding().apply(
+        lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if len(x[x < 0]) > 0 else 0)
+
+    # Drop the rolling return count column after its use
+    df_tmp.drop(columns=['Rolling Return Count'], inplace=True)
+
+    # Round the values for presentation to two decimal places
+    df_tmp['% Return'] = round(df_tmp['% Return'] * 100, 2)
+    df_tmp['Cumulative % Return'] = round(df_tmp['Cumulative % Return'] * 100, 2)
+    df_tmp['Annualized % Return'] = round(df_tmp['Annualized % Return'] * 100, 2)
+    df_tmp['Annualized Volatility'] = round(df_tmp['Annualized Volatility'] * 100, 2)
+    df_tmp['Annualized Downside Volatility'] = round(df_tmp['Annualized Downside Volatility'] * 100, 2)
+    
+    # Rename return columns based on the specified period type, if not daily
+    if period != 'Daily':
+        df_tmp.rename(columns={'% Return': period + ' % Return'}, inplace=True)    
+        df_tmp.rename(columns={'Cumulative % Return': period + ' Cumulative % Return'}, inplace=True)
+        df_tmp.rename(columns={'Annualized % Return': period + ' Annualized % Return'}, inplace=True)
+        df_tmp.rename(columns={'Annualized Volatility': period + ' Annualized Volatility'}, inplace=True)
+        df_tmp.rename(columns={'Annualized Downside Volatility': period + ' Annualized Downside Volatility'}, inplace=True)
+        
+    return df_tmp  # Return the modified DataFrame
+
+
+
+def plot_return_histogram(df_tmp, return_type, ticker):
+    
+    """
+    Plot a histogram of '% Return' for a specific ticker with a normal distribution curve based on all tickers.
+    
+    Parameters:
+    - df_tmp: DataFrame containing return data for all tickers.
+    - return_type: Name of the column containing percentage returns.
+    - ticker: Ticker symbol to filter the DataFrame.
+    """
+    
+    # Filter rows for the specific ticker
+    df_ticker = df_tmp[df_tmp['Ticker'] == ticker]
+    
+    # Ensure the DataFrame contains the required columns
+    if return_type not in df_tmp.columns:
+        raise ValueError(f"Required column '{return_type}' is missing.")
+    
+    # Compute global mean and standard deviation from all tickers
+    all_returns = df_tmp[return_type]
+    global_mean = np.mean(all_returns)
+    global_std_dev = np.std(all_returns)
+    
+    # Compute histogram for the specific ticker
+    ticker_returns = df_ticker[return_type]
+    
+    # Calculate the interquartile range (IQR)
+    IQR = np.percentile(ticker_returns, 75) - np.percentile(ticker_returns, 25)
+    
+    # Calculate the bin width using the Freedman-Diaconis rule
+    bin_width = 2 * IQR / np.cbrt(len(ticker_returns))
+    
+    # Calculate the optimal bin width using Freedman-Diaconis rule
+    num_bins = int((ticker_returns.max() - ticker_returns.min()) / bin_width)
+    
+    plt.figure(figsize=(12, 8))
+    
+    # Compute histogram and keep counts (not densities)
+    count, bins, _ = plt.hist(ticker_returns, bins=num_bins, alpha=0.6, density=False, edgecolor='black', label=f'Frequency for {ticker}')
+    total_count = np.sum(count)
+    
+    # Compute KDE for a smooth line
+    kde = gaussian_kde(ticker_returns, bw_method='scott')  # 'scott' method automatically chooses bandwidth
+    x_kde = np.linspace(ticker_returns.min(), ticker_returns.max(), 1000)  # Generate points for smooth line
+    y_kde = kde(x_kde)  # KDE values
+    y_kde_normalized = y_kde * len(ticker_returns) * bin_width  # Normalize KDE to match histogram counts   
+    plt.plot(x_kde, y_kde_normalized, 'g-', linewidth=2, label='KDE (Smooth Line) for ' + ticker)
+    
+    # Calculate bin width for scaling the normal distribution
+    actual_bin_width = bins[1] - bins[0]  # Use the actual bin width from the histogram calculation
+    
+    # Plot the normal distribution curve based on all tickers and scale to match histogram
+    x = np.linspace(min(bins), max(bins), 100)
+    p = norm.pdf(x, global_mean, global_std_dev)  # PDF of the normal distribution
+    p = p * total_count * actual_bin_width  # Scale PDF by total count and bin width to match frequency
+
+    # Plot the normal distribution curve
+    plt.plot(x, p, 'r-', linewidth=2, label='Normal Distribution (All Tickers)')
+    
+    # Add red dotted vertical line at x = 0
+    plt.axvline(x=0, color='red', linestyle='--', linewidth=2, label='x = 0')
+    
+    # Set labels and title
+    plt.xlabel(return_type)
+    plt.ylabel('Frequency')
+    plt.title(f'Frequency Histogram of {return_type} for {ticker} with Normal Distribution Curve')
+    
+    # Add legend and grid
+    plt.legend()
+    plt.grid(True)
+    plt.show()    
+
+    
+def plot_returns_bubble_chart(df_tmp, return_type, size_type):
+    
+    """
+    Plot a bubble chart where the x-axis is Ticker, 
+    y-axis is return_type.
+    
+    Parameters:
+    - df: DataFrame with columns 'Ticker', return_type, and other metric as size_type
+    """
+    
+    # Filter out rows where size_type has negative or zero values
+    df_tmp2 = df_tmp[df_tmp[size_type] > 0].copy()
+   
+
+    # Sort by the size_type and get the top 10 tickers
+    top_10_tickers = df_tmp2.nlargest(10, size_type)[['Ticker', return_type, size_type]]
+    
+    fig = px.scatter(
+        df_tmp2, 
+        x='Ticker',  # X-axis is Ticker
+        y=return_type,  # Y-axis is return_type
+        size=size_type,  # Bubble size based on size_type
+        color='Ticker',  # Different colors for different tickers
+        hover_name='Ticker',  # Display Ticker name on hover
+        size_max=60,  # Maximum bubble size
+        title=f"Bubble Chart: {return_type} by Ticker with Bubble Size as {size_type}",
+    )
+    
+    # Customize chart appearance
+    fig.update_layout(
+        xaxis_title="Ticker",
+        yaxis_title=return_type,
+        showlegend=False,
+        plot_bgcolor="lightgrey"  # Set background color
+    )
+    
+    # Add an annotation for the top 10 tickers
+    annotations = []
+    for i, row in top_10_tickers.iterrows():
+        # Get the corresponding y value
+        y_value = df_tmp2.loc[df_tmp2['Ticker'] == row['Ticker'], return_type].values[0]
+        annotations.append(
+            dict(
+                x=row['Ticker'],
+                y=y_value,
+                xref="x",
+                yref="y",
+                text=row['Ticker'],  # Show Ticker name
+                showarrow=True,
+                arrowhead=2,
+                ax=50,  # Move the annotation right
+                ay=-20,  # Adjust the vertical position of annotation
+                font=dict(size=10, color="black")
+            )
+        )
+
+    # Add the annotations to the layout
+    fig.update_layout(annotations=annotations)
+
+    # Create a separate legend box on the right for the top 10 tickers
+    legend_text = '<br>'.join([f"{row['Ticker']}, {row[size_type]}" for _, row in top_10_tickers.iterrows()])
+    
+    # Add a text box to display the top 10 tickers legend
+    fig.add_annotation(
+        dict(
+            x=1.05,  # Position the legend outside of the plot
+            y=0.5,  # Vertically center the legend
+            xref='paper', 
+            yref='paper',
+            showarrow=False,
+            text=f'<b>Top 10 Tickers by<br>{size_type}</b><br>{legend_text}',
+            font=dict(size=12, color="black"),
+            align='left',
+            bordercolor='black',
+            borderwidth=1,
+            borderpad=5,
+            bgcolor="lightgrey"
+        )
+    )
+
+    # Show the figure
+    fig.show()
+    
+    
+    
+def plot_period_returns_by_ticker_box_plot(df_ret, period):
+    
+    """
+    Plots a box plot of returns for a given ticker and period.
+    
+    Parameters:
+    - df_ret: DataFrame containing return data.
+    - period: Time period for returns (e.g., 'Daily', 'Year', etc.).
+    """
+    
+    # Define properties for outliers in the box plot
+    # 'marker' defines the shape of the outliers
+    # 'color' sets the color of the outliers
+    # 'alpha' adjusts the transparency of the outliers
+    # 'markersize' sets the size of the outlier markers
+    flierprops = dict(marker='o', color='red', alpha=0.5, markersize=8)
+
+    # Create a figure with a specified size for the plot
+    plt.figure(figsize=(12, 8))
+    
+    # If the period is 'Daily', treat it as an empty string for labeling purposes
+    # Otherwise, append a space after the period string for readability in the title
+    period_label = '' if period == 'Daily' else f'{period} '
+
+    # Create the boxplot, with 'Ticker' on the x-axis and returns on the y-axis
+    sns.boxplot(x='Ticker', y=f'{period_label}% Return', data=df_ret, hue='Ticker', palette="Set2", flierprops=flierprops, legend=False)
+    plt.title(f'{period_label}% Returns by Ticker')  
+    plt.ylabel(f'{period_label}% Returns')  
+    plt.xlabel('Ticker')
+                      
+    # Add gridlines to the y-axis for clarity, using a dashed line style and slight transparency
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+    # Rotate the x-axis labels by 45 degrees for better readability, especially if there are many years
+    plt.xticks(rotation=45)
+    
+    # Display the plot
+    plt.show()
+    
+    
+def plot_ticker_correlations(df_tmp, return_type):
+    
+    """
+    Compute and visualize the correlation between the returns of different tickers.
+    
+    Parameters:
+    - df_tmp: DataFrame containing return data for multiple tickers.
+    - return_type: Column name containing the returns to be correlated.
+
+    
+    Returns:
+    - Correlation matrix and heatmap.
+    """
+    
+    # Pivot the DataFrame to have tickers as columns and dates as index
+    df_pivot = df_tmp.pivot_table(index='Date', columns='Ticker', values=return_type)
+    
+    # Calculate the correlation matrix
+    corr_matrix = df_pivot.corr()
+    
+    # Plot the heatmap of the correlation matrix
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1, center=0,
+                cbar_kws={'label': 'Correlation'}, linewidths=0.5)
+    
+    plt.title(f'Correlation between Tickers based on {return_type}')
+    plt.show()
+    
+    return corr_matrix
+
 
 
     
