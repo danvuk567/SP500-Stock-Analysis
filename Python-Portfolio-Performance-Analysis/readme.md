@@ -460,6 +460,9 @@ What would happen if we invested in the top 10 Annualized Sortino Ratio Tickers 
     df_portfolio_ret_after_second_year['Ticker'] = 'PFL'
     df_portfolio_ret_after_second_year.sort_values(by=['Date'], inplace=True)
 
+    df_ret_after_second_year_comb = pd.concat([df_ret_after_second_year, df_portfolio_ret_after_second_year], axis=0)
+    df_ret_after_second_year_comb.sort_values(by=['Ticker','Date'], inplace=True)
+
     df_ret_after_second_year_comb_last = df_ret_after_second_year_comb.copy().groupby('Ticker').tail(1)
     df_ret_after_second_year_comb_last.sort_values(by=['Ticker'], ascending=True, inplace=True)
 
