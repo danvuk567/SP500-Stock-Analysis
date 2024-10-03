@@ -331,7 +331,7 @@ If we want to see how the returns are correlated, we can use the Pearson correla
             sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1, center=0,
                         cbar_kws={'label': 'Correlation'}, linewidths=0.5)
     
-            plt.title('Correlation between Tickers based on {return_Type}')
+            plt.title(f'Correlation between Tickers based on {return_Type}')
             plt.show()
     
             return corr_matrix
