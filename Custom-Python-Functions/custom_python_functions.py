@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import math
 from scipy.stats import norm, gaussian_kde
+from sklearn.linear_model import LinearRegression
 
 
 def create_connection(serv, dbase, uid, passwd):
@@ -1135,6 +1136,40 @@ def plot_ticker_correlations(df_tmp, return_type):
     plt.show()
     
     return corr_matrix
+
+
+def scatter_plot(df_tmp, return_type):
+
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from sklearn.linear_model import LinearRegression
+
+
+    # Create a scatter plot
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(x='Date', y=return_type, data=df_tmp)
+
+    # Fit a linear regression model
+    X = np.array(range(len(df_tmp))).reshape(-1, 1)  # Dates as numerical values
+    y = df_tmp[return_type].values
+    model = LinearRegression()
+    model.fit(X, y)
+    predicted = model.predict(X)
+
+    # Plot the regression line
+    plt.plot(df_tmp['Date'], predicted, color='red', linewidth=2, label='Regression Line')
+
+    # Add labels and title
+    plt.title(f'{return_type} with Regression Line')
+    plt.xlabel('Date')
+    plt.ylabel(f'{return_type}')
+    plt.legend()
+    plt.show()
+
+
+
 
 
 
