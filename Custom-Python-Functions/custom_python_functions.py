@@ -1140,13 +1140,6 @@ def plot_ticker_correlations(df_tmp, return_type):
 
 def scatter_plot(df_tmp, return_type):
 
-    import pandas as pd
-    import numpy as np
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    from sklearn.linear_model import LinearRegression
-
-
     # Create a scatter plot
     plt.figure(figsize=(10, 6))
     sns.scatterplot(x='Date', y=return_type, data=df_tmp)
