@@ -12,7 +12,7 @@ We'll start by defining a pricing function called *get_pricing_data* that will t
     
         Parameters:
         - df_pricing: DataFrame containing the pricing data.
-        - period: String specifying the period for aggregation ('Year', 'Quarter', or 'Month').
+        - period: String specifying the period type for aggregation ('Year', 'Quarter', or 'Month').
 
         Returns:
         - Processed DataFrame aggregated by the specified period.
@@ -612,80 +612,83 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
             fig.show()
 
 
-This function called *plot_returns_line_chart* will plot simple or cumulative returns in a **Line Chart** using the plotly package for single or multiple Tickers. It requires a returns dataframe, a period type and return type as input parameters. 
+This function called *plot_returns_line_chart* will plot simple or cumulative returns in a **Line Chart** using the plotly package for single or multiple security classes. It requires a returns dataframe, a period type and return type as input parameters. 
 
-        def plot_returns_line_chart(df_tmp, period, return_type):
+        def plot_returns_line_chart(df_tmp, period, return_type, security_class):
     
-            """
-            Plots a line chart for multiple tickers based on the specified period using Plotly.
+        """
+        Plots a line chart for one or multiple security classes based on the specified period using Plotly.
 
-            Parameters:
-            - df_tmp: DataFrame containing return data.
-            - period: A string indicating the period ('Year', 'Quarter', 'Month', 'Daily').
+        Parameters:
+        - df_tmp: DataFrame containing return data.
+        - period: A string indicating the period type ('Year', 'Quarter', 'Month', 'Daily').
+        - return_type: A string indicating the return type ('% Return', 'Cumulative % Return')
+        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
 
-            Returns:
-            - None
-            """
-            
-            # Create a Label column based on the period
-            if period == 'Year':
-                df_tmp['Label'] = df_tmp['Year'].astype(str)
-            elif period == 'Quarter':
-                df_tmp['Label'] = df_tmp['Year'].astype(str) + "-Q" + df_tmp['Quarter'].astype(str)
-            elif period == 'Month':
-                # Ensure month is zero-padded if needed
-                df_tmp['Label'] = df_tmp['Year'].astype(str) + "-" + df_tmp['Month'].apply(lambda x: str(x).zfill(2))
-            else:
-                df_tmp['Label'] = df_tmp['Date'].astype(str)
+        Returns:
+        - None
+        """
+    
+        # Create a Label column based on the period
+        if period == 'Year':
+            df_tmp['Label'] = df_tmp['Year'].astype(str)
+        elif period == 'Quarter':
+            df_tmp['Label'] = df_tmp['Year'].astype(str) + "-Q" + df_tmp['Quarter'].astype(str)
+        elif period == 'Month':
+            # Ensure month is zero-padded if needed
+            df_tmp['Label'] = df_tmp['Year'].astype(str) + "-" + df_tmp['Month'].apply(lambda x: str(x).zfill(2))
+        else:
+            df_tmp['Label'] = df_tmp['Date'].astype(str)
         
-            if period == 'Daily':
-                label = 'Date'
-                period = ''
-            else:
-                label = period
+        if period == 'Daily':
+            label = 'Date'
+            period = ''
+        else:
+            label = period
 
-            tickers = df_tmp['Ticker'].unique()
+        security_classes = df_tmp[security_class].unique()
     
-            if len(tickers) == 0:
-                print("No tickers found in the DataFrame.")
-                return
-            elif len(tickers) == 1:
-                ticker_label = tickers[0]
-            else:
-                ticker_label = 'Ticker'
+        if len(security_classes) == 0:
+            print(f"No {security_class} found in the DataFrame.")
+            return
+        elif len(security_classes) == 1:
+            security_class_label = security_classes[0]
+        else:
+            security_class_label = security_class
+        
     
-            if return_type not in df_tmp.columns:
-                print(f"Column '{return_type} not found in the DataFrame.")
-                return
+        if return_type not in df_tmp.columns:
+            print(f"Column '{return_type} not found in the DataFrame.")
+            return
     
-            fig = pltly.graph_objects.Figure()
+        fig = pltly.graph_objects.Figure()
     
-            for ticker in tickers:
-                df_ticker = df_tmp[df_tmp['Ticker'] == ticker]
-                if df_ticker.empty:
-                    print(f"No data found for ticker {ticker}.")
+        for sec in security_classes:
+            df_security_class = df_tmp[df_tmp[security_class] == sec]
+            if df_security_class.empty:
+                print(f"No data found for {sec}.")
                 continue
         
             fig.add_trace(
                 pltly.graph_objects.Scatter(
-                    x=df_ticker['Label'],
-                    y=df_ticker[return_type],
+                    x=df_security_class['Label'],
+                    y=df_security_class[return_type],
                     mode='lines',
-                    name=ticker
+                    name=sec
                 )
             )
+
+        fig.update_layout(
+            title=f'{return_type} for {security_class_label}',
+            xaxis_title=security_class_label,
+            yaxis_title=f'{return_type}',
+            legend_title=security_class,
+            plot_bgcolor='#f5f5f5',  # Lightest grey
+            paper_bgcolor='white'
+        )
     
-            fig.update_layout(
-                title=f'{return_type} for {ticker_label}',
-                xaxis_title=label,
-                yaxis_title=f'{return_type}',
-                legend_title='Ticker',
-                plot_bgcolor='#f5f5f5',  # Lightest grey
-                paper_bgcolor='white'
-            )
-    
-            fig.update_xaxes(tickangle=45)  # Rotate x-axis labels for better readability if necessary
-            fig.show()
+        fig.update_xaxes(tickangle=45)  # Rotate x-axis labels for better readability if necessary
+        fig.show()
 
 We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is another measure of risk and is the difference between the peak value and the trough value that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input, the period type and return the same dataframe with drawdown columns for the period: *'Peak'*, *'Drawdown'*, *'% Drawdown'*, *'Cumulative Max % Drawdown'*, *'Max % Drawdown'*, and *'Max Drawdown Date'*.
 
