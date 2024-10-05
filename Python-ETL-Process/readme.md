@@ -30,6 +30,8 @@ conda install seaborn
 
 conda install scipy
 
+conda install sklearn
+
 
 ## Create custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom_Python_Functions/custom_python_functions.py)*  
 
@@ -45,10 +47,10 @@ In all SQL operations, we will need to create a connection to the database. We w
         Creates a connection to a SQL Server database using SQLAlchemy and returns a session and engine.
 
         Args:
-            serv (str): The name or IP address of the SQL Server.
-            dbase (str): The name of the database to connect to.
-            uid (str): The username for database authentication (leave empty for trusted connection).
-            passwd (str): The password for database authentication (needed if uid is provided).
+            serv: String specifying the name or IP address of the SQL server.
+            dbase: String specifying the name of the database to connect to.
+            uid  String specifying the username for database authentication (leave empty for trusted connection).
+            passwd: String specifying the password for database authentication (needed if uid is provided).
 
         Returns:
             tuple: A tuple containing the sessionmaker class and the SQLAlchemy engine.
@@ -85,7 +87,8 @@ In all SQL operations, we will need to create a connection to the database. We w
         Clears all rows from the specified database table using a TRUNCATE command.
 
         Args:
-            s1 (Session): The SQLAlchemy session object used to execute the command.
+        s1: The SQLAlchemy session object used to execute the command.
+        t: String representing the table name.
         """
     
         sql_stat = sa.text('TRUNCATE TABLE ' + t)
@@ -101,8 +104,8 @@ In all SQL operations, we will need to create a connection to the database. We w
             Generates the start and end dates for data retrieval.
 
             Args:
-                yrs_back (int): Number of years to look back from the current year.
-                yrs_forward (int): Number of years to look forward from the current year.
+                yrs_back: Integer specifying the number of years to look back from the current year.
+                yrs_forward: Integer specifying the number of years to look forward from the current year.
 
             Returns:
                 tuple: A tuple containing the start date and end date in string format.
