@@ -511,7 +511,7 @@ After using percentile ranking logic, we determined that in fact, our portfolio 
 
 Let's use a Histogram plot using our custom function *plot_return_histogram* to view our portfolio simple returns compared to all the S&P 500 Ticker simple returns.
 
-    plot_return_histogram(df_ret_after_second_year_comb, '% Return', 'PFL')
+    plot_return_histogram(df_ret_after_second_year_comb, '% Return', 'Ticker', 'PFL')
 
 ![SP500_Portfolio_Histogram_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Histogram_Chart_Python.jpg?raw=true)
 
@@ -519,9 +519,13 @@ Our portfolio **PFL** has a shape that is more narrow and longer with less fatte
 
 Another way to view our portfolio returns compared to the broader market is to use a benchmark. We can calculate the returns for all Tickers as a portfolio and define it as the benchmark labelled **BM**. We then plot the Portfolio **PFL** and benchmark **BM** cumulative returns in a Line Chart using our custom function *plot_returns_line_chart*.
 
+    df_bench_ret_after_second_year = calculate_portfolio_return(df_ret_after_second_year.copy(), ['Ticker'], 'Daily')
+    df_bench_ret_after_second_year['Ticker'] = 'BM'
+    df_bench_ret_after_second_year.sort_values(by=['Date'], inplace=True)
+    
     df_ret_after_second_year_comb2 = pd.concat([df_bench_ret_after_second_year, df_portfolio_ret_after_second_year], axis=0)
     df_ret_after_second_year_comb2.sort_values(by=['Ticker','Date'], inplace=True)
-    plot_returns_line_chart(df_ret_after_second_year_comb2, 'Daily', 'Cumulative % Return')
+    plot_returns_line_chart(df_ret_after_second_year_comb2, 'Daily', 'Cumulative % Return', 'Ticker')
 
 ![SP500_Portfolio_Benchmark_Cumulative_Returns_Line_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Cumulative_Returns_Line_Chart_Python.jpg?raw=true)
 
