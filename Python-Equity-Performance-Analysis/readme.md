@@ -251,19 +251,20 @@ Lastly, we convert our returns and volatility measures into percentages, drop th
     return df_tmp
 
 
-Here we define a function called *plot_returns_bar_chart* to create a **Bar Chart** using the **matplotlib** package. It also takes a return dataframe, Ticker name and period type as input parameters as well as a return type.
+Here we define a function called *plot_returns_bar_chart* to create a **Bar Chart** using the **matplotlib** package. It also takes a return dataframe, security class value, period type and return type as input parameters.
 
-        def plot_returns_bar_chart(df_tmp, ticker, period, return_type):
-    
+        def plot_returns_bar_chart(df_tmp, security_class_val, period, return_type):
+
             """
             Plots a bar chart of returns based on the specified period.
-    
-            Parameters:
-            - df_tmp: DataFrame containing return data.
-            - ticker: Stock ticker symbol.
-            - period: Time period for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+
+            Args:
+                - df_tmp: DataFrame containing return data.
+                - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+                - period: A string indicating the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+                - return_type: A string indicating the return type ('% Return', 'Cumulative % Return'). 
             """
-    
+
             # Create a Label column based on the period
             if period == 'Year':
                 df_tmp['Label'] = df_tmp['Year'].astype(str)
@@ -274,47 +275,48 @@ Here we define a function called *plot_returns_bar_chart* to create a **Bar Char
                 df_tmp['Label'] = df_tmp['Year'].astype(str) + "-" + df_tmp['Month'].apply(lambda x: str(x).zfill(2))
             else:
                 df_tmp['Label'] = df_tmp['Date']
-        
+    
 
             # Check if return_type exists in df_tmp
             if return_type not in df_tmp.columns:
                 raise ValueError(f"Column '{return_type}' does not exist in the DataFrame.")
-    
+
             # Plot returns as a bar chart
             colors = ['red' if x < 0 else 'blue' for x in df_tmp[return_type]]
             plt.figure(figsize=(10, 8))
             plt.axhline(0, color='red', linestyle='--', linewidth=2.0)
             plt.bar(df_tmp['Label'], df_tmp[return_type], color=colors, edgecolor='black')
-            plt.title(f'{ticker} {return_type}')
+            plt.title(f'{security_class_val} {return_type}')
             plt.xlabel(period)
             plt.ylabel(return_type)
             plt.grid(axis='y', linestyle='--', alpha=0.7)
             plt.xticks(rotation=45)  # Rotate labels if needed for readability
-            plt.show()
+            plt.show()  
 
-Now let's define a function called *calculate_stats* which will calculate Quarterly Return Statistics based on Year and Year % Return. Similar to what we did using SQL queries, we want to find the Lowest, Highest, Average, Median and Variance of Quarterly Returns for each Year. We use the built-in *groupby* and *agg* functions we can apply to dataframes to achieve this. It requires a return dataframe and period type as input parameters and returns a statistics dataframe.
+Now let's define a function called *calculate_stats* which will calculate Quarterly Return Statistics based on Year and Year % Return. Similar to what we did using SQL queries, we want to find the Lowest, Highest, Average, Median and Variance of Quarterly Returns for each Year. We use the built-in *groupby* and *agg* functions we can apply to dataframes to achieve this. It requires a return dataframe, security class type and period type as input parameters and returns a statistics dataframe.
 
-        def calculate_stats(df_ret, period):
-    
+        def calculate_stats(df_ret, security_class, period):
+
             """
             Calculate various statistical metrics for returns such as Lowest, Highest, Average, Median returns, 
             and Return Variance for the given period.
 
-            Parameters:
-            - df_ret: DataFrame containing return data.
-            - period: The period for which the statistics are being calculated ('Year', 'Quarter', 'Month', or 'Daily').
+            Args:
+                - df_ret: DataFrame containing return data.
+                - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+                - period: A string indicating the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
 
             Returns:
-            - df_tmp: A DataFrame containing the calculated statistics for each 'Ticker' over the specified period.
+                - df_tmp: A DataFrame containing the calculated statistics for each security class type over the specified period.
             """
     
             # Determine the required columns based on the given period
             if (period == 'Quarter') or (period == 'Month') or (period == 'Daily'):
                 # For these periods, also include 'Year' and 'Year % Return' in the grouping columns
-                required_cols = ['Ticker', 'Year', 'Year % Return']
+                required_cols = [security_class, 'Year', 'Year % Return']
             else:  
                 # Default to 'Year' only if the period is not specified as 'Quarter', 'Month', or 'Daily'
-                required_cols = ['Ticker']
+                required_cols = [security_class]
     
             # Adjust period string for daily returns (no prefix) or for non-daily periods (add space after period)
             if period == 'Daily':
@@ -352,26 +354,28 @@ Now let's define a function called *calculate_stats* which will calculate Quarte
             # Return the DataFrame with the calculated statistics
             return df_tmp
 
-This custom function called *plot_year_stats_bar_charts* will use matplotlib subplots to show separate bar charts of each period Statistic based on  *'Year'* and *'Year % Return'* we want to show. The code is a bit tricky and lengthy to get correct dynamic formatting. It requires a statistics dataframe and Ticker name as input parameters.
+    
+This custom function called *plot_year_stats_bar_charts* will use matplotlib subplots to show separate bar charts of each period Statistic based on  *'Year'* and *'Year % Return'* we want to show. The code is a bit tricky and lengthy to get correct dynamic formatting. It requires a statistics dataframe, security class type and security class value as input parameters.
 
-        def plot_period_stats_by_year_bar_charts(df_stats, ticker):
+        def plot_period_stats_by_year_bar_charts(df_stats, security_class, security_class_val):
     
             """
             Create bar charts to visualize various statistics.
     
-            Parameters:
-            - df_stats: DataFrame containing the combined statistics.
-            - ticker: String representing the ticker symbol.
+            Args:
+                - df_stats: DataFrame containing the combined statistics.
+                - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+                - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
             """
     
-            # Determine the columns to plot by excluding 'Ticker' and 'Year'
-            columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year']]
+            # Determine the columns to plot by excluding 'security_class' and 'Year'
+            columns_to_plot = [col for col in df_stats.columns if col not in [security_class, 'Year']]
     
             # Check if there is only one row in the DataFrame
             if len(df_stats) == 1:
         
-                # Determine the columns to plot by excluding 'Ticker' and 'Year'
-                columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year']]
+                # Determine the columns to plot by excluding 'security_class' and 'Year'
+                columns_to_plot = [col for col in df_stats.columns if col not in [security_class, 'Year']]
         
                 # Extract the single row of statistics
                 stats = {col: df_stats[col].values[0] for col in columns_to_plot}
@@ -383,14 +387,14 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
                 for key, value in stats.items():
                     ax.bar(key, value, color='blue', edgecolor='black', label=key)
         
-                ax.set_title(f'{ticker} Year Statistics')
+                ax.set_title(f'{security_class_val} Year Statistics')
                 ax.set_ylabel('Value')
                 ax.grid(axis='y', linestyle='--', alpha=0.7)
 
             else:
         
-                # Determine the columns to plot by excluding 'Ticker' and 'Year' and 'Year % Return'
-                columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year', 'Year % Return']]
+                # Determine the columns to plot by excluding 'security_class' and 'Year' and 'Year % Return'
+                columns_to_plot = [col for col in df_stats.columns if col not in [security_class, 'Year', 'Year % Return']]
         
                 # Number of statistics to plot
                 num_stats = len(columns_to_plot)
@@ -419,11 +423,11 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
                     # Plot the bar chart
                     ax[i].bar(df_stats['Year'], df_stats[col], color=colors, edgecolor='black')
                     ax[i].axhline(0, color='red', linestyle='--', linewidth=2.0)
-                    ax[i].set_title(f'{ticker} {col}')
+                    ax[i].set_title(f'{security_class_val} {col}')
                     ax[i].set_xlabel('Year')
                     ax[i].set_ylabel(col)
                     ax[i].grid(axis='y', linestyle='--', alpha=0.7)
-
+            
                     # Set x-ticks to only whole years
                     ax[i].set_xticks(df_stats['Year'].unique())  # Set x-ticks to unique years
                     ax[i].set_xticklabels(df_stats['Year'].unique().astype(int), rotation=45)  # Use int for tick labels
@@ -441,19 +445,19 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
 
 This custom function called *plot_period_returns_by_year_box_plot* will use seaborn to plot **Box Plots**. Box plots are one of my favorite visualizations that tell a lot of the story in numerical data. The boxes themselves represent the interquartile range (IQR), which is the range between the first quartile (Q1, or 25th percentile) and the third quartile (Q3, or 75th percentile). The IQR contains the middle 50% of the data. The Median is a line inside the box represents the median (or second quartile, Q2, or 50th percentile) of the data which is the center of the dataset. The whiskers extend from the edges of the box to the smallest and largest values within 1.5 times the IQR from Q1 and Q3, respectively. Data points that fall outside the whiskers (beyond 1.5 times the IQR from Q1 and Q3) are considered outliers and are typically plotted as individual points.
 
-This function uses the seaborn package to plot the box plots and requires a returns dataframe, Ticker name and period type as input parameters.
+This function uses the seaborn package to plot the box plots and requires a returns dataframe, a security class value and period type as input parameters.
 
         import seaborn as sns
         
-        def plot_period_returns_by_year_box_plot(df_ret, ticker, period):
+         def plot_period_returns_by_year_box_plot(df_ret, security_class_val, period):
     
             """
             Plots a box plot of returns for a given ticker and period.
     
-            Parameters:
-            - df_ret: DataFrame containing return data.
-            - ticker: Stock ticker symbol.
-            - period: Time period for returns (e.g., 'Daily', 'Year', etc.).
+            Args:
+                - df_ret: DataFrame containing return data.
+                - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+                - period: A string indicating the period type ('Year', 'Quarter', 'Month', etc.).
             """
     
             # Define properties for outliers in the box plot
@@ -478,14 +482,14 @@ This function uses the seaborn package to plot the box plots and requires a retu
                 # If period is 'Year', create a box plot of yearly percentage returns
                 # y-axis is set to the 'Year % Return' column in the DataFrame
                 sns.boxplot(y=f'Year % Return', data=df_ret, palette="Set2", flierprops=flierprops)
-                plt.title(f'{ticker} Year % Returns')  # Title includes the ticker and indicates yearly returns
+                plt.title(f'{security_class_val} Year % Returns')  # Title includes the security class type and indicates yearly returns
                 plt.ylabel('Year % Return')  # Set the label for the y-axis to 'Year % Return'
 
             else:
                 # For other periods, create a box plot with 'Year' on the x-axis and returns on the y-axis
                 # The 'hue' argument differentiates data points by 'Year', using different colors for each year
                 sns.boxplot(x='Year', y=f'{period}% Return', data=df_ret, hue='Year', palette="Set2", flierprops=flierprops)
-                plt.title(f'{ticker} {period}% Returns by Year')  # Title includes the ticker and period
+                plt.title(f'{security_class_val} {period}% Returns by Year')  # Title includes the security_class and period
                 plt.xlabel('Year')  # Set the label for the x-axis to 'Year'
 
             # Add gridlines to the y-axis for clarity, using a dashed line style and slight transparency
@@ -498,23 +502,25 @@ This function uses the seaborn package to plot the box plots and requires a retu
             plt.show()
             
 
-This function called *plot_top_returns_bar_chart* that uses the plotly package will plot period returns as bar charts within subplots using a plotly color scheme *'Blues'*. This function is quite complex to achive the desired result and format. It uses a pivot function to create a pivot table dataframe that shifts returns under Tickers. It also uses the math package to calculate the number of subplots. It requires a returns dataframe and period type as input parameters.
+This function called *plot_top_returns_bar_chart* that uses the plotly package will plot period returns as bar charts within subplots using a plotly color scheme *'Blues'*. This function is quite complex to achive the desired result and format. It uses a pivot function to create a pivot table dataframe that shifts returns under the security class type columns. It also uses the math package to calculate the number of subplots. It requires a returns dataframe, security class type and period type as input parameters.
 
         import math
         
-        def plot_top_returns_bar_chart(df_tmp, period):
-        
-            """
-            Plots a bar chart of returns based on the specified period for multiple tickers.
+        def plot_top_returns_bar_chart(df_tmp, security_class, period):
     
-            Parameters:
-            - df_tmp: DataFrame containing return data.
-            - period: Time period for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
             """
+            Plots a bar chart of returns based on the specified period for multiple security classes.
+    
+            Args:
+                - df_tmp: DataFrame containing return data.
+                - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+                - period: A string indicating the period type ('Year', 'Quarter', 'Month', etc.).
+            """
+    
             if period == 'Daily':
                 raise ValueError("Too many periods to support number of subplots.")
         
-            tickers = df_tmp['Ticker'].unique()
+            security_classes = df_tmp[security_class].unique()
 
             # Create a Label column based on the period
             if period == 'Year':
@@ -531,9 +537,9 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
                 df_tmp.sort_values(by=['Year', 'Month'], inplace=True)
             else:
                 df_tmp['Label'] = df_tmp['Date'].astype(str)
-            
-            return_type = period + ' % Return'
     
+            return_type = period + ' % Return'
+            
             # Check if return_type exists in df_tmp
             if return_type not in df_tmp.columns:
                 raise ValueError(f"Column '{return_type}' does not exist in the DataFrame.")
@@ -563,33 +569,33 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
             fig = make_subplots(rows=rows, cols=cols, vertical_spacing=vert_space, horizontal_spacing=horiz_space)
     
             # Generate a color scale from dark to light blue
-            num_tickers = len(tickers)
+            num_security_classes = len(security_classes)
             color_scale = px.colors.sequential.Blues
-            colors = color_scale[:num_tickers] if num_tickers <= len(color_scale) else color_scale * (num_tickers // len(color_scale) + 1)
+            colors = color_scale[:num_tickers] if num_security_classes <= len(color_scale) else color_scale * (num_security_classes // len(color_scale) + 1)
     
-            num_top_tickers = round(len(df_tmp) / num_periods)
+            num_top_security_classes = round(len(df_tmp) / num_periods)
     
-            # Loop through each period and plot the returns for all tickers
+            # Loop through each period and plot the returns for all security class types
             for i, period_val in enumerate(unique_periods):
                 df_period = df_tmp[df_tmp['Label'] == period_val]
         
-                # Create a pivot table dataframe to shift returns under 'Label' column for Tickers
-                df_pivot = df_period.pivot(index='Ticker', columns='Label', values=return_type)
+                # Create a pivot table dataframe to shift returns under 'Label' column for security class types
+                df_pivot = df_period.pivot(index=security_class, columns='Label', values=return_type)
         
                 # Sort by the first column (the only column in this case) in descending order
                 df_pivot = df_pivot.sort_values(by=df_pivot.columns[0], ascending=False)
-
-                # Create a bar chart for each period, showing returns of all tickers
-                # Add traces for each ticker with distinct colors
-                for j, ticker in enumerate(df_pivot.index):
-                    y_values = df_pivot.loc[ticker].values
+        
+                # Create a bar chart for each period, showing returns of all security class types
+                # Add traces for each security class type with distinct colors
+                for j, sec in enumerate(df_pivot.index):
+                    y_values = df_pivot.loc[sec].values
                     fig.add_trace(
                         pltly.graph_objects.Bar(
                             x=[period_val],  # Use the period value as x-tick for that subplot
                             y=y_values,  # Use the pivoted values
-                            name=ticker,
+                            name=sec,
                             marker_color=colors[j % len(colors)],  # Apply color
-                            text=ticker,  # Display ticker on bars
+                            text=sec,  # Display secuirty class type on bars
                             textposition='inside'  # Label on bars
                         ),
                         row=(i // cols) + 1,
@@ -599,7 +605,7 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
             fig.update_layout(
                 height=height_size * rows,  # Adjust height based on number of rows
                 width=width_size,
-                title_text=f'Top {num_top_tickers} Tickers by {period} % Return',
+                title_text=f'Top {num_top_security_classes} for {security_class} by {period} % Return',
                 plot_bgcolor='lightgrey',  # Background color
                 paper_bgcolor='white',  # Paper background color
                 showlegend=False  # Hide legend
@@ -612,7 +618,7 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
             fig.show()
 
 
-This function called *plot_returns_line_chart* will plot simple or cumulative returns in a **Line Chart** using the plotly package for single or multiple security classes. It requires a returns dataframe, a period type and return type as input parameters. 
+This function called *plot_returns_line_chart* will plot simple or cumulative returns in a **Line Chart** using the plotly package for single or multiple security classes. It requires a returns dataframe, period type, return type and security class type as input parameters. 
 
         def plot_returns_line_chart(df_tmp, period, return_type, security_class):
     
@@ -690,60 +696,60 @@ This function called *plot_returns_line_chart* will plot simple or cumulative re
         fig.update_xaxes(tickangle=45)  # Rotate x-axis labels for better readability if necessary
         fig.show()
 
-We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on Ticker. A **Drawdown** is another measure of risk and is the difference between the peak value and the trough value that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input, the period type and return the same dataframe with drawdown columns for the period: *'Peak'*, *'Drawdown'*, *'% Drawdown'*, *'Cumulative Max % Drawdown'*, *'Max % Drawdown'*, and *'Max Drawdown Date'*.
+We will now define a function called  *calculate_drawdowns* that will calculate the drawdowns, cumulative max drawdowns (rolling worst drawdown) and maximum drawdown for all dates using cumulative returns based on security class type. A **Drawdown** is another measure of risk and is the difference between the peak value and the trough value that follows. For more information on drawdowns, refer to this link: [Drawdown: What It Is, Risks, and Examples](https://www.investopedia.com/terms/d/drawdown.asp). Here we simply calculate the drawdown at each date as the difference in cumulative return from the rolling peak cumulative return. We pass the return dataframe as input, the period type and return the same dataframe with drawdown columns for the period: *'Peak'*, *'Drawdown'*, *'% Drawdown'*, *'Cumulative Max % Drawdown'*, *'Max % Drawdown'*, and *'Max Drawdown Date'*.
 
-        def calculate_drawdowns(df_tmp, period):
+        def calculate_drawdowns(df_tmp, security_class, period):
     
             """
-            Calculate drawdowns and maximum drawdown based on cumulative returns.
+                Calculate drawdowns and maximum drawdown based on cumulative returns.
     
-            Parameters:
-            - df_tmp: The DataFrame containing the cumulative return data.
-            - period: The period type (e.g., 'Daily', 'Monthly', etc.), which is used to label the columns.
+            Args:
+                - df_tmp: The DataFrame containing the cumulative return data.
+                - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker').
+                - period: A string indicating the period type ('Year', 'Quarter', 'Month', 'Daily').
 
             Returns:
-            - A DataFrame with new columns for drawdown and maximum drawdown.
+                - A DataFrame with new columns for drawdown and maximum drawdown.
             """
-
+    
             # Determine the label for the columns based on the period type
             if period == 'Daily':
                 label = ''
             else:
                 label = period + ' '
-        
+    
             # Ensure the DataFrame is sorted by Date for proper calculations
-            df_tmp.sort_values(by=['Ticker', 'Date'], inplace=True)
+            df_tmp.sort_values(by=[security_class, 'Date'], inplace=True)
 
             # Check for 'Cumulative % Return' presence
             if label + 'Cumulative % Return' not in df_tmp.columns:
                 raise ValueError(f"{label}Cumulative % Return column is missing. Please calculate returns first.")
     
-            # Calculate Peak for each Ticker
-            df_tmp['Peak'] = df_tmp.groupby('Ticker')['Cumulative % Return'].cummax()
+            # Calculate Peak for each security class type
+            df_tmp['Peak'] = df_tmp.groupby(security_class)[label + 'Cumulative % Return'].cummax()
     
-            # Calculate Drawdown as the difference between Peak and Cumulative Return
             df_tmp['Drawdown'] = np.where(
                 df_tmp[label + 'Cumulative % Return'] >= 0,  # If cumulative return is positive or zero
                 df_tmp['Peak'] - df_tmp[label + 'Cumulative % Return'],  # Calculate drawdown normally
                 df_tmp['Peak'] + abs(df_tmp[label + 'Cumulative % Return'])  # Account for negative cumulative return
-            )
-    
+                )
+   
             # Calculate % Drawdown
             df_tmp['% Drawdown'] = np.where(
                 df_tmp['Peak'] != 0,
                 round((df_tmp['Drawdown'] / df_tmp['Peak']) * 100, 2),
                 0
             )
-
-            # Calculate Cumulative Max % Drawdown for each Ticker (worst drawdown observed up to each date)
-            df_tmp['Cumulative Max % Drawdown'] = df_tmp.groupby('Ticker')['% Drawdown'].cummax()
+    
+            # Calculate Cumulative Max % Drawdown for each security class type (worst drawdown observed up to each date)
+            df_tmp['Cumulative Max % Drawdown'] = df_tmp.groupby(security_class)['% Drawdown'].cummax()
     
             # Max % Drawdown column represents max drawdown of all dates
-            df_tmp['Max % Drawdown'] = df_tmp.groupby('Ticker')['% Drawdown'].transform('max')
+            df_tmp['Max % Drawdown'] = df_tmp.groupby(security_class)['% Drawdown'].transform('max')
             # Create a mask where % Drawdown equals Max % Drawdown
             df_tmp['Is_Max_Drawdown'] = df_tmp['% Drawdown'] == df_tmp['Max % Drawdown']
             # Extract the last date where the Max % Drawdown occurs
-            df_tmp['Max Drawdown Date'] = df_tmp['Date'].where(df_tmp['Is_Max_Drawdown']).groupby(df_tmp['Ticker']).transform('last')
+            df_tmp['Max Drawdown Date'] = df_tmp['Date'].where(df_tmp['Is_Max_Drawdown']).groupby(df_tmp[security_class]).transform('last')
 
             # If the period is not 'Daily', rename the columns with the period label prefix
             if period != 'Daily':
@@ -753,8 +759,8 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
                 df_tmp.rename(columns={'Cumulative Max % Drawdown': label + 'Cumulative Max % Drawdown'}, inplace=True)
                 df_tmp.rename(columns={'Max % Drawdown': label + 'Max % Drawdown'}, inplace=True)
                 df_tmp.rename(columns={'Max Drawdown Date': label + 'Max Drawdown Date'}, inplace=True)
-
-        return df_tmp
+        
+            return df_tmp
 
 
 ## Equity Performance Analysis: *[Equity-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Performance-Analysis.ipynb)*
@@ -868,14 +874,14 @@ Let's plot a bar chart of the Quarterly returns for **MSFT** using the df_comb_r
 
 Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_ret_ticker dataframe to retrieve the Quarterly return statistics by year and print the results.
 
-     df_comb_stats_ticker = calculate_stats(df_comb_ret_ticker.copy(), 'Quarter')
+     df_comb_stats_ticker = calculate_stats(df_comb_ret_ticker.copy(), 'Ticker', 'Quarter')
      print(df_comb_stats_ticker.to_string(index=False))
 
  ![MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg?raw=true) 
 
  We can plot all the Quarterly return statistics by year using our custom function *plot_year_stats_bar_charts* for **MSFT**.
 
-      plot_period_stats_by_year_bar_charts(df_comb_stats_ticker, 'MSFT')
+      plot_period_stats_by_year_bar_charts(df_comb_stats_ticker, 'Ticker', 'MSFT')
  
 ![MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Bar_Charts.jpg?raw=true) 
 
@@ -905,7 +911,7 @@ Now let’s examine Yearly returns for multiple stocks and get the top 5 perform
 
 Let's call our custom function *plot_top_returns_bar_chart* to plot our top 5 performers by year using the *df_yearly_ret_top* dataframe.
 
-      plot_top_returns_bar_chart(df_yearly_ret_top, 'Year')
+      plot_top_returns_bar_chart(df_yearly_ret_top, 'Ticker', 'Year')
 
 ![SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Bar_Charts.jpg?raw=true)
 
@@ -967,7 +973,7 @@ Let's extract the top 10 tickers from our *df_ret_filter* dataframe as *df_ret_f
 
     top_tickers = df_ret_filter_last_top['Ticker'].unique()
     df_ret_filter_top = df_ret_filter[df_ret_filter['Ticker'].isin(top_tickers)].copy()
-    plot_returns_line_chart(df_ret_filter_top, 'Daily', 'Cumulative % Return')
+    plot_returns_line_chart(df_ret_filter_top, 'Daily', 'Cumulative % Return', 'Ticker')
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Line_Chart.jpg?raw=true)
 
