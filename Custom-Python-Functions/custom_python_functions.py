@@ -21,15 +21,16 @@ from scipy.stats import norm, gaussian_kde
 from sklearn.linear_model import LinearRegression
 
 
+
 def create_connection(serv, dbase, uid, passwd):
     """
     Creates a connection to a SQL Server database using SQLAlchemy and returns a session and engine.
 
     Args:
-        serv (str): The name or IP address of the SQL Server.
-        dbase (str): The name of the database to connect to.
-        uid (str): The username for database authentication (leave empty for trusted connection).
-        passwd (str): The password for database authentication (needed if uid is provided).
+        serv: String specifying the name or IP address of the SQL server.
+        dbase: String specifying the name of the database to connect to.
+        uid  String specifying the username for database authentication (leave empty for trusted connection).
+        passwd: String specifying the password for database authentication (needed if uid is provided).
 
     Returns:
         tuple: A tuple containing the sessionmaker class and the SQLAlchemy engine.
@@ -65,7 +66,8 @@ def clear_table(s1, t):
     Clears all rows from the specified database table using a TRUNCATE command.
 
     Args:
-        s1 (Session): The SQLAlchemy session object used to execute the command.
+        s1: The SQLAlchemy session object used to execute the command.
+        t: String representing the table name.
     """
     
     sql_stat = sa.text('TRUNCATE TABLE ' + t)
@@ -79,8 +81,8 @@ def get_dates_for_years(yrs_back, yrs_forward):
     Generates the start and end dates for data retrieval.
 
     Args:
-        yrs_back (int): Number of years to look back from the current year.
-        yrs_forward (int): Number of years to look forward from the current year.
+        yrs_back: Integer specifying the number of years to look back from the current year.
+        yrs_forward: Integer specifying the number of years to look forward from the current year.
 
     Returns:
         tuple: A tuple containing the start date and end date in string format.
@@ -107,12 +109,12 @@ def get_pricing_data(df_tmp, period):
         """
         This function processes pricing data from a DataFrame based on the specified period ('Year', 'Quarter', or 'Month').
     
-        Parameters:
-        - df_pricing: DataFrame containing the pricing data.
-        - period: String specifying the period for aggregation ('Year', 'Quarter', or 'Month').
+        Args:
+            - df_pricing: DataFrame containing the pricing data.
+            - period: String specifying the period type for aggregation ('Year', 'Quarter', or 'Month').
 
         Returns:
-        - Processed DataFrame aggregated by the specified period.
+            - Processed DataFrame aggregated by the specified period.
         """
     
       
@@ -147,10 +149,10 @@ def plot_pricing_candlestick(df_tmp, ticker, period):
         """
         Plots a candlestick chart for the given DataFrame, ticker, and period.
     
-        Parameters:
-        - df_tmp: DataFrame containing pricing data with 'Date', 'Open', 'High', 'Low', 'Close'.
-        - ticker: The stock ticker symbol.
-        - period: The period type for the x-axis ticks ('Year', 'Quarter', 'Month, or 'Daily').
+        Args:
+            - df_tmp: DataFrame containing pricing data with 'Date', 'Open', 'High', 'Low', 'Close'.
+            - ticker: String representing the stock ticker symbol.
+            - period: String specifying the period type for the x-axis ticks ('Year', 'Quarter', 'Month, or 'Daily').
         """
     
         # Generate tick_text based on the period
@@ -201,16 +203,15 @@ def plot_pricing_line(df_tmp, ticker, period, price):
 
     """
     Plots a line chart for the given DataFrame, ticker, and period.
-
-    Parameters:
-    - df_tmp: DataFrame containing pricing data (e.g., with 'Date', 'Open', 'High', 'Low', 'Close').
-    - ticker: The stock ticker symbol.
-    - period: The period type for the x-axis ('Year', 'Quarter', 'Month', or 'Daily').
-    - price: The column name for the y-axis values to plot (e.g., 'Close', 'Open').
-
     This function creates a simple line chart for a given financial asset 
     over the specified period, with properly formatted x and y axis labels, 
     a grid, and rotated x-axis labels for better readability.
+
+    Args:
+        - df_tmp: DataFrame containing pricing data (e.g., with 'Date', 'Open', 'High', 'Low', 'Close').
+        - ticker: String representing the stock ticker symbol.
+        - period: String specifying the period type for the x-axis ticks ('Year', 'Quarter', 'Month, or 'Daily').
+        - price: String representing the column name for the y-axis values to plot (e.g., 'Close', 'Open').
     """
 
     # Check if the period is 'Daily'
@@ -244,13 +245,13 @@ def calculate_return(df_tmp, period):
     """
     Calculate the return percentage based on the 'Close' and 'Open' prices for a given period type.
     
-    Parameters:
-    - df_tmp: The DataFrame containing the historical data.
-    - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
+    Args:
+        - df_tmp: The DataFrame containing the historical data.
+        - period: A string indicating the period type ('Year', 'Quarter', 'Month', or 'Daily').
 
     Returns:
-    - A DataFrame with new columns: '% Return','Cumulative % Return','Annualized % Return','Annualized Volatility', 
-    - 'Annualized Downside Volatility', or None if not applicable.
+        - A DataFrame with new columns: '% Return','Cumulative % Return','Annualized % Return','Annualized Volatility', 
+        - 'Annualized Downside Volatility', or None if not applicable.
     """
     
     # Assign the number of periods based on period type
@@ -302,7 +303,7 @@ def calculate_return(df_tmp, period):
     df_tmp['Annualized % Return'] = ((1 + df_tmp['Cumulative Simple % Return'])**(no_of_periods / df_tmp['Rolling Return Count']) - 1.0)
     
     # Calculate the rolling Annualized Volatility based on Simple Return and using no_of_periods
-    df_tmp['Annualized Volatility'] = (df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).apply(lambda x: x.std() * np.sqrt(no_of_periods)).reset_index(level=0, drop=True))
+    df_tmp['Annualized Volatility'] = (df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).apply(lambda x: x.std() * np.sqrt(no_of_periods) if len(x) > 1 else 0).reset_index(level=0, drop=True))
     
     # Calculate the rolling Downside Annualized Volatility based on Negative Simple Return and using no_of_periods
     df_tmp['Annualized Downside Volatility'] = (df_tmp.groupby('Ticker')['% Return'].expanding(min_periods=1).apply(lambda x: x[x < 0].std() * np.sqrt(no_of_periods) if not x[x < 0].empty else 0).reset_index(level=0, drop=True))
@@ -310,17 +311,13 @@ def calculate_return(df_tmp, period):
     # Drop the 'Prev_Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return' and 'Rolling Return Count' 
     # columns after calculation
     df_tmp.drop(columns=['Prev Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return', 'Rolling Return Count'], inplace=True)
-    
+
     # Convert Returns to percentages
     df_tmp['% Return'] = round(df_tmp['% Return'] * 100, 2)
     df_tmp['Cumulative % Return'] = round(df_tmp['Cumulative % Return'] * 100, 2)
     df_tmp['Annualized % Return'] = round(df_tmp['Annualized % Return'] * 100, 2)
     df_tmp['Annualized Volatility'] = round(df_tmp['Annualized Volatility'] * 100, 2)
     df_tmp['Annualized Downside Volatility'] = round(df_tmp['Annualized Downside Volatility'] * 100, 2)
-    
-    # Drop the 'Prev_Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return' and 'Rolling Return Count' 
-    # columns after calculation
-    df_tmp.drop(columns=['Prev Close', 'Log Return', 'Cumulative Log Return', 'Cumulative Simple % Return', 'Rolling Return Count'], inplace=True)
     
     # Rename the Return column based on period type
     if period != 'Daily':
@@ -333,15 +330,16 @@ def calculate_return(df_tmp, period):
     return df_tmp
 
         
-def plot_returns_bar_chart(df_tmp, ticker, period, return_type):
+def plot_returns_bar_chart(df_tmp, security_class_val, period, return_type):
 
     """
     Plots a bar chart of returns based on the specified period.
 
-    Parameters:
-    - df_tmp: DataFrame containing return data.
-    - ticker: Stock ticker symbol.
-    - period: Time period for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+    Args:
+        - df_tmp: DataFrame containing return data.
+        - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+        - period: A string indicating the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+        - return_type: A string indicating the return type ('% Return', 'Cumulative % Return'). 
     """
 
     # Create a Label column based on the period
@@ -365,7 +363,7 @@ def plot_returns_bar_chart(df_tmp, ticker, period, return_type):
     plt.figure(figsize=(10, 8))
     plt.axhline(0, color='red', linestyle='--', linewidth=2.0)
     plt.bar(df_tmp['Label'], df_tmp[return_type], color=colors, edgecolor='black')
-    plt.title(f'{ticker} {return_type}')
+    plt.title(f'{security_class_val} {return_type}')
     plt.xlabel(period)
     plt.ylabel(return_type)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
@@ -373,27 +371,28 @@ def plot_returns_bar_chart(df_tmp, ticker, period, return_type):
     plt.show()    
     
 
-def calculate_stats(df_ret, period):
+def calculate_stats(df_ret, security_class, period):
     
     """
     Calculate various statistical metrics for returns such as Lowest, Highest, Average, Median returns, 
     and Return Variance for the given period.
 
-    Parameters:
-    - df_ret: DataFrame containing return data.
-    - period: The period for which the statistics are being calculated ('Year', 'Quarter', 'Month', or 'Daily').
+    Args:
+        - df_ret: DataFrame containing return data.
+        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+        - period: A string indicating the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
 
     Returns:
-    - df_tmp: A DataFrame containing the calculated statistics for each 'Ticker' over the specified period.
+        - df_tmp: A DataFrame containing the calculated statistics for each security class type over the specified period.
     """
     
     # Determine the required columns based on the given period
     if (period == 'Quarter') or (period == 'Month') or (period == 'Daily'):
         # For these periods, also include 'Year' and 'Year % Return' in the grouping columns
-        required_cols = ['Ticker', 'Year', 'Year % Return']
+        required_cols = [security_class, 'Year', 'Year % Return']
     else:  
         # Default to 'Year' only if the period is not specified as 'Quarter', 'Month', or 'Daily'
-        required_cols = ['Ticker']
+        required_cols = [security_class]
     
     # Adjust period string for daily returns (no prefix) or for non-daily periods (add space after period)
     if period == 'Daily':
@@ -432,24 +431,25 @@ def calculate_stats(df_ret, period):
     return df_tmp
 
 
-def plot_period_stats_by_year_bar_charts(df_stats, ticker):
+def plot_period_stats_by_year_bar_charts(df_stats, security_class, security_class_val):
     
     """
     Create bar charts to visualize various statistics.
     
-    Parameters:
-    - df_stats: DataFrame containing the combined statistics.
-    - ticker: String representing the ticker symbol.
+    Args:
+        - df_stats: DataFrame containing the combined statistics.
+        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+        - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
     """
     
-    # Determine the columns to plot by excluding 'Ticker' and 'Year'
-    columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year']]
+    # Determine the columns to plot by excluding 'security_class' and 'Year'
+    columns_to_plot = [col for col in df_stats.columns if col not in [security_class, 'Year']]
     
     # Check if there is only one row in the DataFrame
     if len(df_stats) == 1:
         
-        # Determine the columns to plot by excluding 'Ticker' and 'Year'
-        columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year']]
+        # Determine the columns to plot by excluding 'security_class' and 'Year'
+        columns_to_plot = [col for col in df_stats.columns if col not in [security_class, 'Year']]
         
         # Extract the single row of statistics
         stats = {col: df_stats[col].values[0] for col in columns_to_plot}
@@ -461,14 +461,14 @@ def plot_period_stats_by_year_bar_charts(df_stats, ticker):
         for key, value in stats.items():
             ax.bar(key, value, color='blue', edgecolor='black', label=key)
         
-        ax.set_title(f'{ticker} Year Statistics')
+        ax.set_title(f'{security_class_val} Year Statistics')
         ax.set_ylabel('Value')
         ax.grid(axis='y', linestyle='--', alpha=0.7)
 
     else:
         
-        # Determine the columns to plot by excluding 'Ticker' and 'Year' and 'Year % Return'
-        columns_to_plot = [col for col in df_stats.columns if col not in ['Ticker', 'Year', 'Year % Return']]
+        # Determine the columns to plot by excluding 'security_class' and 'Year' and 'Year % Return'
+        columns_to_plot = [col for col in df_stats.columns if col not in [security_class, 'Year', 'Year % Return']]
         
         # Number of statistics to plot
         num_stats = len(columns_to_plot)
@@ -497,7 +497,7 @@ def plot_period_stats_by_year_bar_charts(df_stats, ticker):
             # Plot the bar chart
             ax[i].bar(df_stats['Year'], df_stats[col], color=colors, edgecolor='black')
             ax[i].axhline(0, color='red', linestyle='--', linewidth=2.0)
-            ax[i].set_title(f'{ticker} {col}')
+            ax[i].set_title(f'{security_class_val} {col}')
             ax[i].set_xlabel('Year')
             ax[i].set_ylabel(col)
             ax[i].grid(axis='y', linestyle='--', alpha=0.7)
@@ -517,15 +517,15 @@ def plot_period_stats_by_year_bar_charts(df_stats, ticker):
     plt.show()
 
     
-def plot_period_returns_by_year_box_plot(df_ret, ticker, period):
+def plot_period_returns_by_year_box_plot(df_ret, security_class_val, period):
     
     """
     Plots a box plot of returns for a given ticker and period.
     
-    Parameters:
-    - df_ret: DataFrame containing return data.
-    - ticker: Stock ticker symbol.
-    - period: Time period for returns (e.g., 'Daily', 'Year', etc.).
+    Args:
+        - df_ret: DataFrame containing return data.
+        - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+        - period: A string indicating the period type ('Year', 'Quarter', 'Month', etc.).
     """
     
     # Define properties for outliers in the box plot
@@ -550,14 +550,14 @@ def plot_period_returns_by_year_box_plot(df_ret, ticker, period):
         # If period is 'Year', create a box plot of yearly percentage returns
         # y-axis is set to the 'Year % Return' column in the DataFrame
         sns.boxplot(y=f'Year % Return', data=df_ret, palette="Set2", flierprops=flierprops)
-        plt.title(f'{ticker} Year % Returns')  # Title includes the ticker and indicates yearly returns
+        plt.title(f'{security_class_val} Year % Returns')  # Title includes the security class type and indicates yearly returns
         plt.ylabel('Year % Return')  # Set the label for the y-axis to 'Year % Return'
 
     else:
         # For other periods, create a box plot with 'Year' on the x-axis and returns on the y-axis
         # The 'hue' argument differentiates data points by 'Year', using different colors for each year
         sns.boxplot(x='Year', y=f'{period}% Return', data=df_ret, hue='Year', palette="Set2", flierprops=flierprops)
-        plt.title(f'{ticker} {period}% Returns by Year')  # Title includes the ticker and period
+        plt.title(f'{security_class_val} {period}% Returns by Year')  # Title includes the security_class and period
         plt.xlabel('Year')  # Set the label for the x-axis to 'Year'
 
     # Add gridlines to the y-axis for clarity, using a dashed line style and slight transparency
@@ -570,18 +570,21 @@ def plot_period_returns_by_year_box_plot(df_ret, ticker, period):
     plt.show()
     
     
-def plot_top_returns_bar_chart(df_tmp, period):
-    """
-    Plots a bar chart of returns based on the specified period for multiple tickers.
+def plot_top_returns_bar_chart(df_tmp, security_class, period):
     
-    Parameters:
-    - df_tmp: DataFrame containing return data.
-    - period: Time period for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
     """
+    Plots a bar chart of returns based on the specified period for multiple security classes.
+    
+    Args:
+        - df_tmp: DataFrame containing return data.
+        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+        - period: A string indicating the period type ('Year', 'Quarter', 'Month', etc.).
+    """
+    
     if period == 'Daily':
         raise ValueError("Too many periods to support number of subplots.")
         
-    tickers = df_tmp['Ticker'].unique()
+    security_classes = df_tmp[security_class].unique()
 
     # Create a Label column based on the period
     if period == 'Year':
@@ -630,33 +633,33 @@ def plot_top_returns_bar_chart(df_tmp, period):
     fig = make_subplots(rows=rows, cols=cols, vertical_spacing=vert_space, horizontal_spacing=horiz_space)
     
     # Generate a color scale from dark to light blue
-    num_tickers = len(tickers)
+    num_security_classes = len(security_classes)
     color_scale = px.colors.sequential.Blues
-    colors = color_scale[:num_tickers] if num_tickers <= len(color_scale) else color_scale * (num_tickers // len(color_scale) + 1)
+    colors = color_scale[:num_tickers] if num_security_classes <= len(color_scale) else color_scale * (num_security_classes // len(color_scale) + 1)
     
-    num_top_tickers = round(len(df_tmp) / num_periods)
+    num_top_security_classes = round(len(df_tmp) / num_periods)
     
-    # Loop through each period and plot the returns for all tickers
+    # Loop through each period and plot the returns for all security class types
     for i, period_val in enumerate(unique_periods):
         df_period = df_tmp[df_tmp['Label'] == period_val]
         
-        # Create a pivot table dataframe to shift returns under 'Label' column for Tickers
-        df_pivot = df_period.pivot(index='Ticker', columns='Label', values=return_type)
+        # Create a pivot table dataframe to shift returns under 'Label' column for security class types
+        df_pivot = df_period.pivot(index=security_class, columns='Label', values=return_type)
         
         # Sort by the first column (the only column in this case) in descending order
         df_pivot = df_pivot.sort_values(by=df_pivot.columns[0], ascending=False)
         
-        # Create a bar chart for each period, showing returns of all tickers
-        # Add traces for each ticker with distinct colors
-        for j, ticker in enumerate(df_pivot.index):
-            y_values = df_pivot.loc[ticker].values
+        # Create a bar chart for each period, showing returns of all security class types
+        # Add traces for each security class type with distinct colors
+        for j, sec in enumerate(df_pivot.index):
+            y_values = df_pivot.loc[sec].values
             fig.add_trace(
                 pltly.graph_objects.Bar(
                     x=[period_val],  # Use the period value as x-tick for that subplot
                     y=y_values,  # Use the pivoted values
-                    name=ticker,
+                    name=sec,
                     marker_color=colors[j % len(colors)],  # Apply color
-                    text=ticker,  # Display ticker on bars
+                    text=sec,  # Display secuirty class type on bars
                     textposition='inside'  # Label on bars
                 ),
                 row=(i // cols) + 1,
@@ -666,7 +669,7 @@ def plot_top_returns_bar_chart(df_tmp, period):
     fig.update_layout(
         height=height_size * rows,  # Adjust height based on number of rows
         width=width_size,
-        title_text=f'Top {num_top_tickers} Tickers by {period} % Return',
+        title_text=f'Top {num_top_security_classes} for {security_class} by {period} % Return',
         plot_bgcolor='lightgrey',  # Background color
         paper_bgcolor='white',  # Paper background color
         showlegend=False  # Hide legend
@@ -679,17 +682,17 @@ def plot_top_returns_bar_chart(df_tmp, period):
     fig.show()
 
 
-def plot_returns_line_chart(df_tmp, period, return_type):
+
+def plot_returns_line_chart(df_tmp, period, return_type, security_class):
     
     """
-    Plots a line chart for multiple tickers based on the specified period using Plotly.
+    Plots a line chart for one or multiple security classes based on the specified period using Plotly.
 
-    Parameters:
-    - df_tmp: DataFrame containing return data.
-    - period: A string indicating the period ('Year', 'Quarter', 'Month', 'Daily').
-
-    Returns:
-    - None
+    Args:
+        - df_tmp: DataFrame containing return data.
+        - period: A string indicating the period ('Year', 'Quarter', 'Month', 'Daily').
+        - return_type: A string indicating the return type ('% Return', 'Cumulative % Return').
+        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker').
     """
     
     # Create a Label column based on the period
@@ -709,15 +712,15 @@ def plot_returns_line_chart(df_tmp, period, return_type):
     else:
         label = period
 
-    tickers = df_tmp['Ticker'].unique()
+    security_classes = df_tmp[security_class].unique()
     
-    if len(tickers) == 0:
-        print("No tickers found in the DataFrame.")
+    if len(security_classes) == 0:
+        print(f"No {security_class} found in the DataFrame.")
         return
-    elif len(tickers) == 1:
-        ticker_label = tickers[0]
+    elif len(security_classes) == 1:
+        security_class_label = security_classes[0]
     else:
-        ticker_label = 'Ticker'
+        security_class_label = security_class
         
     
     if return_type not in df_tmp.columns:
@@ -726,26 +729,26 @@ def plot_returns_line_chart(df_tmp, period, return_type):
     
     fig = pltly.graph_objects.Figure()
     
-    for ticker in tickers:
-        df_ticker = df_tmp[df_tmp['Ticker'] == ticker]
-        if df_ticker.empty:
-            print(f"No data found for ticker {ticker}.")
+    for sec in security_classes:
+        df_security_class = df_tmp[df_tmp[security_class] == sec]
+        if df_security_class.empty:
+            print(f"No data found for {sec}.")
             continue
         
         fig.add_trace(
             pltly.graph_objects.Scatter(
-                x=df_ticker['Label'],
-                y=df_ticker[return_type],
+                x=df_security_class['Label'],
+                y=df_security_class[return_type],
                 mode='lines',
-                name=ticker
+                name=sec
             )
         )
 
     fig.update_layout(
-        title=f'{return_type} for {ticker_label}',
-        xaxis_title=label,
+        title=f'{return_type} for {security_class_label}',
+        xaxis_title=security_class_label,
         yaxis_title=f'{return_type}',
-        legend_title='Ticker',
+        legend_title=security_class,
         plot_bgcolor='#f5f5f5',  # Lightest grey
         paper_bgcolor='white'
     )
@@ -754,18 +757,18 @@ def plot_returns_line_chart(df_tmp, period, return_type):
     fig.show()
     
     
-
-def calculate_drawdowns(df_tmp, period):
+def calculate_drawdowns(df_tmp, security_class, period):
     
     """
     Calculate drawdowns and maximum drawdown based on cumulative returns.
     
-    Parameters:
-    - df_tmp: The DataFrame containing the cumulative return data.
-    - period: The period type (e.g., 'Daily', 'Monthly', etc.), which is used to label the columns.
+    Args:
+        - df_tmp: The DataFrame containing the cumulative return data.
+        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker').
+        - period: A string indicating the period type ('Year', 'Quarter', 'Month', 'Daily').
 
     Returns:
-    - A DataFrame with new columns for drawdown and maximum drawdown.
+        - A DataFrame with new columns for drawdown and maximum drawdown.
     """
     
     # Determine the label for the columns based on the period type
@@ -775,14 +778,14 @@ def calculate_drawdowns(df_tmp, period):
         label = period + ' '
     
     # Ensure the DataFrame is sorted by Date for proper calculations
-    df_tmp.sort_values(by=['Ticker', 'Date'], inplace=True)
+    df_tmp.sort_values(by=[security_class, 'Date'], inplace=True)
 
     # Check for 'Cumulative % Return' presence
     if label + 'Cumulative % Return' not in df_tmp.columns:
         raise ValueError(f"{label}Cumulative % Return column is missing. Please calculate returns first.")
     
-    # Calculate Peak for each Ticker
-    df_tmp['Peak'] = df_tmp.groupby('Ticker')[label + 'Cumulative % Return'].cummax()
+    # Calculate Peak for each security class type
+    df_tmp['Peak'] = df_tmp.groupby(security_class)[label + 'Cumulative % Return'].cummax()
     
     df_tmp['Drawdown'] = np.where(
         df_tmp[label + 'Cumulative % Return'] >= 0,  # If cumulative return is positive or zero
@@ -797,15 +800,15 @@ def calculate_drawdowns(df_tmp, period):
         0
     )
     
-    # Calculate Cumulative Max % Drawdown for each Ticker (worst drawdown observed up to each date)
-    df_tmp['Cumulative Max % Drawdown'] = df_tmp.groupby('Ticker')['% Drawdown'].cummax()
+    # Calculate Cumulative Max % Drawdown for each security class type (worst drawdown observed up to each date)
+    df_tmp['Cumulative Max % Drawdown'] = df_tmp.groupby(security_class)['% Drawdown'].cummax()
     
     # Max % Drawdown column represents max drawdown of all dates
-    df_tmp['Max % Drawdown'] = df_tmp.groupby('Ticker')['% Drawdown'].transform('max')
+    df_tmp['Max % Drawdown'] = df_tmp.groupby(security_class)['% Drawdown'].transform('max')
     # Create a mask where % Drawdown equals Max % Drawdown
     df_tmp['Is_Max_Drawdown'] = df_tmp['% Drawdown'] == df_tmp['Max % Drawdown']
     # Extract the last date where the Max % Drawdown occurs
-    df_tmp['Max Drawdown Date'] = df_tmp['Date'].where(df_tmp['Is_Max_Drawdown']).groupby(df_tmp['Ticker']).transform('last')
+    df_tmp['Max Drawdown Date'] = df_tmp['Date'].where(df_tmp['Is_Max_Drawdown']).groupby(df_tmp[security_class]).transform('last')
 
     # If the period is not 'Daily', rename the columns with the period label prefix
     if period != 'Daily':
@@ -817,6 +820,7 @@ def calculate_drawdowns(df_tmp, period):
         df_tmp.rename(columns={'Max Drawdown Date': label + 'Max Drawdown Date'}, inplace=True)
         
     return df_tmp
+    
 
 def calculate_portfolio_return(df_tmp, period):
     
