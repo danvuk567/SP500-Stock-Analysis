@@ -2,16 +2,17 @@ Let's do some analysis on a portfolio of stocks. We will be adding new functions
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-Let's define a function called *calculate_portfolio_return* which will calculate returns for a portfolio of Tickers based on average log returns. The returns dataframe and period type are passed as input parameters and the returns dataframe is returned with the same columns as the *calculate_return* function.
+Let's define a function called *calculate_portfolio_return* which will calculate returns for a portfolio of security class type based on average log returns. We will need to drop the security class list to aggregate all the returns by date. The returns dataframe, a security class list, and period type are passed as input parameters and the returns dataframe is returned with the same columns as the *calculate_return* function.
 
 
-    def calculate_portfolio_return(df_tmp, period):
+    def calculate_portfolio_return(df_tmp, security_class_list, period):
     
             """
             Calculate the returns of a portfolio of Tickers using an average of cumulative returns.
     
             Parameters:
             - df_tmp: The DataFrame containing the historical data.
+            - security_class_list: A string list of column names to drop from the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker').
             - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
 
             Returns:
@@ -35,7 +36,14 @@ Let's define a function called *calculate_portfolio_return* which will calculate
                 label = period + ' '
 
             # Drop unnecessary columns from the DataFrame to simplify calculations
-            df_tmp.drop(columns=['Ticker', 'Open', 'High', 'Low', 'Close', 'Volume', label + 'Annualized % Return', label + 'Annualized Volatility', label + 'Annualized Downside Volatility'], inplace=True)
+            columns_to_drop = security_class_list + ['Open', 'High', 'Low', 'Close', 'Volume', 
+                                              label + 'Annualized % Return', label + 'Annualized Volatility', 
+                                              label + 'Annualized Downside Volatility']
+    
+            # Keep only those columns that exist in df_tmp
+            columns_to_drop = [col for col in columns_to_drop if col in df_tmp.columns]
+
+            df_tmp.drop(columns=columns_to_drop, inplace=True)
 
             # Calculate log returns based on cumulative percentage returns
             df_tmp['Log Return'] = np.log(1 + (df_tmp[label + 'Cumulative % Return'] / 100))
