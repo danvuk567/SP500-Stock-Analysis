@@ -405,7 +405,7 @@ Let's say we want to determine what the top 10 stocks are for the 1st 2 years (2
         num_of_ranks = 10
         df_ret_second_year_last_top = df_ret_second_year_last[df_ret_second_year_last['Annualized Sortino Ratio Rank'] <= num_of_ranks].copy()
 
-Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate the portfolio returns and assign a Ticker label as **PFL** to our portfolio returns.
+Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate the portfolio returns using our custom function *calculate_portfolio_return*. We'll need to drop the 'Ticker' column. we then assign a Ticker label as **PFL** to our portfolio returns.
 
         portfolio_tickers = df_ret_second_year_last_top['Ticker'].unique()
         print(portfolio_tickers)
@@ -414,15 +414,15 @@ Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate
         ticker_cnt = len(df_portfolio_tickers_ret_second_year['Ticker'].unique())
         print(f'Portfolio list count: {ticker_cnt}')
 
-        df_portfolio_ret_second_year = calculate_portfolio_return(df_portfolio_tickers_ret_second_year.copy(), 'Daily')
+        df_portfolio_ret_second_year = calculate_portfolio_return(df_portfolio_tickers_ret_second_year.copy(), ['Ticker'], 'Daily')
         df_portfolio_ret_second_year['Ticker'] = 'PFL'
         df_portfolio_ret_second_year.sort_values(by=['Date'], inplace=True)
 
-We'll combine the returns of the top 10 and the portfolio and then plot the top 10 tickers and the portfolio cumulative returns in a line chart.
+We'll combine the returns of the top 10 and the portfolio and then plot the top 10 tickers using our custom function *plot_returns_line_chart* for the portfolio cumulative returns in a line chart.
 
         df_ret_second_year_comb = pd.concat([df_portfolio_tickers_ret_second_year, df_portfolio_ret_second_year], axis=0)
         df_ret_second_year_comb.sort_values(by=['Ticker','Date'], inplace=True)
-        plot_returns_line_chart(df_ret_second_year_comb, 'Daily', 'Cumulative % Return')
+        plot_returns_line_chart(df_ret_second_year_comb, 'Daily', 'Cumulative % Return', 'Ticker')
 
 ![SP500_Portfolio_Cumulative_Returns_Line_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Cumulative_Returns_Line_Chart_Python.jpg?raw=true)
 
@@ -437,7 +437,7 @@ Now let's see our top 10 Ticker and Portfolio Annualized Sortino Ratio values
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python.jpg?raw=true)
 
-We can see that **MCK** had the highest Annualized Sortino Ratio of **3.07** and that our Portfolio **PFL** had the 2nd highest at **3.04**. We can also plot and compare the Annualized Sortino Ratio for all Tickerts and the portfolio in a Bubble Chart with the following code:
+We can see that **MCK** had the highest Annualized Sortino Ratio of **3.07** and that our Portfolio **PFL** had the 2nd highest at **3.04**. We can also plot and compare the Annualized Sortino Ratio for all Tickers and the portfolio in a Bubble Chart using our custom function *plot_returns_bubble_chart* with the following code:
 
     df_ret_second_year_comb2 = pd.concat([df_ret_second_year_last, df_portfolio_ret_second_year], axis=0)
     df_ret_second_year_comb2.sort_values(by=['Ticker','Date'], inplace=True)
@@ -452,7 +452,7 @@ We can see that **MCK** had the highest Annualized Sortino Ratio of **3.07** and
     )
     df_ret_second_year_comb2_last.sort_values(by=['Ticker'], ascending=True, inplace=True)
 
-    plot_returns_bubble_chart(df_ret_second_year_comb2_last, 'Annualized % Return', 'Annualized Sortino Ratio')
+    plot_returns_bubble_chart(df_ret_second_year_comb2_last, 'Annualized % Return', 'Annualized Sortino Ratio', 'Ticker', True, 10)
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Bubble_Chart_Python.jpg?raw=true)
 
@@ -464,7 +464,7 @@ What would happen if we invested in the top 10 Annualized Sortino Ratio Tickers 
     df_ret_after_second_year = calculate_return(df_pricing_after_second_year.copy(), 'Daily')
     df_portfolio_tickers_ret_after_second_year = df_ret_after_second_year[df_ret_after_second_year['Ticker'].isin(portfolio_tickers)].copy()
 
-    df_portfolio_ret_after_second_year = calculate_portfolio_return(df_portfolio_tickers_ret_after_second_year.copy(), 'Daily')
+    df_portfolio_ret_after_second_year = calculate_portfolio_return(df_portfolio_tickers_ret_after_second_year.copy(), ['Ticker'], 'Daily')
     df_portfolio_ret_after_second_year['Ticker'] = 'PFL'
     df_portfolio_ret_after_second_year.sort_values(by=['Date'], inplace=True)
 
