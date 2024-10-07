@@ -1,3 +1,5 @@
+# Python Portfolio Performance Analysis Description
+
 Let's do some analysis on a portfolio of stocks. We will be adding new functions to our *custom_python_functions.py* file which can be re-used in this project. 
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
