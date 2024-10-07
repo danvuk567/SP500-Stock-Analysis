@@ -78,5 +78,56 @@ How may Tickers exist by Sector? How many have positive Cumulative % Returns? Ho
 
 It looks like **Communication Services**, which had the smallest count of Tickers, had the lowest % of # of positive Cumulative Returns of all Sectors at **47.86%**. There were more negative Cumulative Returns than positive. The **Energy** Sector** was the only Sector that had **100%** of # of positive Cumulative Returns. There were no Tickers with negative Cumulative % Returns in the past 4 years.
 
+Now, let's look at Cumulative % Return, Annualized % Return, Annualized Volatility and Annualized Downside Volatility of the different Sectors. We do this by grouping the Tickers in each Sector as a portfolio and using our custom function *calculate_portfolio_return* that aggregates average log returns from the dataframe *df_ret* to calculate these measures. We will concatenate all portfolio return measures into one dataframe *df_ret_sectors*. We then print the results for the last date.
+
+         df_ret.sort_values(by=['Sector', 'Ticker', 'Date'], inplace=True)
+         df_ret_sectors = pd.DataFrame()  # Initialize an empty DataFrame for concatenation
+
+         # Iterate through unique sectors
+         for sector in df_ret['Sector'].unique():
+             # Filter the DataFrame for the current sector
+             df_ret_sector_tickers = df_ret[df_ret['Sector'] == sector].copy()
+             df_ret_sector_tickers.sort_values(by=['Ticker','Date'], inplace=True)
+
+             # Call your function to calculate portfolio return
+             df_ret_sector = calculate_portfolio_return(df_ret_sector_tickers.copy(), ['Sector', 'Industry_Group', 'Industry', 'Sub_Industry', 'Ticker'], 'Daily')
+    
+             # Add the Sector column
+             df_ret_sector['Sector'] = sector
+    
+             # Concatenate the results
+             df_ret_sectors = pd.concat([df_ret_sectors, df_ret_sector], ignore_index=True)
+    
+         df_ret_sectors.sort_values(by=['Sector', 'Date'], inplace=True)
+
+         df_ret_sectors_last = df_ret_sectors.copy().groupby('Sector').tail(1)
+         df_ret_sectors_last = df_ret_sectors_last[['Sector', 'Cumulative % Return', 'Annualized % Return',  'Annualized Volatility',  'Annualized Downside Volatility']]
+
+         print(df_ret_sectors_last.to_string(index=False))
+
+![SP500_GICS_Sector_Returns_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Returns_Python.jpg?raw=true)
+
+We can see that the **Consumer Staples** Sector had the lowest Annualized % Return of **-2.55%** but with lowest Annualized Volatility of **14.86%*. **Consumer Staples** stocks are not growth stocks and are usually a safe haven during economic downturns and/or used for more consistent returns and dividends. That is why they don't typically reflect high volatility. Over the past 4 years, the economy exhibited resiliance and periods of strong growth causing stronger investments in other Sectors. We see that the **Energy** Sector had the highest Annualized % Return of **25.58%** but came at a cost of highest Annulaized Downside Volatility of **22.35%**. The **Energy** Sector is often subject to significant discrepancies in supply and demand for oil and gas, leading to volatile price fluctuations, particularly during economic downturns or geopolitical risks.
+
+We can show the Sector Cumulative % Return impact in a **Bubble Chart** using our custom function *plot_returns_bubble_chart*.
+
+         plot_returns_bubble_chart(df_ret_sectors_last, 'Annualized % Return', 'Cumulative % Return', 'Sector', False, 0)
+
+![SP500_GICS_Sector_Cumulative_Returns_Bubble_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Cumulative_Returns_Bubble_Chart.jpg?raw=true)
+
+Let's plot the Cumulative % Returns by Sector to show how the Returns were compounded over time in a **Line Chart** using our custom function *plot_returns_line_chart*.
+
+         plot_returns_line_chart(df_ret_sectors, 'Daily', 'Cumulative % Return', 'Sector')
+
+![SP500_GICS_Sector_Cumulative_Returns_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Cumulative_Returns_Line_Chart.jpg?raw=true)
+
+ The **Energy** Sector clearly outperformed all Sectors but also experiencing a number of large drawdowns clearly exhibiting high volatility.
+
+
+
+
+
+        
+
 
 
