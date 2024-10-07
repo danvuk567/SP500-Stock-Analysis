@@ -79,7 +79,7 @@ In all SQL operations, we will need to create a connection to the database. We w
         # Return the sessionmaker class and the engine
         return s, e
 
-*clear_table* will pass a session instance and database table name. The table is cleared using a TRUNCATE DDL SQL statement and committing the transaction through our session.
+*clear_table* will pass a session instance and database table name. The table is cleared using a *TRUNCATE* DDL SQL statement and committing the transaction through our session.
 
         def clear_table(s1, t):
     
@@ -129,7 +129,7 @@ In all SQL operations, we will need to create a connection to the database. We w
 
 ## Stage the Sectors data: *[Load-Sectors_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Sectors_STG.ipynb)*  
 
-We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our *Custom_Python_Functions* folder. We can define the path to this folder using our Windows username and sys package. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
+For this project, we'll simply use a Windows computer database. We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our  *custom_python_functions.py* Python file in our *Custom_Python_Functions* folder. We can define the path to this folder using our Windows username and sys package. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
 
         import datetime as dt
         import sqlalchemy as sa
@@ -175,8 +175,8 @@ We will now import the packages we need and create a database connection by call
         # Clear the existing data in the Data_STG table
         clear_table(s1, 'Financial_Securities.Equities.Data_STG')
 
-We define the path to our *GICS_Industries.csv* file, use the current date nad read the file into the pandas dataframe df_sectors and keep only the unique Sector_ID and Sector records.
-We check if the file exists and loop through the rows and use cnt_recs to keep track of how many rows were loaded. We use an SQL exception that will capture any error but we don't need to raise since we can rerun and clear the table each time we run the commands. After the loop, we issue a commit to our session and then query *Data_STG* to check if the number of records match the number or rows in the dataframe.
+We define the path to our *GICS_Industries.csv* file, use the current date and read the file into the pandas dataframe df_sectors and keep only the unique Sector_ID and Sector records.
+We check if the file exists and loop through the rows and use *cnt_recs* to keep track of how many rows were loaded. We use an SQL exception that will capture any error that we don't need to raise since we can rerun and clear the table each time we run the commands. After the loop, we issue a commit to our session and then query *Data_STG* to check if the number of records match the number or rows in the dataframe.
 
         in_file = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Data_Files/GICS_Industries.csv' # Path to the CSV file
 
@@ -397,7 +397,7 @@ This process will load the *Equities* table with Equity data and Sub_Industry_ID
 
 ## Stage Yahoo Equity Pricing data: *[Load-Yahoo_Equity_Prices_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Yahoo_Equity_Prices_STG.ipynb)*
 
-For this process, we'll go into some new types of code. We will import the packages needed and 2 other packages, yfinance and time. After establishing a connection, we define the staging table *Data_STG* to store the pricing data we will retrieve from Yahoo Finance. We then clear the *Data_STG* table.
+For this process, we'll go into some new types of code. We will import the packages needed and 2 other packages, *yfinance* and *time*. After establishing a connection, we define the staging table *Data_STG* to store the pricing data we will retrieve from **Yahoo Finance**. We then clear the *Data_STG* table.
 
         import datetime as dt
         import sqlalchemy as sa
@@ -439,7 +439,7 @@ For this process, we'll go into some new types of code. We will import the packa
             # Clear the existing data in the Data_STG table
             clear_table(s1, 'Financial_Securities.Equities.Data_STG')
 
-Next, we'll use the tickers we have loaded in the Equties table and store them in a dataframe and convert the values to a list called *ticker_list*.
+Next, we'll use the Tickers we have loaded in the Equities table and store them in a dataframe and convert the values to a list called *ticker_list*.
 
             # Define SQL query to retrieve tickers from the Equities table
             sql_stat = """SELECT
@@ -459,7 +459,7 @@ Next, we'll use the tickers we have loaded in the Equties table and store them i
                 s1.close()
                 raise
 
-We then call the custom function *get_dates_for_years* function for 3 years back and 0 years forward in order to use dates to fetch the last 3 years of pricing data.
+We then call the custom function *get_dates_for_years* function for 3 years back from the current year and 0 years forward in order to use dates to fetch the last 4 years of pricing data.
 
             # Generate the date range of 3 years back as of yesterday
             start_date, end_date = get_dates_for_years(3, 0)
@@ -516,7 +516,7 @@ Next, we define a function to get the pricing data from Yahoo Finance API for th
         else:
             print(f"All {len(ticker_list)} records were fetched!")
 
-We will then loop through our tickers in our ticker list and store our pricing data using our create_daily_pricing function in the df_equities dataframe. We allow 1 second to pass using the sleep function from the time package before fetching each ticker data to avoid any API rate limits. This will take some time to run in order to fetch pricing history for roughly 500 tickers.
+We will then loop through our Tickers in our ticker list and store our pricing data using our create_daily_pricing function in the df_equities dataframe. We allow 1 second to pass using the sleep function from the time package before fetching each Ticker data to avoid any API rate limits. This will take some time to run in order to fetch pricing history for roughly 500 Tickers.
 
         # Initialize variables for processing
         first_ticker = True
@@ -791,7 +791,7 @@ Let's now forward fill all the pricing data based on Ticker.
         df_pricing.sort_values(by=['Ticker_ID', 'Date'], inplace=True)
         df_pricing[['Float_Value1', 'Float_Value2', 'Float_Value3', 'Float_Value4']] = df_pricing.groupby('Ticker_ID')[['Float_Value1', 'Float_Value2', 'Float_Value3', 'Float_Value4']].ffill()
 
-We iterate through the *df_pricing* dataframe and laod the *Yahoo_Equity_Prices* table.
+We iterate through the *df_pricing* dataframe and load the *Yahoo_Equity_Prices* table.
 
         for index, row in df_pricing.iterrows():
             try:
