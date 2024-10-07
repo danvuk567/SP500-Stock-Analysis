@@ -55,5 +55,28 @@ Let's look out how many unique Sectors, Industry Groups, Indistries and Sub-Indu
 
 ![SP500_GICS_Industry_Columns_Count_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Industry_Columns_Count_Python.jpg?raw=true)
 
+There are 11 Sectors, 25 Industry Groups, 66 Industries and 110 Sub-Industries that we have pricing data for.
+
+How may Tickers exist by Sector? How many have positive Cumulative % Returns? How many have negative Cumulative % Returns? Let's calculate the returns and aggregate the results.
+
+         df_ret = calculate_return(df_pricing.copy(), 'Daily')
+         df_ret.sort_values(by=['Ticker', 'Date'], inplace=True)
+
+         df_ret_last = df_ret.copy().groupby('Ticker').tail(1)
+
+         df_ret_cnt = df_ret_last.groupby('Sector').agg(
+             **{
+                 '# of Tickers': ('Ticker', 'nunique'),
+                 '# of Positive Cumulative Returns (%)': ('Cumulative % Return', lambda x: round(((x > 0).sum() / len(x)) * 100, 2)),
+                 '# of Negative Cumulative Returns (%)': ('Cumulative % Return', lambda x: round(((x < 0).sum() / len(x)) * 100, 2))
+             }
+         ).reset_index()
+
+         print(df_ret_cnt.to_string(index=False))
+
+![SP500_GICS_Sector_Ticker_Return_Count_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Ticker_Return_Count_Python.jpg?raw=true)
+
+It looks like **Communication Services**, which had the smallest count of Tickers, had the lowest % of # of positive Cumulative Returns of all Sectors at **47.86** and meaning that there were more negative Cumulative Returns than positive. The **Energy** Sector** was the only Sector that had no Tickers with negative Cumulative % Returns in the past 4 years.
+
 
 
