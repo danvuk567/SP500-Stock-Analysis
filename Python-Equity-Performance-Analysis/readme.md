@@ -44,7 +44,7 @@ We'll start by defining a pricing function called *get_pricing_data* that will t
         # Return the processed DataFrame
         return df_tmp2
 
-We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the plotly.io module for handling the output which we will set to render to the Jupyter notebook by default. For more on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* which takes a daily pricing dataframe, Ticker name and period type as input parameters.
+We'll also want to plot **Candlestick Charts** of pricing data and to do that, you'll need to have the **plotly** package installed. We'll use the *plotly.io* module for handling the output which we will set to render to the Jupyter notebook by default. For more information on Candlestick Charts, refer to this link: [Candlestick Chart Definition and Basics Explained](https://www.investopedia.com/terms/c/candlestick.asp). Let's define a function called *plot_pricing_candlestick* which takes a daily pricing dataframe, Ticker symbol value and period type as input parameters.
 
      import plotly as pltly
      import plotly.io as pio
@@ -104,7 +104,7 @@ We'll also want to plot **Candlestick Charts** of pricing data and to do that, y
         )
         fig.show()
 
-Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a pricing dataframe, Ticker name and period type as input parameters as well as a price type.
+Next we'll define a function called *plot_pricing_line* to create a **Line Chart** using the **matplotlib** package. It also takes a pricing dataframe, Ticker symbol value and period type as input parameters as well as a price type.
 
         import matplotlib.pyplot as plt
         
@@ -148,13 +148,13 @@ Next we'll define a function called *plot_pricing_line* to create a **Line Chart
             plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if necessary
             plt.show()
 
-In order to calculate **Returns**, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We retrieve the number of periods as *no_of_periods* based on the period type. We will first derive the previous Close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous Close is null, otherwise we use (Close / Prev Close) – 1.0.
+In order to calculate **Returns**, we define a function called *calculate_return* which takes a daily pricing dataframe and period type as input parameters and returns a dataframe with Ticker returns. We retrieve the number of periods as *no_of_periods* based on the period type. We will first derive the previous Close column for each Ticker. We then calculate the return as (Close / Open) – 1.0 for cases where we have the 1st period where previous Close does not exist and therefore is null, otherwise we use (Close / Prev Close) – 1.0.
 
-We also use **Log Returns**, aggregate them and de-normalize them to calculate **Cumulative Returns**. For more information on log returns, refer to this link: [What Are Logarithmic Returns and How to Calculate Them in Pandas Dataframe](https://saturncloud.io/blog/what-are-logarithmic-returns-and-how-to-calculate-them-in-pandas-dataframe/). We use the same logic as simple returns to calculate log returns. We then drop the previous Close column, the Log Return column, and the Cumulative Log Return column, and modify the return and cumulative return labels based on period type. We import the *numpy* package to use the *exp* function to de-normalize the aggregate log returns. 
+We also use **Log Returns**, aggregate them and de-normalize them to calculate **Cumulative Returns**. For more information on log returns, refer to this link: [What Are Logarithmic Returns and How to Calculate Them in Pandas Dataframe](https://saturncloud.io/blog/what-are-logarithmic-returns-and-how-to-calculate-them-in-pandas-dataframe/). We use the same logic as simple returns to calculate log returns. We then drop the previous Close column, the Log Return column, and the Cumulative Log Return column, and modify the return and cumulative return labels based on period type. We import the *numpy* package to use the numpy *exp* function to de-normalize the aggregate log returns. 
 
 We will also annualize simple returns by using a variation of this basic formula: **(1 + Return) ^ (1 / N) - 1 for N periods**. This gives us an idea of what the compounded returns would be per year. For more information on **Annualized Returns**, refer to this link: [Annualized Total Return Formula and Calculation](https://www.investopedia.com/terms/a/annualized-total-return.asp). In our code, we will divide the *no_of_periods* by the return count for each Ticker. This will give us 1 / N for N years. For example, if we have daily data, we usually have 252 trading days per year and for say 3 years, we will have 252 * 3 returns, and so 252 / (252 * 3) is the same as 1 / 3. We are essentially calculating a rolling Annualized Return.
 
-A measure that defines risk with respect to returns is volatility. For more information about volatility, refer to this link: [Volatility: Meaning in Finance and How It Works With Stocks](https://www.investopedia.com/terms/v/volatility.asp) We can define **Annualized Volatility** as **Standard Deviation of Returns * N for N periods**. For downside risk, we can calculate **Downside Annualized Volatility** as **Standard Deviation of Negative Returns * N for N periods**. In our code below, we calculate a rolling Annualized Voaltility and a rolling Downside Annualized Volatility.
+A measure that defines risk with respect to returns is volatility. For more information about volatility, refer to this link: [Volatility: Meaning in Finance and How It Works With Stocks](https://www.investopedia.com/terms/v/volatility.asp) We can define **Annualized Volatility** as **Standard Deviation of Returns * N for N periods**. For downside risk, we can calculate **Downside Annualized Volatility** as **Standard Deviation of Negative Returns * N for N periods**. In our code below, we also calculate a rolling Annualized Volatility and a rolling Downside Annualized Volatility.
 
 Lastly, we convert our returns and volatility measures into percentages, drop the unwanted columns and return the dataframe with returns data.
 
@@ -356,7 +356,7 @@ Now let's define a function called *calculate_stats* which will calculate Quarte
             return df_tmp
 
     
-This custom function called *plot_year_stats_bar_charts* will use matplotlib subplots to show separate bar charts of each period Statistic based on  *'Year'* and *'Year % Return'* we want to show. The code is a bit tricky and lengthy to get correct dynamic formatting. It requires a statistics dataframe, security class type and security class value as input parameters.
+This custom function called *plot_year_stats_bar_charts* will use matplotlib subplots to show separate bar charts of each period statistic based on  *'Year'* and *'Year % Return'* we want to show. The code is a bit tricky and lengthy to get correct dynamic formatting. It requires a statistics dataframe, security class type and security class value as input parameters.
 
         def plot_period_stats_by_year_bar_charts(df_stats, security_class, security_class_val):
     
@@ -448,7 +448,7 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
 
 This custom function called *plot_period_returns_by_year_box_plot* will use seaborn to plot **Box Plots**. Box plots are one of my favorite visualizations that tell a lot of the story in numerical data. The boxes themselves represent the interquartile range (IQR), which is the range between the first quartile (Q1, or 25th percentile) and the third quartile (Q3, or 75th percentile). The IQR contains the middle 50% of the data. The Median is a line inside the box represents the median (or second quartile, Q2, or 50th percentile) of the data which is the center of the dataset. The whiskers extend from the edges of the box to the smallest and largest values within 1.5 times the IQR from Q1 and Q3, respectively. Data points that fall outside the whiskers (beyond 1.5 times the IQR from Q1 and Q3) are considered outliers and are typically plotted as individual points.
 
-This function uses the seaborn package to plot the box plots and requires a returns dataframe, a security class value and period type as input parameters.
+This function uses the **seaborn** package to plot the box plots and requires a returns dataframe, a security class value and period type as input parameters.
 
         import seaborn as sns
         
@@ -506,7 +506,7 @@ This function uses the seaborn package to plot the box plots and requires a retu
             plt.show()
             
 
-This function called *plot_top_returns_bar_chart* that uses the plotly package will plot period returns as bar charts within subplots using a plotly color scheme *'Blues'*. This function is quite complex to achive the desired result and format. It uses a pivot function to create a pivot table dataframe that shifts returns under the security class type columns. It also uses the math package to calculate the number of subplots. It requires a returns dataframe, security class type and period type as input parameters.
+This function called *plot_top_returns_bar_chart* that uses the plotly package will plot period returns as **Bar Charts** within subplots using a plotly color scheme *'Blues'*. This function is quite complex to achieve the desired result and format. It uses a pivot function to create a pivot table dataframe that shifts returns under the security class type columns. It also uses the *math* package to calculate the number of subplots. It requires a returns dataframe, security class type and period type as input parameters.
 
         import math
         
@@ -623,7 +623,7 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
             fig.show()
 
 
-This function called *plot_returns_line_chart* will plot simple or cumulative returns in a **Line Chart** using the plotly package for single or multiple security classes. It requires a returns dataframe, period type, return type and security class type as input parameters. 
+This function called *plot_returns_line_chart* will plot simple or cumulative returns in a **Line Chart** using the plotly package for single or multiple security class types. It requires a returns dataframe, period type, return type and security class type as input parameters. 
 
         def plot_returns_line_chart(df_tmp, period, return_type, security_class):
     
@@ -769,7 +769,7 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
 
 ## Equity Performance Analysis: *[Equity-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Equity-Performance-Analysis/Equity-Performance-Analysis.ipynb)*
 
-Let's explore the data and do some performance analysis with the custom functions we created within the python code defined in this file. We'll start out by we connecting to the database and store the yearly pricing data in the dataframe *df_pricing*. We raise a ValueError exception if the dataframe is empty. We'll set our default Ticker to be **MSFT** when doing individual equity analysis. We then get the yearly pricing data for **MSFT**, print the results and plot the Candlestick chart.
+Let's explore the data and do some performance analysis with the custom functions we created within the python code defined in this file. We'll start out by connecting to the database and store the yearly pricing data in the dataframe *df_pricing*. We raise a ValueError exception if the dataframe is empty. We'll set our default Ticker to be **MSFT** when doing individual equity analysis. We then get the yearly pricing data for **MSFT**, print the results and plot the **Candlestick Chart**.
 
         # Define SQL query to retrieve tickers from the Yahoo_Equity_Prices table
         sql_stat = """SELECT 
@@ -822,7 +822,7 @@ Let's explore the data and do some performance analysis with the custom function
 
 What we can observe here is that **MSFT** has a positive trend overall from 2021 to 2024. IF we look at 2021, the candle is green, and the body of the candle is close to the wick ends which indicates that the Close prices were not far off the lowest price and highest price of the year. The top of the candle body (Close price) is further from the wick top (High price) than the body bottom (Open price) is from the wick bottom (Low price) could mean that price was declining at some point and possible at end of 2021. The decline in 2021 could very well be the case as the candle in 2022 was red and the Open vas very close to the High price. In general, **MSFT** Close had a substantial increase in 2021 and a substantial decrease in 2022 where it declined almost as much. 2023 was a good year and 2024 was positive but appears to have had a decline as the top wick takes up most of the candle indicating that the Close has fallen off far from the High of the year.
 
-Now let’s look at the daily Close prices for **MSFT** to get a more granular picture. Let's call the *plot_pricing_line* function we defined.
+Now let’s look at the daily Close prices for **MSFT** to get a more granular picture. Let's call the *plot_pricing_line* function we defined to create the **Line Chart**.
 
       df_pricing_daily_ticker = df_pricing[df_pricing['Ticker'] == ticker].copy() 
       plot_pricing_line(df_pricing_daily_ticker, ticker, 'Daily', 'Close')
@@ -849,7 +849,7 @@ Now we call the calculate_return function with a copy of the *df_pricing_yr* dat
 
  ![MSFT_Yearly_Return_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Return_Data_Python.jpg?raw=true)
 
-Let's plot a bar chart of the Yearly returns for **MSFT** using our custom function *plot_returns_bar_chart*.
+Let's plot a **Bar Chart** of the Yearly returns for **MSFT** using our custom function *plot_returns_bar_chart*.
 
     plot_returns_bar_chart(df_yearly_ret_ticker, ticker, 'Year', 'Year % Return')
 
@@ -870,7 +870,7 @@ Let’s juxtapose the Yearly returns with Quarterly returns. We'll use our custo
      
  ![MSFT_Yearly_Return_Quarterly_Return_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Yearly_Return_Quarterly_Return_Data_Python.jpg?raw=true)
 
-Let's plot a bar chart of the Quarterly returns for **MSFT** using the df_comb_ret_ticker dataframe and custom function *plot_returns_bar_chart*.
+Let's plot a **Bar Chart** of the Quarterly returns for **MSFT** using the df_comb_ret_ticker dataframe and the custom function *plot_returns_bar_chart*.
 
      plot_returns_bar_chart(df_comb_ret_ticker, ticker, 'Quarter', 'Quarter % Return')
 
@@ -883,7 +883,7 @@ Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_
 
  ![MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data_Python.jpg?raw=true) 
 
- We can plot all the Quarterly return statistics by year using our custom function *plot_year_stats_bar_charts* for **MSFT**.
+ We can plot all the Quarterly return statistics by year in **Bar Charts** using our custom function *plot_year_stats_bar_charts* for **MSFT**.
 
       plot_period_stats_by_year_bar_charts(df_comb_stats_ticker, 'Ticker', 'MSFT')
  
@@ -891,7 +891,7 @@ Let's call our custom function *calculate_stats* for **MSFT** using the df_comb_
 
 Based on all the Statistics it looks like 2021 was the top consistently trending year. It was showing a positive Lowest Quarterly return where all other years have negatives, the Quarterly Variance of returns was lower for 2021 than in 2023, and Highest Quarterly returns for 2021 was almost as high as 2023. Both Median and Average Quarterly returns were 2nd highest compared to 2023. 
 
-Now let’s explore what happened using monthly returns by year using box plots. We fetch the Monthly returns using our custom functions and then call our custom function *plot_period_returns_by_year_box_plot* to plot the box plot for **MSFT**.
+Now let’s explore what happened using monthly returns by year using Box Plots. We fetch the Monthly returns using our custom functions and then call our custom function *plot_period_returns_by_year_box_plot* to plot the **Box Plot** for **MSFT**.
 
       df_pricing_mth = get_pricing_data(df_pricing.copy(), 'Month')
       df_monthly_ret = calculate_return(df_pricing_mth.copy(), 'Month')
@@ -971,9 +971,9 @@ We originally had **503** Tickers and now we have **496** Tickers that we will w
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data_Python.jpg?raw=true)
 
-The results are the same for the same Tickers when using SQL queries except that we filtered out the Tickers that did not exist 4 years back and so **'CEG'**, which was 3rd in the SQL results, was not in this result. **'MPC'** ended up appearing in the list as 10th.
+The results are the same for the same Tickers when using SQL queries except that we filtered out the Tickers that did not exist 3 years back and so **'CEG'**, which was 3rd in the SQL results, was not in this result. **'MPC'** ended up appearing in the list as 10th.
 
-Let's extract the top 10 tickers from our *df_ret_filter* dataframe as *df_ret_filter_top* and compare them in a line chart calling our custom function *plot_returns_line_chart*.
+Let's extract the top 10 tickers from our *df_ret_filter* dataframe as *df_ret_filter_top* and compare them in a **Line Chart** calling our custom function *plot_returns_line_chart*.
 
     top_tickers = df_ret_filter_last_top['Ticker'].unique()
     df_ret_filter_top = df_ret_filter[df_ret_filter['Ticker'].isin(top_tickers)].copy()
@@ -1010,7 +1010,7 @@ Let's now look at drawdowns compared to the cumulative returns for the top 10 Ti
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Drawdowns_Data_Python.jpg?raw=true)
 
-We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **80.24%** maximum drawdown on **2022-04-12**. **VST** had the highest maximum drawdown and yet the cumulative return was almost 3 times less than **SMCI**. All stocks out of the top 10 performers had the biggest drawdowns in 2022 except **VST**.
+We can observe that for **SMCI**, the most recent drawdown is **63.20%** represented by *'% Drawdown'* had a **80.24%** maximum drawdown on **2022-04-12**. **VST** had the highest maximum drawdown and yet the Cumulative % Return was almost 3 times less than **SMCI**. All stocks out of the top 10 performers had the biggest drawdowns in 2022 except **VST**.
 
 Now let's examine the Top 10 most volatile stocks using Annualized Volatility and ranking logic.
 
@@ -1028,9 +1028,9 @@ Now let's examine the Top 10 most volatile stocks using Annualized Volatility an
 
 **SMCI** came out as the most volatile stock which can be observed also in the drawdown data and cumulative returns line chart. None of the other top 10 performing stocks were in the top 10 most volatile.
 
-A well known **Risk vs. Reward** measure is the Sharpe Ratio. For more information on this, refer to this link: [Sharpe Ratio: Definition, Formula, and Examples](https://www.investopedia.com/terms/s/sharperatio.asp). It is best to use the **Annualized Sharpe Ratio** which uses annualized returns instead of average returns as it provides a clearer and more reliable measure of risk-adjusted performance. Average returns can be misleading and do not fully capture the dynamics of investment performance over time. The formula can be defined as **(Annualized Return − Risk-Free Rate) / Annualized Volatility**. Another measure of Risk vs. Reward is the Sortino Ratio. Unlike the Sharpe Ratio, which penalizes both upside and downside volatility, the Sortino Ratio only considers the standard deviation of negative returns, making it more appropriate for assessing investments that may experience high volatility but also provide significant upside potential. For more information, please refer to this link: [Sortino Ratio: Definition, Formula, Calculation, and Example](https://www.investopedia.com/terms/s/sortinoratio.asp). We will also use the **Annualized Sortino Ratio** which is defined as **(Annualized Return − Risk-Free Rate) / Annualized Downside Volatility**. 
+A well known **Risk vs. Reward** measure is the **Sharpe Ratio**. For more information on this, refer to this link: [Sharpe Ratio: Definition, Formula, and Examples](https://www.investopedia.com/terms/s/sharperatio.asp). It is best to use the **Annualized Sharpe Ratio** which uses annualized returns instead of average returns as it provides a clearer and more reliable measure of risk-adjusted performance. Average returns can be misleading and do not fully capture the dynamics of investment performance over time. The formula can be defined as **(Annualized Return − Risk-Free Rate) / Annualized Volatility**. Another measure of Risk vs. Reward is the **Sortino Ratio**. Unlike the Sharpe Ratio, which penalizes both upside and downside volatility, the Sortino Ratio only considers the standard deviation of negative returns, making it more appropriate for assessing investments that may experience high volatility but also provide significant upside potential. For more information, please refer to this link: [Sortino Ratio: Definition, Formula, Calculation, and Example](https://www.investopedia.com/terms/s/sortinoratio.asp). We will also use the **Annualized Sortino Ratio** which is defined as **(Annualized Return − Risk-Free Rate) / Annualized Downside Volatility**. 
 
-Let's first calculate the Annualized Sharpe Ratio and the Annulaized Sortino Ratio. We will first find the top 10 risk-adjusted performers based on Sharpe Ratio. The Risk-Free Rate is based on the 3 month T-Bill rate. We would have to retrieve the daily data for past 4 years to produce a more accurate calculation but we can simply use an average as a rough estimate which is 2.5%.
+Let's first calculate the Annualized Sharpe Ratio and the Annulaized Sortino Ratio. We will first find the top 10 risk-adjusted performers based on Sharpe Ratio. The Risk-Free Rate is based on the 3 month T-Bill rate. We would have to retrieve the daily data for past 3 years to produce a more accurate calculation but we can simply use an average as a rough estimate which is 2.5%.
 
     risk_free_rate = 2.5
     df_ret_filter2['Annualized Sharpe Ratio'] = np.where(
