@@ -33,5 +33,7 @@ methodologies, technologies and exploratory result observations.
 
 ## **Snowflake Schema Data Modelling** ##
 
+![Equity_Snowflake_Schema_ERD.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Equity_Snowflake_Schema_ERD.jpg?raw=true)
+
 
 
