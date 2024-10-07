@@ -53,6 +53,7 @@ Let's look out how many unique Sectors, Industry Groups, Indistries and Sub-Indu
 
          print(df_pricing_cnt.to_string(index=False))
 
-SP500_GICS_Industry_Columns_Count_Python.jpg
+![SP500_GICS_Industry_Columns_Count_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Industry_Columns_Count_Python.jpg?raw=true)
+
 
 
