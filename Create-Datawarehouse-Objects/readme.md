@@ -1,20 +1,20 @@
 # Data Warehouse Creation File Description
 
-For this project, we will use an **SQL Server** database. The sql file described below will create database objects in our **Data Warehouse** using a **Snowflake schema**. For more information on Snowflake schemas, you can reference this site: [Snowflake Schema in Data Warehouse Model](https://www.geeksforgeeks.org/snowflake-schema-in-data-warehouse-model/). I will describe what the purpose of each step is going forward. 
+For this project, we will use an **SQL Server** database. The sql file described below will create database objects in our small **Data Warehouse** using a **Snowflake schema**. For more information on Snowflake schemas, you can reference this site: [Snowflake Schema in Data Warehouse Model](https://www.geeksforgeeks.org/snowflake-schema-in-data-warehouse-model/). I will describe what the purpose of each step is going forward. 
 
-Equities fall into a type of business and although every business is unique, businesses can be grouped and classified with similar criteria as industries such as manufacturing, retail, financial services etc. The most common Industry classification is the **Global Industry Classification Standard (GICS)** which is also used by S&P Indices. There are 4 levels of GICS industry classification: **Sector**, **Industry Group**, **Industry** and **Sub-Industry**. For more information on GICS industry classification, refer to these official websites: [The Global Industry Classification Standard](https://www.msci.com/our-solutions/indexes/gics) and [GICS: Global Industry Classification Standard](https://www.spglobal.com/spdji/en/landing/topic/gics/). In order to aggregate and analyze data at higher levels, we can create these Dimension tables using some of the **DDL** statements described below. These tables will be part of a relational hierarchy that is linked to *Equities* Dimension table that stores the unique information for our S&P 500 Equities. Below are the steps described in the sql file: 
+Equities fall into a type of business and although every business is unique, businesses can be grouped and classified with similar criteria as industries such as manufacturing, retail, financial services etc. The most common Industry classification is the **Global Industry Classification Standard (GICS)** which is also used by S&P Indices. There are 4 levels of GICS industry classification: **Sector**, **Industry Group**, **Industry** and **Sub-Industry**. For more information on GICS industry classification, refer to these official websites: [The Global Industry Classification Standard](https://www.msci.com/our-solutions/indexes/gics) and [GICS: Global Industry Classification Standard](https://www.spglobal.com/spdji/en/landing/topic/gics/). In order to aggregate and analyze data at higher levels, we can create these Dimension tables using some of the **DDL** statements described below. These tables will be part of a relational hierarchy that is linked to the *Equities* **Dimension table** that stores the unique information for our S&P 500 Equities. Below are the steps described in the sql file: 
 
 
 ## *[Create-Data-Warehouse-Objects.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Data-Warehouse-Objects.sql)*  
 
-These DDL statements will create the database called *Financial_Securities* which will house Financial Securities data. It will also create a schema called *Equities* which is the type of Financial Securities we will be focusing on.
+These DDL statements will create the database called *Financial_Securities* which will house the Financial Securities data. It will also create a schema called *Equities* which is the type of Financial Securities we will be focusing on.
 
     CREATE DATABASE Financial_Securities;
 
     CREATE SCHEMA Equities;
 
 
-This DDL statement create the *Data_STG* table. Before we create any tables that will store our data, It is good practice to create a staging table that will handle the types of data we will need to load. A staging table is always a good idea as it allows to for any data transformation or merging of data to occur before loading into a final table. It also allows for validating and correcting any issues that may occur. I like to create a table that handles different dates, text, integers and float values. For simplicity’s sake, I will use 5 fields for each type for now that should handle most types of data loads in the future. Financial data usually has a date and string type identifiers so we will use Data and Description for the Primary Key. If there is no date, we can always use today's date. 
+This DDL statement creates the *Data_STG* table. Before we create any tables that will store our data, it is good practice to create a staging table that will handle the types of data we will need to load. A staging table is always a good idea as it allows to for any data transformation or merging of data to occur before loading into a final table. It also allows for validating and correcting any issues that may occur. I like to create a table that handles different dates, text, integers and float values. For simplicity’s sake, I will use 5 fields for each type for now that should handle most types of data loads in the future. Financial data usually has date and string type identifiers so we will use *Data* and *Description* for the **Primary Key**. If there is no date, we can always use today's date. 
 
     CREATE TABLE [Financial_Securities].[Equities].[Data_STG](
       [Date] [datetime] NOT NULL,
@@ -85,7 +85,7 @@ This DDL statement will create the Dimension table called *Equities* with an aut
     CONSTRAINT PK_Equities PRIMARY KEY(Ticker_ID));
 
 
-This DDL statement will create the Fact table called *Yahoo_Equity_Pricing* which stores the Equity pricing data extracted from Yahoo Finance. The *Ticker_ID* is the same unique Ticker identifier in the *Equities* table. Pricing data is represented by Open, High, Low, Close and Volume. For more information about these data points, you can reference this site: [Understanding an OHLC Chart and How to Interpret It](https://www.investopedia.com/terms/o/ohlcchart.asp). The Primary Key is defined as a unique composite key using *Date* and *Ticker_ID*.
+This DDL statement will create the **Fact table** called *Yahoo_Equity_Pricing* which stores the Equity pricing data extracted from Yahoo Finance. The *Ticker_ID* is the same unique Ticker identifier in the *Equities* table. Pricing data is represented by Open, High, Low, Close and Volume. For more information about these data points, you can reference this site: [Understanding an OHLC Chart and How to Interpret It](https://www.investopedia.com/terms/o/ohlcchart.asp). The Primary Key is defined as a unique composite key using *Date* and *Ticker_ID*.
 
     CREATE TABLE [Financial_Securities].[Equities].[Yahoo_Equity_Prices](
 	  [Date] [date] NOT NULL,
@@ -98,7 +98,7 @@ This DDL statement will create the Fact table called *Yahoo_Equity_Pricing* whic
     CONSTRAINT PK_US_Yahoo_Equity_Prices PRIMARY KEY([Date], [Ticker_ID]));
 
 
-These DDL statements will create the Foreign Key Constraints called *FK_Industry_Groups_Sector*, *FK_Industries_Industry_Groups*, *FK_Sub_Industries_Industries*, and *FK_Equities_Sub_Industries* which will enforce a Snowflake relational hierarchy for Equities. The foreign key *FK_US_Yahoo_Equity_Prices_Ticker_ID* will link the *Equities* Dimension table to the *Yahoo_Equity_Prices* Fact table via *Ticker_ID*. These statements should only be run once the data is populated in the tables described above to ensure the constraint validation does not fail due to missing data.
+These DDL statements will create the **Foreign Keys** called *FK_Industry_Groups_Sector*, *FK_Industries_Industry_Groups*, *FK_Sub_Industries_Industries*, and *FK_Equities_Sub_Industries* which will enforce a Snowflake relational hierarchy for Equities. The foreign key *FK_US_Yahoo_Equity_Prices_Ticker_ID* will link the *Equities* Dimension table to the *Yahoo_Equity_Prices* Fact table via *Ticker_ID*. These statements should only be run once the data is populated in the tables described above to ensure the constraint validation does not fail due to missing data.
 
 	ALTER TABLE [Financial_Securities].[Equities].[Industry_Groups]
 	ADD CONSTRAINT FK_Industry_Groups_Sector 
@@ -136,7 +136,7 @@ This DDL statement will create the Dimension table called *Market_Calendar*. To 
     CONSTRAINT PK_Market_Calendar PRIMARY KEY([Country], [Date]));
 
 
-And there you have it! We have set up a basic Snowflake schema for our Equity Data Warehouse.
+And there you have it! We have set up a basic Snowflake schema for our small Equity Data Warehouse.
 
 ![Equity_Snowflake_Schema_ERD.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Equity_Snowflake_Schema_ERD.jpg?raw=true)
 
