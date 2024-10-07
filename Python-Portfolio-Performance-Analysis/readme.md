@@ -104,7 +104,7 @@ Let's define a function called *calculate_portfolio_return* which will calculate
             return df_tmp  # Return the modified DataFrame
 
 
-If we want to see how the returns are distributed for a particular Ticke, we can plot it as a **Histogram** using the matplotlib package. This function called *plot_return_histogram* will plot a histogram and calculate the number of bins based on the Freedman-Diaconis rule that uses quartile range. For more information on this rule. refer to this link: [Freedman–Diaconis rule](https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule). We can also compare how the returns measure up against all the returns that are normalized and plotted as a line representing a Normal Distribution. The scipy package would need to be imported. Another line can be drawn that can smooth the Ticker return bins using the Gaussion KDE (Kernel Density Estimation) function from the scipy package. For more informtion on this, refer to this link: [Kernel density estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation). The *plot_return_histogram* function takes the return dataframe, return type and security class type value as input parameters.
+If we want to see how the returns are distributed for a particular Ticker, we can plot it as a **Histogram** using the **matplotlib** package. This function called *plot_return_histogram* will plot a Histogram and calculate the number of bins based on the **Freedman-Diaconis rule** that uses quartile range. For more information on this rule. refer to this link: [Freedman–Diaconis rule](https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule). We can also compare how the returns measure up against all the returns that are normalized and plotted as a line representing a **Normal Distribution**. The **scipy** package would need to be imported. Another line can be drawn that can smooth the Ticker return bins using the **Gaussion KDE (Kernel Density Estimation) function** from the scipy package. For more informtion on this, refer to this link: [Kernel density estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation). The *plot_return_histogram* function takes the return dataframe, return type and security class type value as input parameters.
 
 
     from scipy.stats import norm, gaussian_kde
@@ -186,7 +186,7 @@ If we want to see how the returns are distributed for a particular Ticke, we can
         plt.show()    
 
 
-If we want to visualize and compare various Tickers using a return type vs another measure, we can use a **Bubble Chart**. The size of the bubble is represented by the size measure. Let's create a function called *plot_returns_bubble_chart* that will display the bubble chart using plotly express scatter plots. For a large group of Tickers such as those in the S&P500, it would be hard to view a snapshot of the chart so we can tweak the code to show a legend of the top 10 Tickers based on a custom performance adjusted measure using the return type value multiplied by the size measure value. The *plot_returns_bubble_chart* function takes the return dataframe, return type, size type, security class type as input paramters. It also takes True or False for displaying top N values in the legend along with N as input parameters.
+If we want to visualize and compare various Tickers using a return type vs another measure, we can use a **Bubble Chart**. The size of the bubble is represented by the size measure. Let's create a function called *plot_returns_bubble_chart* that will display the Bubble Chart using plotly express scatter plots. For a large group of Tickers such as those in the S&P500, it would be hard to view a snapshot of the chart so we can tweak the code to show a legend highlighting the top 10 Tickers based on a custom performance adjusted measure as *size_type*. The *plot_returns_bubble_chart* function takes the return dataframe, return type, size type, security class type as input paramters. It also takes True or False for displaying top N values in the legend along with N as input parameters.
 
 
         def plot_returns_bubble_chart(df_tmp, return_type, size_type, security_class, is_top, top_val):
@@ -284,7 +284,7 @@ If we want to visualize and compare various Tickers using a return type vs anoth
             fig.show()
 
     
-This function called *plot_period_returns_by_ticker_box_plot* creates box plots using the seaborn and matplotlib package. The % Returns are plotted by security class. This function takes the return dataframe, period type and security class type as input parameters.
+This function called *plot_period_returns_by_ticker_box_plot* creates **Box Plots** using the **seaborn** and **matplotlib** package. The % Returns are plotted by security class type. This function takes the return dataframe, period type and security class type as input parameters.
 
         def plot_period_returns_by_security_class_box_plot(df_tmp, period, security_class):
     
@@ -327,7 +327,7 @@ This function called *plot_period_returns_by_ticker_box_plot* creates box plots 
             # Display the plot
             plt.show()
 
-This function called *calculate_information_ratio* calculates the ***Information Ratio*** which measures how consistently a portfolio outperforms its benchmark with respect to risk taken. ***Information Ratio = (Portfolio Return − Benchmark Return) / Tracking Error, where Tracking Error = Standard deviation of difference between Portfolio and Benchmark returns***. For more information on the Information Ratio, refer to this link: [Information Ratio (IR): Definition, Formula, vs. Sharpe Ratio](https://www.investopedia.com/terms/i/informationratio.asp). We can measure the excess return of the portfolio vs. the benchmark using the slopes of the respective regression lines. Let's define a function called *calculate_information_ratio* which requires the return datafarame, security class type, the 1st security class type value, and the 2nd security class value as the benchmark. The Information Ratio value is returned.
+This function called *calculate_information_ratio* calculates the ***Information Ratio*** which measures how consistently a portfolio outperforms its benchmark with respect to magnitude of risk taken. ***Information Ratio = (Portfolio Return − Benchmark Return) / Tracking Error, where Tracking Error = Standard deviation of difference between Portfolio and Benchmark returns***. For more information on the Information Ratio, refer to this link: [Information Ratio (IR): Definition, Formula, vs. Sharpe Ratio](https://www.investopedia.com/terms/i/informationratio.asp). We can measure the excess return of the portfolio vs. the benchmark using the slopes of the respective regression lines. Let's define a function called *calculate_information_ratio* which requires the return datafarame, security class type, the 1st security class type value, and the 2nd security class value as the benchmark. The Information Ratio value is returned.
 
         def calculate_information_ratio(df_tmp, security_class, security_class_val1, security_class_val2):
     
@@ -374,7 +374,7 @@ This function called *calculate_information_ratio* calculates the ***Information
 
             return information_ratio
 
-If we want to see how the returns are correlated, we can use the Pearson correlation coefficient. For more information on this, refer to this link: [The Correlation Coefficient: What It Is and What It Tells Investors](https://www.investopedia.com/terms/c/correlationcoefficient.asp). We start by creating a **Pivot Table** to group the return values under security class type value columns. We can use the pandas dataframe built-in function *corr()* on the pivot table to retrieve the correlation matrix. To plot the correlation matrix, we can create a **Heatmap** using the seaborn package. This function takes the return dataframe, return type and security class type as input parameters and returns the correlation matrix.
+If we want to see how the returns are correlated, we can use the **Pearson correlation coefficient**. For more information on this, refer to this link: [The Correlation Coefficient: What It Is and What It Tells Investors](https://www.investopedia.com/terms/c/correlationcoefficient.asp). We start by creating a **Pivot Table** to group the return values under security class type value columns. We can use the pandas dataframe built-in function *corr()* on the pivot table to retrieve the correlation matrix. To plot the correlation matrix, we can create a **Heatmap** using the seaborn package. This function takes the return dataframe, return type and security class type as input parameters and returns the correlation matrix.
 
 
         def plot_security_class_correlations(df_tmp, return_type, security_class):
@@ -444,7 +444,7 @@ Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment 
 
 We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio.    
 
-Let's say we want to determine what the top 10 stocks are for the 1st 2 years (2021 to 2022) based on Annualize Sortino Retio. First, We can do this calculating the returns, using a risk free rate of 1.5 which is roughly average at the time and then ranking the top 10.
+Let's say we want to determine what the top 10 stocks are for the 1st 2 years (2021 to 2022) based on Annualize Sortino Retio. First, We can do this calculating the returns, using a risk free rate of 1.5 which is roughly average at the time and then rank the top 10.
 
         two_years_after_min_date = min_valid_first_date + pd.DateOffset(days=(365)*2)
         two_years_after_min_date_str = two_years_after_min_date.strftime('%Y-%m-%d')
@@ -469,7 +469,7 @@ Let's say we want to determine what the top 10 stocks are for the 1st 2 years (2
         num_of_ranks = 10
         df_ret_second_year_last_top = df_ret_second_year_last[df_ret_second_year_last['Annualized Sortino Ratio Rank'] <= num_of_ranks].copy()
 
-Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate the portfolio returns using our custom function *calculate_portfolio_return*. We'll need to drop the 'Ticker' column. we then assign a Ticker label as **PFL** to our portfolio returns.
+Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate the portfolio returns using our custom function *calculate_portfolio_return* that uses average Ticker log returns. We assign a Ticker label as **PFL** to our portfolio returns.
 
         portfolio_tickers = df_ret_second_year_last_top['Ticker'].unique()
         print(portfolio_tickers)
@@ -484,7 +484,7 @@ Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate
         df_portfolio_ret_second_year['Ticker'] = 'PFL'
         df_portfolio_ret_second_year.sort_values(by=['Date'], inplace=True)
 
-We'll combine the returns of the top 10 and the portfolio and then plot the top 10 tickers using our custom function *plot_returns_line_chart* for the portfolio cumulative returns in a line chart.
+We'll combine the returns of the top 10 and the portfolio and then plot a **Line Chart** of the top 10 tickers using our custom function *plot_returns_line_chart* for the portfolio cumulative returns.
 
         df_ret_second_year_comb = pd.concat([df_portfolio_tickers_ret_second_year, df_portfolio_ret_second_year], axis=0)
         df_ret_second_year_comb.sort_values(by=['Ticker','Date'], inplace=True)
@@ -494,7 +494,7 @@ We'll combine the returns of the top 10 and the portfolio and then plot the top 
 
 We can see that our portfolio **PFL** (pink line) has returns somewhere around 4th place that are smoother and less volatile than top performing stocks. This is a result of diversification that can reduce risk overall.
 
-Now let's see our top 10 Ticker and Portfolio Annualized Sortino Ratio values
+Now let's observe our top 10 Ticker and Portfolio Annualized Sortino Ratio values.
 
     df_ret_second_year_comb_last = df_ret_second_year_comb_last[['Ticker', 'Date', 'Annualized % Return', 'Annualized Sortino Ratio']]
     df_ret_second_year_comb_last.sort_values(by=['Annualized Sortino Ratio'], ascending=False, inplace=True)
@@ -503,7 +503,7 @@ Now let's see our top 10 Ticker and Portfolio Annualized Sortino Ratio values
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python.jpg?raw=true)
 
-We can see that **MCK** had the highest Annualized Sortino Ratio of **3.07** and that our Portfolio **PFL** had the 2nd highest at **3.04**. We can also plot and compare the Annualized Sortino Ratio for all Tickers and the portfolio in a Bubble Chart using our custom function *plot_returns_bubble_chart* with the following code:
+We can see that **MCK** had the highest Annualized Sortino Ratio of **3.07** and that our Portfolio **PFL** had the 2nd highest at **3.04**. We can also plot and compare the Annualized Sortino Ratio for all Tickers and the portfolio in a **Bubble Chart** using our custom function *plot_returns_bubble_chart* with the following code.
 
     df_ret_second_year_comb2 = pd.concat([df_ret_second_year_last, df_portfolio_ret_second_year], axis=0)
     df_ret_second_year_comb2.sort_values(by=['Ticker','Date'], inplace=True)
@@ -561,7 +561,7 @@ What would happen if we invested in the top 10 Annualized Sortino Ratio Tickers 
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python2.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python2.jpg?raw=true)
 
-It turns out that our Portfolio is not in the top 10 Annualized Sortino Ratio for the past 2 year returns.
+It turns out that our portfolio is not in the top 10 Annualized Sortino Ratio for the past 2 year returns.
 
 After using percentile ranking logic, we determined that in fact, our portfolio was in the 70th percentile which is not bad but not ideal.
 
@@ -575,7 +575,7 @@ After using percentile ranking logic, we determined that in fact, our portfolio 
     
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python3.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python3.jpg?raw=true)
 
-Let's use a Histogram plot using our custom function *plot_return_histogram* to view our portfolio simple returns compared to all the S&P 500 Ticker simple returns.
+Let's use a **Histogram** plot using our custom function *plot_return_histogram* to view our portfolio simple returns compared to all the S&P 500 Ticker simple returns.
 
     plot_return_histogram(df_ret_after_second_year_comb, '% Return', 'Ticker', 'PFL')
 
@@ -583,7 +583,7 @@ Let's use a Histogram plot using our custom function *plot_return_histogram* to 
 
 Our portfolio **PFL** has a shape that is more narrow and longer with less fatter tails than the normal distribution of the S&P 500 Tickers. The portfolio has a higher frequency of small negative returns between 0% and -1% but also has a higher frequency of small positive returns of 0% to 1.5%.
 
-Another way to view our portfolio returns compared to the broader market is to use a benchmark. We can calculate the returns for all Tickers as a portfolio and define it as the benchmark labelled **BM**. We then plot the Portfolio **PFL** and benchmark **BM** cumulative returns in a Line Chart using our custom function *plot_returns_line_chart*.
+Another way to view our portfolio returns compared to the broader market is to use a benchmark. We can calculate the returns for all Tickers as a portfolio and define it as the benchmark labelled **BM**. We then plot the Portfolio **PFL** and benchmark **BM** Cumulative % Returns in a **Line Chart** using our custom function *plot_returns_line_chart*.
 
     df_bench_ret_after_second_year = calculate_portfolio_return(df_ret_after_second_year.copy(), ['Ticker'], 'Daily')
     df_bench_ret_after_second_year['Ticker'] = 'BM'
@@ -597,7 +597,7 @@ Another way to view our portfolio returns compared to the broader market is to u
 
 We see that our portfolio is outperforming the S&P 500 basket of Tickers at certain periods which explains our slight positive skew in our Histogram chart. By end of 2024, the S&P 500 basket of Tickers has almost caught up to the portfolio.
 
-Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_box_plot*, we see that the portfoilo returns have more variance and outliers than the benchmark.
+Looking at a **Box Plot** using our custom function *plot_period_returns_by_ticker_box_plot*, we see that the portfoilo returns have more variance and outliers than the benchmark.
 
     plot_period_returns_by_security_class_box_plot(df_ret_after_second_year_comb2, 'Daily', 'Ticker')
     
@@ -608,9 +608,9 @@ From the persepctive of risk vs. return alpha for our portfolio vs. the broader 
     information_ratio = calculate_information_ratio(df_ret_after_second_year_comb2, 'Ticker', 'PFL', 'BM')
     print(f'Information Ratio: {information_ratio}')
 
-We get **Information Ratio: -0.0** which means there is no real alpha which confirms a lot of the observations we have made from the last **Line Chart** and the **Box Plot**.
+We get **Information Ratio: -0.0** which means there is no real alpha and confirms a lot of the observations we have made from the last **Line Chart** and the **Box Plot**.
 
-Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the correlation matrix.
+Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the **Correlation Matrix**.
 
     df_pricing_mth = get_pricing_data(df_pricing_filtered.copy(), 'Month')
     date_filter3 = (df_pricing_mth['Date'] >= two_years_after_min_date_str)
