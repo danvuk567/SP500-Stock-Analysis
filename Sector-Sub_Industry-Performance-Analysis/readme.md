@@ -2,9 +2,7 @@ Let's do some analysis on a Sectors and Sub-Industries. We will also be adding a
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-Let's define a function called *scatter_plot* which will plot a **Scatter Plot** using **matplotlib** and **sklearn** packages of the our returns and draw a **Regression Line**. We will need to install the sklearn package if it has not been installed and import the *LinearRegression* module from sklearn. This will draw a regression line of our return data to predict future outcomes. The function requires a returns dataframe and return type as input parameters.
-
-        from sklearn.linear_model import LinearRegression
+Let's define a function called *scatter_plot* which will plot a **Scatter Plot** of the our returns. It usese the **matplotlib** and **sklearn** packages, and draws a **Regression Line** to predict future outcomes. The function requires a returns dataframe and return type as input parameters.
 
         def scatter_plot(df_tmp, return_type):
 
@@ -76,7 +74,7 @@ How may Tickers exist by Sector? How many have positive Cumulative % Returns? Ho
 
 ![SP500_GICS_Sector_Ticker_Return_Count_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Ticker_Return_Count_Python.jpg?raw=true)
 
-It looks like **Communication Services**, which had the smallest count of Tickers, had the lowest % of # of positive Cumulative Returns of all Sectors at **47.86%**. There were more negative Cumulative Returns than positive. The **Energy** Sector** was the only Sector that had **100%** of # of positive Cumulative Returns. There were no Tickers with negative Cumulative % Returns in the past 4 years.
+It looks like **Communication Services**, which had the smallest count of Tickers, had the lowest % of # of positive Cumulative % Returns of all Sectors at **47.86%**. There were more negative Cumulative Returns than positive. The **Energy** Sector** was the only Sector that had **100%** of # of positive Cumulative % Returns. There were no Tickers with negative Cumulative % Returns in the past 4 years.
 
 Now, let's look at Cumulative % Return, Annualized % Return, Annualized Volatility and Annualized Downside Volatility of the different Sectors. We do this by grouping the Tickers in each Sector as a portfolio and using our custom function *calculate_portfolio_return* that aggregates average log returns from the dataframe *df_ret* to calculate these measures. We will concatenate all portfolio return measures into one dataframe *df_ret_sectors*. We then print the results for the last date.
 
@@ -115,7 +113,7 @@ We can show the Sector Cumulative % Return impact in a **Bubble Chart** using ou
 
 ![SP500_GICS_Sector_Cumulative_Returns_Bubble_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Cumulative_Returns_Bubble_Chart.jpg?raw=true)
 
-Let's plot the Cumulative % Returns by Sector to show how the Returns were compounded over time in a **Line Chart** using our custom function *plot_returns_line_chart*.
+Let's plot the Cumulative % Returns by Sector in a **Line Chart** to show how the Returns were compounded over time using our custom function *plot_returns_line_chart*.
 
          plot_returns_line_chart(df_ret_sectors, 'Daily', 'Cumulative % Return', 'Sector')
 
@@ -123,7 +121,7 @@ Let's plot the Cumulative % Returns by Sector to show how the Returns were compo
 
  The **Energy** Sector clearly outperformed all Sectors but also experiencing a number of large drawdowns clearly exhibiting high volatility.
 
-Let's now take a look at determining how a Sector is trending over the past 4 years. We can plot a linear regresion line using the Cumulative % Returns and plot it on a **Line Chart**. The steeper the slope, the stronger the trend is whether positive or negative. We'll use our custom function *scatter_plot* to plot a **Scatter Plot** and **Regression Line** for the **Consumer Staples** Sector.
+Let's now take a look at determining how a Sector is trending over the past 4 years. We can plot a **Linear Regression** line using the Cumulative % Returns and plot it on a **Line Chart**. The steeper the slope, the stronger the positive or negative trend. We'll use our custom function *scatter_plot* to plot a **Scatter Plot** and regression line for the **Consumer Staples** Sector.
 
         sector = 'Consumer Staples'
         df_ret_sector = df_ret_sectors[df_ret_sectors['Sector'] == sector].copy()
