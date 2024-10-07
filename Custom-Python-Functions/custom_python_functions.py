@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+Created on Mon Sep 23 13:23:10 2024
+
 @author: Daniel
 """
 
@@ -1145,7 +1147,54 @@ def plot_period_returns_by_security_class_box_plot(df_tmp, period, security_clas
     # Display the plot
     plt.show()
     
+
     
+def calculate_information_ratio(df_tmp, security_class, security_class_val1, security_class_val2):
+    
+    """
+    Compute Information Ratio of a security class type value vs. another benchmark security class type value 
+    
+    Args:
+        - df_tmp: DataFrame containing return data for multiple security class types.
+        - security_class: A string representing the name of the the columns containing security class type ('Sector', 'Industry Group',  
+          'Industry', 'Sub_Industry', 'Ticker').
+        - security_class_val1: A string representing the value of the security class type column ('Sector', 'Industry Group', 
+          'Industry', 'Sub_Industry', 'Ticker').
+        - security_class_val2: A string representing the benchmark value of the security class type column ('Sector', 'Industry Group', 
+          'Industry', 'Sub_Industry', 'Ticker').  
+
+    Returns:
+        - Information Ratio value.
+    """
+
+    df_pivot = df_tmp.pivot(index='Date', columns=security_class, values='% Return')
+
+    # Prepare the independent variable (X) for both portfolio and benchmark
+    X = np.arange(len(df_pivot)).reshape(-1, 1)  # Time indices as the independent variable
+
+    # Fit linear regression for portfolio
+    model_security_class1 = LinearRegression()
+    model_security_class1.fit(X, df_pivot[security_class_val1])
+    slope_security_class1 = model_security_class1.coef_[0]
+
+    # Fit linear regression for benchmark
+    model_security_class2 = LinearRegression()
+    model_security_class2.fit(X, df_pivot[security_class_val2])
+    slope_security_class2 = model_security_class2.coef_[0]
+
+    # Calculate excess return
+    excess_return = slope_security_class1 - slope_security_class2
+
+    # Calculate tracking error (standard deviation of the difference in returns)
+    df_pivot['Excess % Return'] = df_pivot[security_class_val1] - df_pivot[security_class_val2]
+    tracking_error = df_pivot['Excess % Return'].std()
+
+    # Calculate Information Ratio
+    information_ratio = round(excess_return / tracking_error, 2)
+
+    return information_ratio
+
+
 def plot_security_class_correlations(df_tmp, return_type, security_class):
     
     """
