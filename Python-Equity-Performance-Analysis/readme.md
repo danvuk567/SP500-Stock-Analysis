@@ -1,4 +1,4 @@
-# Python Equity Performance Analysis Description
+# Python Equity Performance Analysis
 
 Let's do the same type of analysis we did using SQL within Python. We will adding new functions to our *custom_python_functions.py* file which can be re-used in this project. 
 
