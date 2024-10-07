@@ -31,3 +31,7 @@ methodologies, technologies and exploratory result observations.
 - Extraction and transformation: Excel Power Query, Jupyter Notebook
 - Storage: SQL Server 2022 Database
 
+## **Snowflake Schema Data Modelling** ##
+
+
+
