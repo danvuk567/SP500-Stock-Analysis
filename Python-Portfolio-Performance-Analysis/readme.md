@@ -12,7 +12,8 @@ Let's define a function called *calculate_portfolio_return* which will calculate
     
             Parameters:
             - df_tmp: The DataFrame containing the historical data.
-            - security_class_list: A string list of column names to drop from the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker').
+            - security_class_list: A list of strings representing the security class type columns ('Sector', 'Industry Group', 'Industry', 
+              'Sub_Industry', 'Ticker').
             - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
 
             Returns:
