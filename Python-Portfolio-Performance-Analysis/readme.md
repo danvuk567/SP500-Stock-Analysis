@@ -327,8 +327,10 @@ This function called *plot_period_returns_by_ticker_box_plot* creates **Box Plot
             # Display the plot
             plt.show()
 
-This function called *calculate_information_ratio* calculates the ***Information Ratio*** which measures how consistently a portfolio outperforms its benchmark with respect to magnitude of risk taken. ***Information Ratio = (Portfolio Return − Benchmark Return) / Tracking Error, where Tracking Error = Standard deviation of difference between Portfolio and Benchmark returns***. For more information on the Information Ratio, refer to this link: [Information Ratio (IR): Definition, Formula, vs. Sharpe Ratio](https://www.investopedia.com/terms/i/informationratio.asp). We can measure the excess return of the portfolio vs. the benchmark using the slopes of the respective regression lines. Let's define a function called *calculate_information_ratio* which requires the return datafarame, security class type, the 1st security class type value, and the 2nd security class value as the benchmark. The Information Ratio value is returned.
+This function called *calculate_information_ratio* calculates the ***Information Ratio*** which measures how consistently a portfolio outperforms its benchmark with respect to magnitude of risk taken. ***Information Ratio = (Portfolio Return − Benchmark Return) / Tracking Error, where Tracking Error = Standard deviation of difference between Portfolio and Benchmark returns***. For more information on the Information Ratio, refer to this link: [Information Ratio (IR): Definition, Formula, vs. Sharpe Ratio](https://www.investopedia.com/terms/i/informationratio.asp). We can measure the excess return of the portfolio vs. the benchmark using the slopes of the respective **Regression Lines**. We will need to install the **sklearn** package if it has not been installed and import the *LinearRegression* module from sklearn. Let's define a function called *calculate_information_ratio* which requires the return datafarame, security class type, the 1st security class type value, and the 2nd security class value as the benchmark. The Information Ratio value is returned.
 
+        from sklearn.linear_model import LinearRegression
+        
         def calculate_information_ratio(df_tmp, security_class, security_class_val1, security_class_val2):
     
             """
