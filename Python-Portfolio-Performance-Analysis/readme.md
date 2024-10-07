@@ -327,6 +327,53 @@ This function called *plot_period_returns_by_ticker_box_plot* creates box plots 
             # Display the plot
             plt.show()
 
+This function called *calculate_information_ratio* calculates the ***Information Ratio*** which measures how consistently a portfolio outperforms its benchmark with respect to risk taken. ***Information Ratio = (Portfolio Return − Benchmark Return) / Tracking Error, where Tracking Error = Standard deviation of difference between Portfolio and Benchmark returns***. For more information on the Information Ratio, refer to this link: [Information Ratio (IR): Definition, Formula, vs. Sharpe Ratio](https://www.investopedia.com/terms/i/informationratio.asp). We can measure the excess return of the portfolio vs. the benchmark using the slopes of the respective regression lines. Let's define a function called *calculate_information_ratio* which requires the return datafarame, security class type, the 1st security class type value, and the 2nd security class value as the benchmark. The Information Ratio value is returned.
+
+        def calculate_information_ratio(df_tmp, security_class, security_class_val1, security_class_val2):
+    
+            """
+            Compute Information Ratio of a security class type value vs. another benchmark security class type value. 
+    
+            Args:
+                - df_tmp: DataFrame containing return data for multiple security class types.
+                - security_class: A string representing the name of the the columns containing security class type ('Sector', 'Industry Group',  
+                  'Industry', 'Sub_Industry', 'Ticker').
+                - security_class_val1: A string representing the value of the security class type column ('Sector', 'Industry Group', 
+                  'Industry', 'Sub_Industry', 'Ticker').
+                - security_class_val2: A string representing the benchmark value of the security class type column ('Sector', 'Industry Group', 
+                  'Industry', 'Sub_Industry', 'Ticker').  
+
+            Returns:
+                - Information Ratio value.
+            """
+
+            df_pivot = df_tmp.pivot(index='Date', columns=security_class, values='% Return')
+
+            # Prepare the independent variable (X) for both portfolio and benchmark
+            X = np.arange(len(df_pivot)).reshape(-1, 1)  # Time indices as the independent variable
+
+            # Fit linear regression for portfolio
+            model_security_class1 = LinearRegression()
+            model_security_class1.fit(X, df_pivot[security_class_val1])
+            slope_security_class1 = model_security_class1.coef_[0]
+
+            # Fit linear regression for benchmark
+            model_security_class2 = LinearRegression()
+            model_security_class2.fit(X, df_pivot[security_class_val2])
+            slope_security_class2 = model_security_class2.coef_[0]
+
+            # Calculate excess return
+            excess_return = slope_security_class1 - slope_security_class2
+
+            # Calculate tracking error (standard deviation of the difference in returns)
+            df_pivot['Excess % Return'] = df_pivot[security_class_val1] - df_pivot[security_class_val2]
+            tracking_error = df_pivot['Excess % Return'].std()
+
+            # Calculate Information Ratio
+            information_ratio = round(excess_return / tracking_error, 2)
+
+            return information_ratio
+
 If we want to see how the returns are correlated, we can use the Pearson correlation coefficient. For more information on this, refer to this link: [The Correlation Coefficient: What It Is and What It Tells Investors](https://www.investopedia.com/terms/c/correlationcoefficient.asp). We start by creating a **Pivot Table** to group the return values under security class type value columns. We can use the pandas dataframe built-in function *corr()* on the pivot table to retrieve the correlation matrix. To plot the correlation matrix, we can create a **Heatmap** using the seaborn package. This function takes the return dataframe, return type and security class type as input parameters and returns the correlation matrix.
 
 
