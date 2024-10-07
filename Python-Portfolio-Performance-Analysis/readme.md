@@ -1,4 +1,4 @@
-# Python Portfolio Performance Analysis Description
+# Python Portfolio Performance Analysis
 
 Let's do some analysis on a portfolio of stocks. We will be adding new functions to our *custom_python_functions.py* file which can be re-used in this project. 
 
