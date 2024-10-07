@@ -37,3 +37,8 @@ Let's define a function called *calculate_portfolio_return* which will plot a **
             plt.legend()
             plt.show()
 
+
+## Sector / Sub-Industry Performance Analysis: *[Sector-Sub_Industry-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Portfolio-Performance-Analysis/Sector-Sub_Industry-Performance-Analysis.ipynb)*
+
+Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment portfolio. We will import the necessary packages, connect to the database, query the database for our pricing data bind it to the         df_pricing dataframe. Before we proceed any futher, we want to focus on stocks that existed from the start of the 4 year data we stored so that any aggregated return comparison is not skewed by newer stocks that         were traded later on.
+
