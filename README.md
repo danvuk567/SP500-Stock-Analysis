@@ -11,4 +11,4 @@ methodologies, technologies and exploratory result observations.
 ## **Table of Contents** ##
 
 - [Data Sources and File Transformation Overview](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Data-Source-Files/readme.md)
-- [Python ETL Process Description](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/readme.md)
+- [Python ETL Process Description](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/readme.md))
