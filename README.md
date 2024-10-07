@@ -12,4 +12,9 @@ methodologies, technologies and exploratory result observations.
 
 - [Data Sources and File Transformation Overview](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Data-Source-Files/readme.md)
 - [Data Warehouse Creation File Description](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/readme.md)
-- [Python ETL Process Description](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/readme.md))
+- [Python ETL Process Description](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/readme.md)
+- [SQL Equity Performance Analysis Description](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/SQL-Equity-Performance-Analysis)
+- [Python Equity Performance Analysis Description](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Equity-Performance-Analysis)
+- [Python Portfolio Performance Analysis Description](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Portfolio-Performance-Analysis)
+- [Python Sector/Sub-Industry Performance Analysis Description](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Sector-Sub_Industry-Performance-Analysis)
+
