@@ -76,7 +76,7 @@ How may Tickers exist by Sector? How many have positive Cumulative % Returns? Ho
 
 ![SP500_GICS_Sector_Ticker_Return_Count_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Ticker_Return_Count_Python.jpg?raw=true)
 
-It looks like **Communication Services**, which had the smallest count of Tickers, had the lowest % of # of positive Cumulative Returns of all Sectors at **47.86** and meaning that there were more negative Cumulative Returns than positive. The **Energy** Sector** was the only Sector that had no Tickers with negative Cumulative % Returns in the past 4 years.
+It looks like **Communication Services**, which had the smallest count of Tickers, had the lowest % of # of positive Cumulative Returns of all Sectors at **47.86%**. There were more negative Cumulative Returns than positive. The **Energy** Sector** was the only Sector that had **100%** of # of positive Cumulative Returns. There were no Tickers with negative Cumulative % Returns in the past 4 years.
 
 
 
