@@ -548,7 +548,7 @@ Another way to view our portfolio returns compared to the broader market is to u
 
 ![SP500_Portfolio_Benchmark_Cumulative_Returns_Line_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Cumulative_Returns_Line_Chart_Python.jpg?raw=true)
 
-We see that our portfolio is generally outperforming the S&P 500 basket of Tickers since August of 2023 but the S&P 500 Tickers are catching up in Sept 2024.
+We see that our portfolio is outperforming the S&P 500 basket of Tickers at certain periods which explains our slight positive skew in our Histogram chart. By end of 2024, the S&P 500 basket of Tickers has almost caught up to the portfolio.
 
 Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_box_plot*, we see that the portfoilo returns have more variance and outliers than the benchmark.
 
