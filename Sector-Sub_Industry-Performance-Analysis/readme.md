@@ -2,7 +2,7 @@ Let's do some analysis on a Sectors and Sub-Industries. We will also be adding a
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-Let's define a function called *scatter_plot* which will plot a **Scatter Plot** using matplotlib and sklearn packages of the our returns and draw a regression line. We will need to install the sklearn package if it has not been installed and import the LinearRegression module from sklearn. This will draw a regression line of our return data to predict future outcomes. The function requires a returns dataframe and return type as input parameters.
+Let's define a function called *scatter_plot* which will plot a **Scatter Plot** using **matplotlib** and **sklearn** packages of the our returns and draw a **Regression Line**. We will need to install the sklearn package if it has not been installed and import the *LinearRegression* module from sklearn. This will draw a regression line of our return data to predict future outcomes. The function requires a returns dataframe and return type as input parameters.
 
         from sklearn.linear_model import LinearRegression
 
