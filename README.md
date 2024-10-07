@@ -10,4 +10,4 @@ methodologies, technologies and exploratory result observations.
 
 ## **Table of Contents** ##
 
-- [Data Source Files](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Data-Source-Files/readme.md)
+- [Data Sources and File Transformation Overview](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Data-Source-Files/readme.md)
