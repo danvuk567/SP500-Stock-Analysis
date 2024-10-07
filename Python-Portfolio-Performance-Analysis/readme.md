@@ -431,6 +431,8 @@ Then we'll extract the 1st 2 year returns for the 10 as our portfolio, calculate
         ticker_cnt = len(df_portfolio_tickers_ret_second_year['Ticker'].unique())
         print(f'Portfolio list count: {ticker_cnt}')
 
+![SP500_Portfolio_list_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_list_Python.jpg?raw=true)
+
         df_portfolio_ret_second_year = calculate_portfolio_return(df_portfolio_tickers_ret_second_year.copy(), ['Ticker'], 'Daily')
         df_portfolio_ret_second_year['Ticker'] = 'PFL'
         df_portfolio_ret_second_year.sort_values(by=['Date'], inplace=True)
@@ -550,8 +552,8 @@ We see that our portfolio is generally outperforming the S&P 500 basket of Ticke
 
 Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_box_plot*, we see that the portfoilo returns have more variance and outliers than the benchmark.
 
-    plot_period_returns_by_ticker_box_plot(df_ret_after_second_year_comb2, 'Daily')
-
+    plot_period_returns_by_security_class_box_plot(df_ret_after_second_year_comb2, 'Daily', 'Ticker')
+    
 ![SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg?raw=true)
 
 Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the correlation matrix.
@@ -564,7 +566,7 @@ Finally, let's explore the monthly smple returns for our portfolio and look at t
     df_ret_mth_after_second_year.sort_values(by=['Ticker', 'Date'], inplace=True)
     
     df_portfolio_tickers_ret_mth_after_second_year = df_ret_mth_after_second_year[df_ret_mth_after_second_year['Ticker'].isin(portfolio_tickers)].copy()
-    plot_ticker_correlations(df_portfolio_tickers_ret_mth_after_second_year, 'Month % Return')
+    df_corr = plot_security_class_correlations(df_portfolio_tickers_ret_mth_after_second_year, 'Month % Return', 'Ticker')
 
 ![SP500_Portfolio_Correlation_Matrix_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Correlation_Matrix_Python.jpg?raw=true)
 
