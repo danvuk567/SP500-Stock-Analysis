@@ -129,7 +129,7 @@ Let's now take a look at determining how a Sector is trending over the past 4 ye
         df_ret_sector = df_ret_sectors[df_ret_sectors['Sector'] == sector].copy()
         scatter_plot(df_ret_sector, 'Cumulative % Return')
 
-![SP500_GICS_Consumer_Staples Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
+![SP500_GICS_Consumer_Staples Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples_Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
 
 We can observe that the **Consumer Staples** Sector is in a weak negative trend.
 
@@ -139,7 +139,7 @@ Let's compare it to the **Energy** Sector.
         df_ret_sector = df_ret_sectors[df_ret_sectors['Sector'] == sector].copy()
         scatter_plot(df_ret_sector, 'Cumulative % Return')
 
-![SP500_GICS_Energy Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Energy Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
+![SP500_GICS_Energy_Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Energy_Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
 
 We can observe that the **Energy** Sector is in a fairly stong positive trend.
 
