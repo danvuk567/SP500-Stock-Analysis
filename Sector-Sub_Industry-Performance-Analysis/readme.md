@@ -2,7 +2,7 @@ Let's do some analysis on a Sectors and Sub-Industries. We will also be adding a
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-Let's define a function called *calculate_portfolio_return* which will plot a **Scatter Plot** using matplotlib and sklearn packages of the our returns and draw a regression line. We will need to install the sklearn package if it has not been installed and import the LinearRegression module from sklearn. This will draw a regression line of our data to predict future outcomes. The function requires a returns dataframe and return type as input parameters.
+Let's define a function called *scatter_plot* which will plot a **Scatter Plot** using matplotlib and sklearn packages of the our returns and draw a regression line. We will need to install the sklearn package if it has not been installed and import the LinearRegression module from sklearn. This will draw a regression line of our return data to predict future outcomes. The function requires a returns dataframe and return type as input parameters.
 
         from sklearn.linear_model import LinearRegression
 
@@ -40,5 +40,19 @@ Let's define a function called *calculate_portfolio_return* which will plot a **
 
 ## Sector / Sub-Industry Performance Analysis: *[Sector-Sub_Industry-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Portfolio-Performance-Analysis/Sector-Sub_Industry-Performance-Analysis.ipynb)*
 
-Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment portfolio. We will import the necessary packages, connect to the database, query the database for our pricing data bind it to the         df_pricing dataframe. Before we proceed any futher, we want to focus on stocks that existed from the start of the 4 year data we stored so that any aggregated return comparison is not skewed by newer stocks that         were traded later on.
+Let's go ahead and analyze returns aggregated by Sector from the S&P 500 Tickers. We will import the necessary packages, connect to the database and query the database for our Ticker pricing data along with our GICS Industry Classification columns that includes Sector, Industry Group, Industry, and Sub-Industry. We will then bind it to the df_pricing dataframe.
+
+Let's look out how many unique Sectors, Industry Groups, Indistries and Sub-Industries we have.
+
+         df_pricing_cnt = pd.DataFrame({
+             '# of Sectors': [df_pricing['Sector'].nunique()],
+             '# of Industry Groups': [df_pricing['Industry_Group'].nunique()],
+             '# of Industries': [df_pricing['Industry'].nunique()],
+             '# of Sub-Industries': [df_pricing['Sub_Industry'].nunique()]
+         })
+
+         print(df_pricing_cnt.to_string(index=False))
+
+SP500_GICS_Industry_Columns_Count_Python.jpg
+
 
