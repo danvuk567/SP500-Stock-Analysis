@@ -33,6 +33,8 @@ methodologies, technologies and exploratory result observations.
 
 ## **Snowflake Schema Data Modelling** ##
 
+This basic Snowflake schema for our small Equity Data Warehouse was designed using the principles of fact and dim data modeling concepts.
+
 ![Equity_Snowflake_Schema_ERD.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Equity_Snowflake_Schema_ERD.jpg?raw=true)
 
 
