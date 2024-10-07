@@ -603,6 +603,13 @@ Looking at a Boxplot using our custom function *plot_period_returns_by_ticker_bo
     
 ![SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg?raw=true)
 
+From the persepctive of risk vs. return alpha for our portfolio vs. the broader market, we can calculate the **Information Ratio** using our custom function *calculate_information_ratio*.
+
+    information_ratio = calculate_information_ratio(df_ret_after_second_year_comb2, 'Ticker', 'PFL', 'BM')
+    print(f'Information Ratio: {information_ratio}')
+
+We get **Information Ratio: -0.0** which means there is no real alpha which confirms a lot of the observations we have made from the last **Line Chart** and the **Box Plot**.
+
 Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the correlation matrix.
 
     df_pricing_mth = get_pricing_data(df_pricing_filtered.copy(), 'Month')
