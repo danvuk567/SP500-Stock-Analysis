@@ -9,7 +9,7 @@ Before we can create a Dimension relational hierarchy that is linked to Equities
 
 ## Finding and transforming free Sector, Industry and Sub-Industry data with Power Query
 
-Let's reference this Wikipedia link: [Global Industry Classification Standard](https://en.wikipedia.org/w/index.php?title=Global_Industry_Classification_Standard&oldid=1243171079) that was last updated in August 2024. We can cross-reference the following official pdf to validate the Wikepedia data: [GLOBAL INDUSTRY CLASSIFICATION STANDARD (GICS®) METHODOLOGY](https://www.msci.com/documents/1296102/11185224/GICS+Methodology+2020.pdf). We then copy-paste the data into excel and use **Power Query** to clean up and transform the data and save the file as *GICS_Industries.csv* in the *Data_Files* folder.
+Let's reference this Wikipedia link: [Global Industry Classification Standard](https://en.wikipedia.org/w/index.php?title=Global_Industry_Classification_Standard&oldid=1243171079) that was last updated in August 2024. To validate the Wikepedia data, we can cross-reference the following official pdf: [GLOBAL INDUSTRY CLASSIFICATION STANDARD (GICS®) METHODOLOGY](https://www.msci.com/documents/1296102/11185224/GICS+Methodology+2020.pdf). We then copy-paste the data into excel and use **Power Query** to clean up and transform the data and save the file as *GICS_Industries.csv* in the *Data_Files* folder.
 
 ![GICS Industries Excel](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/GICS_Industries.jpg?raw=true)
 
