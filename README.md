@@ -24,3 +24,10 @@ methodologies, technologies and exploratory result observations.
 - Global Industry Classification Standard (as of August 2024): (https://en.wikipedia.org/w/index.php?title=Global_Industry_Classification_Standard&oldid=1243171079)
 - GLOBAL INDUSTRY CLASSIFICATION STANDARD (GICS®) METHODOLOGY: (https://www.msci.com/documents/1296102/11185224/GICS+Methodology+2020.pdf)
 - S&P 500 Equities Latest Pricing data (as of September 2024): (https://www.barchart.com/stocks/indices/sp/sp500?viewName=main)
+
+## **Technologies** ##
+
+Language: SQL, Python
+Extraction and transformation: Excel Power Query, Jupyter Notebook
+Storage: SQL Server 2022 Database
+
