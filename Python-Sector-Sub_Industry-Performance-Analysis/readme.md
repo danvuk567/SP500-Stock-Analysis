@@ -1,4 +1,4 @@
-# Python Sector/Sub-Industry Performance Analysis Description
+# Python Sector/Sub-Industry Performance Analysis
 
 Let's do some analysis on a Sectors and Sub-Industries. We will also be adding a new function to our *custom_python_functions.py* file which can be re-used in this project. 
 
