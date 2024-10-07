@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-@author: Daniel Vukota
+Created on Mon Sep 23 13:23:10 2024
+
+@author: Daniel
 """
 
 import sqlalchemy as sa
@@ -247,7 +249,7 @@ def calculate_return(df_tmp, period):
     
     Args:
         - df_tmp: The DataFrame containing the historical data.
-        - period: A string indicating the period type ('Year', 'Quarter', 'Month', or 'Daily').
+        - period: A string representing the period type column ('Year', 'Quarter', 'Month', or 'Daily').
 
     Returns:
         - A DataFrame with new columns: '% Return','Cumulative % Return','Annualized % Return','Annualized Volatility', 
@@ -337,9 +339,10 @@ def plot_returns_bar_chart(df_tmp, security_class_val, period, return_type):
 
     Args:
         - df_tmp: DataFrame containing return data.
-        - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+        - security_class_val: A string representing the value for security class type column ('Sector', 'Industry Group', 'Industry',  
+          'Sub_Industry', 'Ticker').
         - period: A string indicating the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
-        - return_type: A string indicating the return type ('% Return', 'Cumulative % Return'). 
+        - return_type: A string representing the return type column ('% Return', 'Cumulative % Return'). 
     """
 
     # Create a Label column based on the period
@@ -379,8 +382,9 @@ def calculate_stats(df_ret, security_class, period):
 
     Args:
         - df_ret: DataFrame containing return data.
-        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
-        - period: A string indicating the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+        - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+          'Ticker').
+        - period: A string representing the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
 
     Returns:
         - df_tmp: A DataFrame containing the calculated statistics for each security class type over the specified period.
@@ -438,8 +442,10 @@ def plot_period_stats_by_year_bar_charts(df_stats, security_class, security_clas
     
     Args:
         - df_stats: DataFrame containing the combined statistics.
-        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
-        - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
+        - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+          'Ticker').
+        - security_class_val: A string indicating the value for security class type column ('Sector', 'Industry Group', 'Industry', 
+          'Sub_Industry', 'Ticker')
     """
     
     # Determine the columns to plot by excluding 'security_class' and 'Year'
@@ -524,8 +530,9 @@ def plot_period_returns_by_year_box_plot(df_ret, security_class_val, period):
     
     Args:
         - df_ret: DataFrame containing return data.
-        - security_class_val: A string indicating the value for security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
-        - period: A string indicating the period type ('Year', 'Quarter', 'Month', etc.).
+        - security_class_val: A string representing the value for security class type column ('Sector', 'Industry Group', 'Industry', 
+          'Sub_Industry', 'Ticker').
+        - period: A string representing the period type column ('Year', 'Quarter', 'Month', etc.).
     """
     
     # Define properties for outliers in the box plot
@@ -577,8 +584,9 @@ def plot_top_returns_bar_chart(df_tmp, security_class, period):
     
     Args:
         - df_tmp: DataFrame containing return data.
-        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker')
-        - period: A string indicating the period type ('Year', 'Quarter', 'Month', etc.).
+        - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+          'Ticker').
+        - period: A string representing the period type column ('Year', 'Quarter', 'Month', etc.).
     """
     
     if period == 'Daily':
@@ -690,9 +698,10 @@ def plot_returns_line_chart(df_tmp, period, return_type, security_class):
 
     Args:
         - df_tmp: DataFrame containing return data.
-        - period: A string indicating the period ('Year', 'Quarter', 'Month', 'Daily').
-        - return_type: A string indicating the return type ('% Return', 'Cumulative % Return').
-        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker').
+        - period: A string representing the period type column ('Year', 'Quarter', 'Month', 'Daily').
+        - return_type: A string representing the return type column ('% Return', 'Cumulative % Return')
+        - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+          'Ticker').
     """
     
     # Create a Label column based on the period
@@ -764,8 +773,9 @@ def calculate_drawdowns(df_tmp, security_class, period):
     
     Args:
         - df_tmp: The DataFrame containing the cumulative return data.
-        - security_class: A string indicating the security class type ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 'Ticker').
-        - period: A string indicating the period type ('Year', 'Quarter', 'Month', 'Daily').
+        - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+          'Ticker').
+        - period: A string representing the period type column ('Year', 'Quarter', 'Month', 'Daily').
 
     Returns:
         - A DataFrame with new columns for drawdown and maximum drawdown.
@@ -820,20 +830,23 @@ def calculate_drawdowns(df_tmp, security_class, period):
         df_tmp.rename(columns={'Max Drawdown Date': label + 'Max Drawdown Date'}, inplace=True)
         
     return df_tmp
-    
 
-def calculate_portfolio_return(df_tmp, period):
+
+
+def calculate_portfolio_return(df_tmp, security_class_list, period):
     
     """
-    Calculate the returns of a portfolio of Tickers using an average of log returns.
+    Calculate the returns of a portfolio of security class types using an average of log returns.
     
-    Parameters:
-    - df_tmp: The DataFrame containing the historical data.
-    - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
+    Args:
+        - df_tmp: The DataFrame containing the historical data.
+        - security_class_list: A list of strings representing the security class type columns ('Sector', 'Industry Group', 'Industry', 
+          'Sub_Industry', 'Ticker').
+        - period: A string representing the period type column ('Year', 'Quarter', 'Month', or 'Daily').
 
     Returns:
-    - A DataFrame with new columns: '% Return', 'Cumulative % Return', 'Annualized % Return', 'Annualized Volatility', 
-      'Annualized Downside Volatility', or None if not applicable.
+        - A DataFrame with new columns: '% Return', 'Cumulative % Return', 'Annualized % Return', 'Annualized Volatility', 
+        'Annualized Downside Volatility', or None if not applicable.
     """
     
     # Assign the number of periods based on the specified period type
@@ -852,7 +865,14 @@ def calculate_portfolio_return(df_tmp, period):
         label = period + ' '
 
     # Drop unnecessary columns from the DataFrame to simplify calculations
-    df_tmp.drop(columns=['Ticker', 'Open', 'High', 'Low', 'Close', 'Volume', label + 'Annualized % Return', label + 'Annualized Volatility', label + 'Annualized Downside Volatility'], inplace=True)
+    columns_to_drop = security_class_list + ['Open', 'High', 'Low', 'Close', 'Volume', 
+                                              label + 'Annualized % Return', label + 'Annualized Volatility', 
+                                              label + 'Annualized Downside Volatility']
+
+    # Keep only those columns that exist in df_tmp
+    columns_to_drop = [col for col in columns_to_drop if col in df_tmp.columns]
+    
+    df_tmp.drop(columns=columns_to_drop, inplace=True)
 
     # Calculate log returns based on cumulative percentage returns
     df_tmp['Log Return'] = np.log(1 + (df_tmp[label + 'Cumulative % Return'] / 100))
@@ -913,19 +933,23 @@ def calculate_portfolio_return(df_tmp, period):
 
 
 
-def plot_return_histogram(df_tmp, return_type, ticker):
+def plot_return_histogram(df_tmp, return_type, security_class, security_class_val):
     
     """
-    Plot a histogram of '% Return' for a specific ticker with a normal distribution curve based on all tickers.
+    Plot a histogram of '% Return' for a specific security class type value with a normal distribution curve based on all security class 
+    type values.
     
-    Parameters:
-    - df_tmp: DataFrame containing return data for all tickers.
-    - return_type: Name of the column containing percentage returns.
-    - ticker: Ticker symbol to filter the DataFrame.
+    Args::
+        - df_tmp: DataFrame containing return data for all security class type values.
+        - return_type: String representing the name of the column containing returns.
+        - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+        'Ticker').
+        - security_class_val: A string representing the value for security class type column ('Sector', 'Industry Group', 'Industry',  
+        'Sub_Industry', 'Ticker').
     """
     
-    # Filter rows for the specific ticker
-    df_ticker = df_tmp[df_tmp['Ticker'] == ticker]
+    # Filter rows for the specific security class value
+    df_security_class = df_tmp[df_tmp[security_class] == security_class_val]
     
     # Ensure the DataFrame contains the required columns
     if return_type not in df_tmp.columns:
@@ -936,41 +960,41 @@ def plot_return_histogram(df_tmp, return_type, ticker):
     global_mean = np.mean(all_returns)
     global_std_dev = np.std(all_returns)
     
-    # Compute histogram for the specific ticker
-    ticker_returns = df_ticker[return_type]
+    # Compute histogram for the specific security class value
+    security_class_returns = df_security_class[return_type]
     
     # Calculate the interquartile range (IQR)
-    IQR = np.percentile(ticker_returns, 75) - np.percentile(ticker_returns, 25)
+    IQR = np.percentile(security_class_returns, 75) - np.percentile(security_class_returns, 25)
     
     # Calculate the bin width using the Freedman-Diaconis rule
-    bin_width = 2 * IQR / np.cbrt(len(ticker_returns))
+    bin_width = 2 * IQR / np.cbrt(len(security_class_returns))
     
     # Calculate the optimal bin width using Freedman-Diaconis rule
-    num_bins = int((ticker_returns.max() - ticker_returns.min()) / bin_width)
+    num_bins = int((security_class_returns.max() - security_class_returns.min()) / bin_width)
     
     plt.figure(figsize=(12, 8))
     
     # Compute histogram and keep counts (not densities)
-    count, bins, _ = plt.hist(ticker_returns, bins=num_bins, alpha=0.6, density=False, edgecolor='black', label=f'Frequency for {ticker}')
+    count, bins, _ = plt.hist(security_class_returns, bins=num_bins, alpha=0.6, density=False, edgecolor='black', label=f'Frequency for {security_class_val}')
     total_count = np.sum(count)
     
     # Compute KDE for a smooth line
-    kde = gaussian_kde(ticker_returns, bw_method='scott')  # 'scott' method automatically chooses bandwidth
-    x_kde = np.linspace(ticker_returns.min(), ticker_returns.max(), 1000)  # Generate points for smooth line
+    kde = gaussian_kde(security_class_returns, bw_method='scott')  # 'scott' method automatically chooses bandwidth
+    x_kde = np.linspace(security_class_returns.min(), security_class_returns.max(), 1000)  # Generate points for smooth line
     y_kde = kde(x_kde)  # KDE values
-    y_kde_normalized = y_kde * len(ticker_returns) * bin_width  # Normalize KDE to match histogram counts   
-    plt.plot(x_kde, y_kde_normalized, 'g-', linewidth=2, label='KDE (Smooth Line) for ' + ticker)
+    y_kde_normalized = y_kde * len(security_class_returns) * bin_width  # Normalize KDE to match histogram counts   
+    plt.plot(x_kde, y_kde_normalized, 'g-', linewidth=2, label=f'KDE (Smooth Line) for {security_class_val}')
     
     # Calculate bin width for scaling the normal distribution
     actual_bin_width = bins[1] - bins[0]  # Use the actual bin width from the histogram calculation
     
-    # Plot the normal distribution curve based on all tickers and scale to match histogram
+    # Plot the normal distribution curve based on all security class type values and scale to match histogram
     x = np.linspace(min(bins), max(bins), 100)
     p = norm.pdf(x, global_mean, global_std_dev)  # PDF of the normal distribution
     p = p * total_count * actual_bin_width  # Scale PDF by total count and bin width to match frequency
 
     # Plot the normal distribution curve
-    plt.plot(x, p, 'r-', linewidth=2, label='Normal Distribution (All Tickers)')
+    plt.plot(x, p, 'r-', linewidth=2, label=f'Normal Distribution for all values of {security_class}')
     
     # Add red dotted vertical line at x = 0
     plt.axvline(x=0, color='red', linestyle='--', linewidth=2, label='x = 0')
@@ -978,45 +1002,56 @@ def plot_return_histogram(df_tmp, return_type, ticker):
     # Set labels and title
     plt.xlabel(return_type)
     plt.ylabel('Frequency')
-    plt.title(f'Frequency Histogram of {return_type} for {ticker} with Normal Distribution Curve')
+    plt.title(f'Frequency Histogram of {return_type} for {security_class_val} with Normal Distribution Curve')
     
     # Add legend and grid
     plt.legend()
     plt.grid(True)
     plt.show()    
 
-    
-def plot_returns_bubble_chart(df_tmp, return_type, size_type):
+        
+
+def plot_returns_bubble_chart(df_tmp, return_type, size_type, security_class, is_top, top_val):
     
     """
-    Plot a bubble chart where the x-axis is Ticker, 
+    Plot a bubble chart where the x-axis is the security class type value, 
     y-axis is return_type.
     
-    Parameters:
-    - df: DataFrame with columns 'Ticker', return_type, and other metric as size_type
+    Args:
+        - df_tmp: DataFrame with columns security class, return_type, and other metric as size_type.
+        - return_type: String representing the name of the column containing returns.
+        - size_type: String representing the name of the the column containing the bubble size values.
+        - security_class: A string representing the security class type column ('Sector', 'Industry Group', 
+          'Industry', 'Sub_Industry', 'Ticker').
+        - security_class_val: A string representing the value of the security class type column ('Sector', 'Industry Group', 
+          'Industry', 'Sub_Industry', 'Ticker').
+        - is_top: Boolean value indicating whether we want to show top vlaues in the legend.
+        - top_val: Integer representing N for top N values.      
     """
     
     # Filter out rows where size_type has negative or zero values
     df_tmp2 = df_tmp[df_tmp[size_type] > 0].copy()
    
-
-    # Sort by the size_type and get the top 10 tickers
-    top_10_tickers = df_tmp2.nlargest(10, size_type)[['Ticker', return_type, size_type]]
+    if is_top:
+        # Sort by the size_type and get the top top_val security class type values
+        top_security_classes = df_tmp2.nlargest(top_val, size_type)[[security_class, return_type, size_type]]
+    else:
+        top_security_classes = df_tmp2[[security_class, return_type, size_type]]
     
     fig = px.scatter(
         df_tmp2, 
-        x='Ticker',  # X-axis is Ticker
+        x=security_class,  # X-axis is security class type value
         y=return_type,  # Y-axis is return_type
         size=size_type,  # Bubble size based on size_type
-        color='Ticker',  # Different colors for different tickers
-        hover_name='Ticker',  # Display Ticker name on hover
+        color=security_class,  # Different colors for different security class type values
+        hover_name=security_class,  # Display security class type value on hover
         size_max=60,  # Maximum bubble size
-        title=f"Bubble Chart: {return_type} by Ticker with Bubble Size as {size_type}",
+        title=f"Bubble Chart: {return_type} by {security_class} with Bubble Size as {size_type}",
     )
     
     # Customize chart appearance
     fig.update_layout(
-        xaxis_title="Ticker",
+        xaxis_title=security_class,
         yaxis_title=return_type,
         showlegend=False,
         plot_bgcolor="lightgrey"  # Set background color
@@ -1024,16 +1059,16 @@ def plot_returns_bubble_chart(df_tmp, return_type, size_type):
     
     # Add an annotation for the top 10 tickers
     annotations = []
-    for i, row in top_10_tickers.iterrows():
+    for i, row in top_security_classes.iterrows():
         # Get the corresponding y value
-        y_value = df_tmp2.loc[df_tmp2['Ticker'] == row['Ticker'], return_type].values[0]
+        y_value = df_tmp2.loc[df_tmp2[security_class] == row[security_class], return_type].values[0]
         annotations.append(
             dict(
-                x=row['Ticker'],
+                x=row[security_class],
                 y=y_value,
                 xref="x",
                 yref="y",
-                text=row['Ticker'],  # Show Ticker name
+                text=row[security_class],  # Show security name
                 showarrow=True,
                 arrowhead=2,
                 ax=50,  # Move the annotation right
@@ -1045,40 +1080,42 @@ def plot_returns_bubble_chart(df_tmp, return_type, size_type):
     # Add the annotations to the layout
     fig.update_layout(annotations=annotations)
 
-    # Create a separate legend box on the right for the top 10 tickers
-    legend_text = '<br>'.join([f"{row['Ticker']}, {row[size_type]}" for _, row in top_10_tickers.iterrows()])
+    if is_top:
+        # Create a separate legend box on the right for the top top_val security class type
+        legend_text = '<br>'.join([f"{row[security_class]}, {row[size_type]}" for _, row in top_security_classes.iterrows()])
     
-    # Add a text box to display the top 10 tickers legend
-    fig.add_annotation(
-        dict(
-            x=1.05,  # Position the legend outside of the plot
-            y=0.5,  # Vertically center the legend
-            xref='paper', 
-            yref='paper',
-            showarrow=False,
-            text=f'<b>Top 10 Tickers by<br>{size_type}</b><br>{legend_text}',
-            font=dict(size=12, color="black"),
-            align='left',
-            bordercolor='black',
-            borderwidth=1,
-            borderpad=5,
-            bgcolor="lightgrey"
+        # Add a text box to display the top 10 tickers legend
+        fig.add_annotation(
+            dict(
+                x=1.05,  # Position the legend outside of the plot
+                y=0.5,  # Vertically center the legend
+                xref='paper', 
+                yref='paper',
+                showarrow=False,
+                text=f'<b>Top {top_val} for {security_class} by<br>{size_type}</b><br>{legend_text}',
+                font=dict(size=12, color="black"),
+                align='left',
+                bordercolor='black',
+                borderwidth=1,
+                borderpad=5,
+                bgcolor="lightgrey"
+            )
         )
-    )
 
     # Show the figure
     fig.show()
     
     
-    
-def plot_period_returns_by_ticker_box_plot(df_ret, period):
+def plot_period_returns_by_security_class_box_plot(df_tmp, period, security_class):
     
     """
-    Plots a box plot of returns for a given ticker and period.
+    Plots a box plot of returns for a given security class type and period.
     
-    Parameters:
-    - df_ret: DataFrame containing return data.
-    - period: Time period for returns (e.g., 'Daily', 'Year', etc.).
+    Args:
+        - df_tmp: DataFrame containing return data.
+        - period: A string representing the period type column ('Year', 'Quarter', 'Month', or 'Daily').
+        - security_class: A string representing the security class type column ('Sector', 'Industry Group', 
+          'Industry', 'Sub_Industry', 'Ticker').
     """
     
     # Define properties for outliers in the box plot
@@ -1095,11 +1132,11 @@ def plot_period_returns_by_ticker_box_plot(df_ret, period):
     # Otherwise, append a space after the period string for readability in the title
     period_label = '' if period == 'Daily' else f'{period} '
 
-    # Create the boxplot, with 'Ticker' on the x-axis and returns on the y-axis
-    sns.boxplot(x='Ticker', y=f'{period_label}% Return', data=df_ret, hue='Ticker', palette="Set2", flierprops=flierprops, legend=False)
-    plt.title(f'{period_label}% Returns by Ticker')  
+    # Create the boxplot, with security class type on the x-axis and returns on the y-axis
+    sns.boxplot(x=security_class, y=f'{period_label}% Return', data=df_tmp, hue=security_class, palette="Set2", flierprops=flierprops, legend=False)
+    plt.title(f'{period_label}% Returns by {security_class}')  
     plt.ylabel(f'{period_label}% Returns')  
-    plt.xlabel('Ticker')
+    plt.xlabel(security_class)
                       
     # Add gridlines to the y-axis for clarity, using a dashed line style and slight transparency
     plt.grid(axis='y', linestyle='--', alpha=0.7)
@@ -1111,22 +1148,23 @@ def plot_period_returns_by_ticker_box_plot(df_ret, period):
     plt.show()
     
     
-def plot_ticker_correlations(df_tmp, return_type):
+def plot_security_class_correlations(df_tmp, return_type, security_class):
     
     """
     Compute and visualize the correlation between the returns of different tickers.
     
-    Parameters:
-    - df_tmp: DataFrame containing return data for multiple tickers.
-    - return_type: Column name containing the returns to be correlated.
+    Args:
+        - df_tmp: DataFrame containing return data for multiple security class types.
+        - return_type: A string representing the column name containing the returns to be correlated.
+        - security_class: A string representing the name of the the columns containing security class type ('Sector', 'Industry Group',  
+          'Industry', 'Sub_Industry', 'Ticker').
 
-    
     Returns:
-    - Correlation matrix and heatmap.
+        - Correlation matrix and heatmap.
     """
     
-    # Pivot the DataFrame to have tickers as columns and dates as index
-    df_pivot = df_tmp.pivot_table(index='Date', columns='Ticker', values=return_type)
+    # Pivot the DataFrame to have security class types as columns and dates as index
+    df_pivot = df_tmp.pivot_table(index='Date', columns=security_class, values=return_type)
     
     # Calculate the correlation matrix
     corr_matrix = df_pivot.corr()
@@ -1136,13 +1174,21 @@ def plot_ticker_correlations(df_tmp, return_type):
     sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1, center=0,
                 cbar_kws={'label': 'Correlation'}, linewidths=0.5)
     
-    plt.title(f'Correlation between Tickers based on {return_type}')
+    plt.title(f'Correlation between each {security_class} based on {return_type}')
     plt.show()
     
     return corr_matrix
 
 
 def scatter_plot(df_tmp, return_type):
+    
+    """
+    Plots a scatter plot of return.
+    
+    Args:
+        - df_tmp: DataFrame containing return data.
+        - return_type: A string representing the column name containing the returns.
+    """
 
     # Create a scatter plot
     plt.figure(figsize=(10, 6))
@@ -1164,13 +1210,12 @@ def scatter_plot(df_tmp, return_type):
     plt.ylabel(f'{return_type}')
     plt.legend()
     plt.show()
-
-
-
-
-
-
+ 
     
+    
+ 
+
+
         
     
 
