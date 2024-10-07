@@ -123,6 +123,107 @@ Let's plot the Cumulative % Returns by Sector to show how the Returns were compo
 
  The **Energy** Sector clearly outperformed all Sectors but also experiencing a number of large drawdowns clearly exhibiting high volatility.
 
+Let's now take a look at determining how a Sector is trending over the past 4 years. We can plot a linear regresion line using the Cumulative % Returns and plot it on a **Line Chart**. The steeper the slope, the stronger the trend is whether positive or negative. We'll use our custom function *scatter_plot* to plot a **Scatter Plot** and **Regression Line** for the **Consumer Staples** Sector.
+
+        sector = 'Consumer Staples'
+        df_ret_sector = df_ret_sectors[df_ret_sectors['Sector'] == sector].copy()
+        scatter_plot(df_ret_sector, 'Cumulative % Return')
+
+![SP500_GICS_Consumer_Staples Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
+
+We can observe that the **Consumer Staples** Sector is in a weak negative trend.
+
+Let's compare it to the **Energy** Sector.
+
+        sector = 'Energy'
+        df_ret_sector = df_ret_sectors[df_ret_sectors['Sector'] == sector].copy()
+        scatter_plot(df_ret_sector, 'Cumulative % Return')
+
+![SP500_GICS_Energy Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Energy Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
+
+We can observe that the **Energy** Sector is in a fairly stong positive trend.
+
+And finally, let's look at Cumulative % Returns for Sub-Industries and observe the strongest performing. We can plot the top 20 Sub-Industries and highlight the top 10 in a **Bubble Chart** using our custom plot_returns_bubble_chart function.
+
+        df_ret.sort_values(by=['Sector', 'Sub_Industry','Ticker', 'Date'], inplace=True)
+        df_ret_sub_industries = pd.DataFrame()  # Initialize an empty DataFrame for concatenation
+
+        # Iterate through unique sub-industries
+        for sub_industry in df_ret['Sub_Industry'].unique():
+            # Filter the DataFrame for the current sector
+            df_ret_sub_industry_tickers = df_ret[df_ret['Sub_Industry'] == sub_industry].copy()
+            sector = df_ret_sub_industry_tickers['Sector'].unique()[0]
+            df_ret_sub_industry_tickers.sort_values(by=['Ticker','Date'], inplace=True)
+    
+            # Call your function to calculate portfolio return
+            df_ret_sub_industry = calculate_portfolio_return(df_ret_sub_industry_tickers.copy(), ['Sector', 'Industry_Group', 'Industry', 'Sub_Industry', 'Ticker'], 'Daily')
+    
+            # Add the Sector column
+            df_ret_sub_industry['Sector'] = sector
+            df_ret_sub_industry['Sub_Industry'] = sub_industry
+    
+            # Concatenate the results
+            df_ret_sub_industries = pd.concat([df_ret_sub_industries, df_ret_sub_industry], ignore_index=True)
+    
+        df_ret_sub_industries.sort_values(by=['Sector', 'Sub_Industry', 'Date'], inplace=True)
+
+        df_ret_sub_industries_last = df_ret_sub_industries.copy().groupby(['Sector', 'Sub_Industry']).tail(1)
+        df_ret_sub_industries_last = df_ret_sub_industries_last[['Sector', 'Sub_Industry', 'Date', 'Cumulative % Return', 'Annualized % Return']]
+        df_ret_sub_industries_last.sort_values(by=['Sector', 'Sub_Industry'], inplace=True)
+
+        df_ret_sub_industries_last.loc[:, 'Cumulative % Return Rank'] = df_ret_sub_industries_last.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
+        num_of_ranks = 20
+        df_ret_sub_industries_last_top = df_ret_sub_industries_last[df_ret_sub_industries_last['Cumulative % Return Rank'] <= num_of_ranks].copy()
+        df_ret_sub_industries_last_top = df_ret_sub_industries_last_top[['Sector', 'Sub_Industry', 'Annualized % Return', 'Cumulative % Return', 'Cumulative % Return Rank']]
+        df_ret_sub_industries_last_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
+
+        plot_returns_bubble_chart(df_ret_sub_industries_last_top, 'Annualized % Return', 'Cumulative % Return', 'Sub_Industry', True, 10)
+
+![SP500_GICS_Sub_Industries_Cumulative_Returns_Bubble_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sub_Industries_Cumulative_Returns_Bubble_Chart_Python.jpg?raw=true)
+
+We can see that 4 out the top 10 Sub-Industries belong to the **Energy Sector** which makes sense.
+
+What were the top 5 Sub-Industries in the **Energy** Sector?
+
+        sector = 'Energy'
+        df_ret_sub_industries_last2 = df_ret_sub_industries_last[df_ret_sub_industries_last['Sector'] == sector].copy()
+
+        df_ret_sub_industries_last2.loc[:, 'Cumulative % Return Rank'] = df_ret_sub_industries_last2.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
+        num_of_ranks = 5
+        df_ret_sub_industries_last2_top = df_ret_sub_industries_last2[df_ret_sub_industries_last2['Cumulative % Return Rank'] <= num_of_ranks].copy()
+        df_ret_sub_industries_last2_top = df_ret_sub_industries_last2_top[['Sector', 'Sub_Industry', 'Cumulative % Return', 'Cumulative % Return Rank']]
+        df_ret_sub_industries_last2_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
+
+        print(df_ret_sub_industries_last2_top.to_string(index=False))
+
+![SP500_GICS_Energy_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Energy_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
+
+The **Energy Oil & Gas Storage & Transportation** Sub-Industry had the strongest Cumulative % Return in the **Energy** Sector.
+
+What were the top 5 Sub-Industries in the **Consumer Staples** Sector?
+
+        sector = 'Consumer Staples'
+        df_ret_sub_industries_last2 = df_ret_sub_industries_last[df_ret_sub_industries_last['Sector'] == sector].copy()
+
+        df_ret_sub_industries_last2.loc[:, 'Cumulative % Return Rank'] = df_ret_sub_industries_last2.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
+        num_of_ranks = 5
+        df_ret_sub_industries_last2_top = df_ret_sub_industries_last2[df_ret_sub_industries_last2['Cumulative % Return Rank'] <= num_of_ranks].copy()
+        df_ret_sub_industries_last2_top = df_ret_sub_industries_last2_top[['Sector', 'Sub_Industry', 'Cumulative % Return', 'Cumulative % Return Rank']]
+        df_ret_sub_industries_last2_top.sort_values(by=['Cumulative % Return Rank'], inplace=True)
+
+        print(df_ret_sub_industries_last2_top.to_string(index=False))
+
+![SP500_GICS_Consumer_Staples_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
+
+The **Agricultural Products & Services** Sub-Industry had the strongest Cumulative % Return in the **Consumer Staples** Sector.
+
+
+
+
+
+
+
+
 
 
 
