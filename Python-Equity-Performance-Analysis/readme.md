@@ -12,7 +12,7 @@ We'll start by defining a pricing function called *get_pricing_data* that will t
     
         Parameters:
         - df_pricing: DataFrame containing the pricing data.
-        - period: String specifying the period type for aggregation ('Year', 'Quarter', or 'Month').
+        - period: String representing the period type column for aggregation ('Year', 'Quarter', or 'Month').
 
         Returns:
         - Processed DataFrame aggregated by the specified period.
@@ -112,16 +112,15 @@ Next we'll define a function called *plot_pricing_line* to create a **Line Chart
 
             """
             Plots a line chart for the given DataFrame, ticker, and period.
-
-            Parameters:
-            - df_tmp: DataFrame containing pricing data (e.g., with 'Date', 'Open', 'High', 'Low', 'Close').
-            - ticker: The stock ticker symbol.
-            - period: The period type for the x-axis ('Year', 'Quarter', 'Month', or 'Daily').
-            - price: The column name for the y-axis values to plot (e.g., 'Close', 'Open').
-
             This function creates a simple line chart for a given financial asset 
             over the specified period, with properly formatted x and y axis labels, 
             a grid, and rotated x-axis labels for better readability.
+
+            Args:
+                - df_tmp: DataFrame containing pricing data (e.g., with 'Date', 'Open', 'High', 'Low', 'Close').
+                - ticker: String representing the stock ticker symbol.
+                - period: String specifying the period type for the x-axis ticks ('Year', 'Quarter', 'Month, or 'Daily').
+                - price: String representing the column name for the y-axis values to plot (e.g., 'Close', 'Open').
             """
 
             # Check if the period is 'Daily'
@@ -168,7 +167,7 @@ Lastly, we convert our returns and volatility measures into percentages, drop th
     
         Parameters:
         - df_tmp: The DataFrame containing the historical data.
-        - period: A string indicating the period ('Year', 'Quarter', 'Month', or 'Daily').
+        - period: A string representing the period type column ('Year', 'Quarter', 'Month', or 'Daily').
 
         Returns:
         - A DataFrame with new columns: '% Return','Cumulative % Return','Annualized % Return','Annualized Volatility', 
@@ -263,7 +262,7 @@ Here we define a function called *plot_returns_bar_chart* to create a **Bar Char
                 - security_class_val: A string representing the value for security class type column ('Sector', 'Industry Group', 'Industry', 
                   'Sub_Industry', 'Ticker').
                 - period: A string indicating the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
-                - return_type: A string indicating the return type ('% Return', 'Cumulative % Return'). 
+                - return_type: A string representing the return type column ('% Return', 'Cumulative % Return'). 
             """
 
             # Create a Label column based on the period
@@ -306,7 +305,7 @@ Now let's define a function called *calculate_stats* which will calculate Quarte
                 - df_ret: DataFrame containing return data.
                 - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
                   'Ticker').
-                - period: A string indicating the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
+                - period: A string representing the period type for x-axis labeling ('Year', 'Quarter', 'Month', etc.).
 
             Returns:
                 - df_tmp: A DataFrame containing the calculated statistics for each security class type over the specified period.
@@ -366,7 +365,7 @@ This custom function called *plot_year_stats_bar_charts* will use matplotlib sub
     
             Args:
                 - df_stats: DataFrame containing the combined statistics.
-                - security_class: A string indicating the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+                - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
                   'Ticker').
                 - security_class_val: A string indicating the value for security class type column ('Sector', 'Industry Group', 'Industry', 
                   'Sub_Industry', 'Ticker')
@@ -460,9 +459,9 @@ This function uses the seaborn package to plot the box plots and requires a retu
     
             Args:
                 - df_ret: DataFrame containing return data.
-                - security_class_val: A string indicating the value for security class type column ('Sector', 'Industry Group', 'Industry', 
+                - security_class_val: A string representing the value for security class type column ('Sector', 'Industry Group', 'Industry', 
                   'Sub_Industry', 'Ticker').
-                - period: A string indicating the period type ('Year', 'Quarter', 'Month', etc.).
+                - period: A string representing the period type column ('Year', 'Quarter', 'Month', etc.).
             """
     
             # Define properties for outliers in the box plot
@@ -518,9 +517,9 @@ This function called *plot_top_returns_bar_chart* that uses the plotly package w
     
             Args:
                 - df_tmp: DataFrame containing return data.
-                - security_class: A string indicating the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+                - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
                   'Ticker').
-                - period: A string indicating the period type ('Year', 'Quarter', 'Month', etc.).
+                - period: A string representing the period type column ('Year', 'Quarter', 'Month', etc.).
             """
     
             if period == 'Daily':
@@ -633,9 +632,9 @@ This function called *plot_returns_line_chart* will plot simple or cumulative re
 
         Args:
             - df_tmp: DataFrame containing return data.
-            - period: A string indicating the period type ('Year', 'Quarter', 'Month', 'Daily').
-            - return_type: A string indicating the return type ('% Return', 'Cumulative % Return')
-            - security_class: A string indicating the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+            - period: A string representing the period type column ('Year', 'Quarter', 'Month', 'Daily').
+            - return_type: A string representing the return type column ('% Return', 'Cumulative % Return')
+            - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
               'Ticker').
         """
     
@@ -709,9 +708,9 @@ We will now define a function called  *calculate_drawdowns* that will calculate 
     
             Args:
                 - df_tmp: The DataFrame containing the cumulative return data.
-                - security_class: A string indicating the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
+                - security_class: A string representing the security class type column ('Sector', 'Industry Group', 'Industry', 'Sub_Industry', 
                   'Ticker').
-                - period: A string indicating the period type ('Year', 'Quarter', 'Month', 'Daily').
+                - period: A string representing the period type column ('Year', 'Quarter', 'Month', 'Daily').
 
             Returns:
                 - A DataFrame with new columns for drawdown and maximum drawdown.
