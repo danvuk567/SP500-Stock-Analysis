@@ -18,4 +18,9 @@ methodologies, technologies and exploratory result observations.
 - [Python Portfolio Performance Analysis Description](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Portfolio-Performance-Analysis)
 - [Python Sector/Sub-Industry Performance Analysis Description](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Sector-Sub_Industry-Performance-Analysis)
 
-## **Data Sources** ##
+## **Free Data Sources Used** ##
+
+- List of S&P 500 companies page (as of September 2024): (https://en.wikipedia.org/w/index.php?title=List_of_S%26P_500_companies&oldid=1246399544)
+- Global Industry Classification Standard (as of August 2024): (https://en.wikipedia.org/w/index.php?title=Global_Industry_Classification_Standard&oldid=1243171079)
+- GLOBAL INDUSTRY CLASSIFICATION STANDARD (GICS®) METHODOLOGY: (https://www.msci.com/documents/1296102/11185224/GICS+Methodology+2020.pdf)
+- S&P 500 Equities Latest Pricing data (as of September 2024): (https://www.barchart.com/stocks/indices/sp/sp500?viewName=main)
