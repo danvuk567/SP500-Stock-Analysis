@@ -27,7 +27,7 @@ methodologies, technologies and exploratory result observations.
 
 ## **Technologies** ##
 
-Language: SQL, Python
-Extraction and transformation: Excel Power Query, Jupyter Notebook
-Storage: SQL Server 2022 Database
+- Language: SQL, Python
+- Extraction and transformation: Excel Power Query, Jupyter Notebook
+- Storage: SQL Server 2022 Database
 
