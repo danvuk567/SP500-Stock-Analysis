@@ -55,7 +55,7 @@ Let's look out how many unique Sectors, Industry Groups, Indistries and Sub-Indu
 
 ![SP500_GICS_Industry_Columns_Count_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Industry_Columns_Count_Python.jpg?raw=true)
 
-There are 11 Sectors, 25 Industry Groups, 66 Industries and 110 Sub-Industries that we have pricing data for.
+There are 11 Sectors, 25 Industry Groups, 68 Industries and 127 Sub-Industries that we have pricing data for.
 
 How may Tickers exist by Sector? How many have positive Cumulative % Returns? How many have negative Cumulative % Returns? Let's calculate the returns and aggregate the results.
 
@@ -76,7 +76,7 @@ How may Tickers exist by Sector? How many have positive Cumulative % Returns? Ho
 
 ![SP500_GICS_Sector_Ticker_Return_Count_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Ticker_Return_Count_Python.jpg?raw=true)
 
-It looks like **Communication Services**, which had the smallest count of Tickers, had the lowest % of # of positive Cumulative % Returns of all Sectors at **47.86%**. There were more negative Cumulative Returns than positive. The **Energy** Sector** was the only Sector that had **100%** of # of positive Cumulative % Returns. There were no Tickers with negative Cumulative % Returns in the past 4 years.
+It looks like **Communication Services**, which had the smallest count of Tickers, had the lowest % of # of positive Cumulative % Returns of all Sectors at **54.55%**. The **Energy** Sector** was the only Sector that had **100%** of # of positive Cumulative % Returns. There were no Tickers with negative Cumulative % Returns in the past 4 years.
 
 Now, let's look at Cumulative % Return, Annualized % Return, Annualized Volatility and Annualized Downside Volatility of the different Sectors. We do this by grouping the Tickers in each Sector as a portfolio and using our custom function *calculate_portfolio_return* that aggregates average log returns from the dataframe *df_ret* to calculate these measures. We will concatenate all portfolio return measures into one dataframe *df_ret_sectors*. We then print the results for the last date.
 
@@ -107,7 +107,7 @@ Now, let's look at Cumulative % Return, Annualized % Return, Annualized Volatili
 
 ![SP500_GICS_Sector_Returns_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Returns_Python.jpg?raw=true)
 
-We can see that the **Consumer Staples** Sector had the lowest Annualized % Return of **-2.55%** but with lowest Annualized Volatility of **14.86%*. **Consumer Staples** stocks are not growth stocks and are usually a safe haven during economic downturns and/or used for more consistent returns and dividends. That is why they don't typically reflect high volatility. Over the past 4 years, the economy exhibited resiliance and periods of strong growth causing stronger investments in other Sectors. We see that the **Energy** Sector had the highest Annualized % Return of **25.58%** but came at a cost of highest Annulaized Downside Volatility of **22.35%**. The **Energy** Sector is often subject to significant discrepancies in supply and demand for oil and gas, leading to volatile price fluctuations, particularly during economic downturns or geopolitical risks.
+We can see that the **Communication Services** Sector had the lowest Annualized % Return of **-1.50%**. The **Consumer Staples** Sector has the lowest Annualized Volatility at **14.32%**. Consumer Staples stocks are not growth stocks and are usually a safe haven during economic downturns and/or used for more consistent returns and dividends. That is why they don't typically reflect high volatility. Over the past 4 years, the economy exhibited resiliance and periods of strong growth causing stronger investments in other Sectors. We see that the **Energy** Sector had the highest Annualized % Return of **26.72%** but came at a cost of highest Annualized Downside Volatility of **21.90%**. The **Energy** Sector is often subject to significant discrepancies in supply and demand for oil and gas, leading to volatile price fluctuations, particularly during economic downturns or geopolitical risks.
 
 We can show the Sector Cumulative % Return impact in a **Bubble Chart** using our custom function *plot_returns_bubble_chart*.
 
@@ -129,7 +129,7 @@ Let's now take a look at determining how a Sector is trending over the past 4 ye
         df_ret_sector = df_ret_sectors[df_ret_sectors['Sector'] == sector].copy()
         scatter_plot(df_ret_sector, 'Cumulative % Return')
 
-![SP500_GICS_Consumer_Staples Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples_Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
+![SP500_GICS_Communication_Services Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Communication_Services_Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
 
 We can observe that the **Consumer Staples** Sector is in a weak negative trend.
 
@@ -213,7 +213,7 @@ What were the top 5 Sub-Industries in the **Consumer Staples** Sector?
 
         print(df_ret_sub_industries_last2_top.to_string(index=False))
 
-![SP500_GICS_Consumer_Staples_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
+![SP500_GICS_Communication_Services_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
 
 The **Agricultural Products & Services** Sub-Industry had the strongest Cumulative % Return in the **Consumer Staples** Sector.
 
