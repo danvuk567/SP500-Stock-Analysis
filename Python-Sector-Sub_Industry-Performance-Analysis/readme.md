@@ -198,7 +198,7 @@ What were the top 5 Sub-Industries in the **Energy** Sector?
 
 ![SP500_GICS_Energy_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Energy_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
 
-The **Energy Oil & Gas Storage & Transportation** Sub-Industry had the strongest Cumulative % Return of **164.21** in the **Energy** Sector.
+The **Energy Oil & Gas Storage & Transportation** Sub-Industry had the strongest Cumulative % Return of **164.21%** in the **Energy** Sector.
 
 What were the top 5 Sub-Industries in the **Communication Services** Sector?
 
