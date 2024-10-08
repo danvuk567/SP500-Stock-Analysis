@@ -123,15 +123,15 @@ Let's plot the Cumulative % Returns by Sector in a **Line Chart** to show how th
 
  The **Energy** Sector clearly outperformed all Sectors but also experiencing a number of large drawdowns clearly exhibiting high volatility.
 
-Let's now take a look at determining how a Sector is trending over the past 4 years. We can plot a **Linear Regression** line using the Cumulative % Returns and plot it on a **Line Chart**. The steeper the slope, the stronger the positive or negative trend. We'll use our custom function *scatter_plot* to plot a **Scatter Plot** and regression line for the **Consumer Staples** Sector.
+Let's now take a look at determining how a Sector is trending over the past 4 years. We can plot a **Linear Regression** line using the Cumulative % Returns and plot it on a **Line Chart**. The steeper the slope, the stronger the positive or negative trend. We'll use our custom function *scatter_plot* to plot a **Scatter Plot** and regression line for the **Communication Services** Sector.
 
-        sector = 'Consumer Staples'
+        sector = 'Communication Services'
         df_ret_sector = df_ret_sectors[df_ret_sectors['Sector'] == sector].copy()
         scatter_plot(df_ret_sector, 'Cumulative % Return')
 
 ![SP500_GICS_Communication_Services Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Communication_Services_Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
 
-We can observe that the **Consumer Staples** Sector is in a weak negative trend.
+We can observe that the **Communication Services** Sector is in a long-term negative trend overall due to the large drawdown in 2022. It looks to be recovering in a positive trend in 2023 and 2024.
 
 Let's compare it to the **Energy** Sector.
 
@@ -141,7 +141,7 @@ Let's compare it to the **Energy** Sector.
 
 ![SP500_GICS_Energy_Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Energy_Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
 
-We can observe that the **Energy** Sector is in a fairly stong positive trend.
+We can observe that the **Energy** Sector is in a fairly strong long-term positive trend.
 
 And finally, let's look at Cumulative % Returns for Sub-Industries and observe the strongest performing. We can plot the top 20 Sub-Industries and highlight the top 10 in a **Bubble Chart** using our custom plot_returns_bubble_chart function.
 
@@ -198,11 +198,11 @@ What were the top 5 Sub-Industries in the **Energy** Sector?
 
 ![SP500_GICS_Energy_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Energy_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
 
-The **Energy Oil & Gas Storage & Transportation** Sub-Industry had the strongest Cumulative % Return in the **Energy** Sector.
+The **Energy Oil & Gas Storage & Transportation** Sub-Industry had the strongest Cumulative % Return of **164.21** in the **Energy** Sector.
 
-What were the top 5 Sub-Industries in the **Consumer Staples** Sector?
+What were the top 5 Sub-Industries in the **Communication Services** Sector?
 
-        sector = 'Consumer Staples'
+        sector = 'Communication Services'
         df_ret_sub_industries_last2 = df_ret_sub_industries_last[df_ret_sub_industries_last['Sector'] == sector].copy()
 
         df_ret_sub_industries_last2.loc[:, 'Cumulative % Return Rank'] = df_ret_sub_industries_last2.groupby('Date')['Cumulative % Return'].rank(ascending=False, method='dense').astype(int)
@@ -215,5 +215,5 @@ What were the top 5 Sub-Industries in the **Consumer Staples** Sector?
 
 ![SP500_GICS_Communication_Services_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
 
-The **Agricultural Products & Services** Sub-Industry had the strongest Cumulative % Return in the **Consumer Staples** Sector.
+The **Publishing** Sub-Industry had the strongest Cumulative % Return of **50.01%** in the **Communication Services** Sector.
 
