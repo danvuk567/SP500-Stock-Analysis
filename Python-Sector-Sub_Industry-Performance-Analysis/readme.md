@@ -213,7 +213,7 @@ What were the top 5 Sub-Industries in the **Communication Services** Sector?
 
         print(df_ret_sub_industries_last2_top.to_string(index=False))
 
-![SP500_GICS_Communication_Services_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Consumer_Staples_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
+![SP500_GICS_Communication_Services_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Communication_Services_Sector_Sub_Industries_Top_5_Cumulative_Returns_Data_Python.jpg?raw=true)
 
 The **Publishing** Sub-Industry had the strongest Cumulative % Return of **50.01%** in the **Communication Services** Sector.
 
