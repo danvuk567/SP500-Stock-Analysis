@@ -178,7 +178,7 @@ For this project, we'll simply use a Windows computer database. We will now impo
 We define the path to our *GICS_Industries.csv* file, use the current date and read the file into the pandas dataframe df_sectors and keep only the unique Sector_ID and Sector records.
 We check if the file exists and loop through the rows and use *cnt_recs* to keep track of how many rows were loaded. We use an SQL exception that will capture any error that we don't need to raise since we can rerun and clear the table each time we run the commands. After the loop, we issue a commit to our session and then query *Data_STG* to check if the number of records match the number or rows in the dataframe.
 
-        in_file = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Data_Files/GICS_Industries.csv' # Path to the CSV file
+        in_file = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Data-Source-Files/GICS_Industries.csv' # Path to the CSV file
 
         curr_date = dt.datetime.now()  # Current date and time
 
