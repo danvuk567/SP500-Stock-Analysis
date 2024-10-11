@@ -37,9 +37,38 @@ Before bringing in any data source in to Power BI to build a report, let's conso
 
 ![Power_BI_Import_Yahoo_Equty_Prices_View.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Import_Yahoo_Equty_Prices_View.jpg?raw=true)
 
-We'll click on **Transform** to load **Power Query**. We'll rename our view *VW_Yahoo_Equity_Prices* to *Equity_Prices* as a simpler naming convention. Next, we will need to extract the Dimension tables from the view. We'll start with extracting the *Sectors* Dimension table by duplicating the Equity_Prices table query. We select *Sector_ID* and *Sector* column and use *Remove Other Columns*. And lastly we use *Remove Duplicates*.
+We'll click on **Transform** to load **Power Query**. We'll rename our view *VW_Yahoo_Equity_Prices* to *Equity_Prices* as a simpler naming convention. Next, we will need to extract the Dimension tables from the view. 
+
+We'll start with extracting the *Sectors* Dimension table query by duplicating the Equity_Prices table query. We select *Sector_ID* and *Sector* columns and use *Remove Other Columns*. And lastly we use *Remove Duplicates*.
 
 ![Power_BI_Power_Query_Sectors_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Sectors_Transformation.jpg?raw=true)
+
+We extract our *Industry_Group* Dimension Dimension table query by duplicating the Equity_Prices table query. We select *Sector_ID*, *Industry_Group*, and *Industry_Group_ID* columns and use *Remove Other Columns* and then *Remove Duplicates*.
+
+![Power_BI_Power_Query_Industry_Groups_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Industry_Groups_Transformation.jpg?raw=true)
+
+Then we extract our *Industries* Dimension Dimension table query by duplicating the Equity_Prices table query. We select *Industry_Group_ID*, *Industry*, and *Industry_ID* columns and use *Remove Other Columns* and then *Remove Duplicates*.
+
+![Power_BI_Power_Query_Industries_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Industries_Transformation.jpg?raw=true)
+
+We also extract our *Sub_Industries* Dimension Dimension table query by duplicating the Equity_Prices table query. We select *Industry_ID*, *Sub_Industry*, and *Sub_Industry_ID* columns and use *Remove Other Columns* and then *Remove Duplicates*.
+
+![Power_BI_Power_Query_Sub_Industries_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Sub_Industries_Transformation.jpg?raw=true)
+
+We extract our *Equities* Dimension Dimension table query by duplicating the Equity_Prices table query. We select *Industry_Group_ID*, *Industry*, and *Industry_ID* columns and use *Remove Other Columns* and then *Remove Duplicates*.
+
+![Power_BI_Power_Query_Equities_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equities_Transformation.jpg?raw=true)
+
+And lastly, we'll remove the unnecessary columns from *Equity_Prices* to normalize our data model by selecting *Date*, *Ticker_ID*, *Open*, *High*, *Low*, *Close* and *Volume* columns and use *Remove Other Columns*
+
+![Power_BI_Power_Query_Equity_Prices_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Prices_Transformation.jpg?raw=true)
+
+Let's now join all the tables using foreign keys to create our initial data model.
+
+![Power_BI_Initial_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Initial_Data_Model.jpg?raw=true)
+
+
+
 
 
 
