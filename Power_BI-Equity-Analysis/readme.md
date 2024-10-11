@@ -68,7 +68,7 @@ Let's now join all the tables using foreign keys to create our initial data mode
 ![Power_BI_Initial_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Initial_Data_Model.jpg?raw=true)
 
 
-We want to view our pricing data by Year, Quarter or Month and the best way to do that is to use and create a **Calendar** Dimension table. To do so, we can use an expression language native to Power BI called **DAX**. DAX stands for Data Analysis Expressions and we can create the DAX **calculated table** Calendar using the min and max dates from the *Equity_Prices* table. We define the columns *Date*, *Year*, Quarter*, *Month Long* (long name), *Month Short* (short name), *Month No* and *Day* with the following DAX code:
+We want to view our pricing data by Year, Quarter or Month and the best way to do that is to use and create a **Calendar** Dimension table. To do so, we can use an expression language native to Power BI called **DAX**. DAX stands for Data Analysis Expressions and we can create the DAX **calculated table** Calendar using the min and max dates from the *Equity_Prices* table. We define the columns *Date*, *Year*, *Quarter*, *Month Long* (long name), *Month Short* (short name), *Month No* and *Day* with the following DAX code:
 
 	Calendar = 
   		VAR StartDate = MIN(Equity_Prices[Date])
@@ -85,7 +85,13 @@ We want to view our pricing data by Year, Quarter or Month and the best way to d
         		"Day", DAY([Date])
     		)
 
+Next we'll need to create the *Year*, *Quarter* and *Month No* **calculated columns** in the **Equity_Prices table** which we will use to create our aggregated calculated tables for Year, Quarter and Month.
 
+ 	Year = YEAR(Equity_Prices[Date])
+        Quarter = YEAR([Date]) & "Q" & QUARTER([Date])
+	Month No = (YEAR([Date]) * 100) + MONTH([Date])
 
+ 
+        
 
 
