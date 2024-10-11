@@ -88,7 +88,7 @@ We want to view our pricing data by Year, Quarter or Month and the best way to d
 Next we'll need to create the *Year*, *Quarter* and *Month No* **calculated columns** in the **Equity_Prices table** which we will use to create our aggregated calculated tables for Year, Quarter and Month.
 
  	Year = YEAR(Equity_Prices[Date])
-        Quarter = YEAR([Date]) & "Q" & QUARTER([Date])
+     Quarter = YEAR([Date]) & "Q" & QUARTER([Date])
 	Month No = (YEAR([Date]) * 100) + MONTH([Date])
 
  
