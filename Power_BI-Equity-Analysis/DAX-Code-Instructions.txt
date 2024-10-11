@@ -1,3 +1,4 @@
+
 1. Go to "Model View" and create a "New table" called Calendar:
 
 Calendar = 
@@ -15,8 +16,526 @@ Calendar =
     		"Day", DAY([Date])
 		)
 
-2. Under Data Pane, use "New column" to create the following columns:
+
+2. Under Data Pane, select the Equity_Prices table, use "New column" to create the following columns:
 
 Year = YEAR(Equity_Prices[Date])
 Quarter = YEAR([Date]) & "Q" & QUARTER([Date])
 Month No = (YEAR([Date]) * 100) + MONTH([Date])
+
+
+3. Go to "Model View" and create a "New table" called Equity_Prices_by_Year:
+
+Equity_Prices_by_Year = 
+SUMMARIZE(
+    ALL(Equity_Prices),  // Removes all filters on the Equity_Prices table
+    Equity_Prices[Ticker_ID],  // Group by Ticker_ID
+    Equity_Prices[Year],    // Group by Year
+
+    "Date", MAX(Equity_Prices[Date]),  // Get Max Date by Ticker and year
+    
+    // Get the first 'Open' value by Ticker for the year (by MIN date)
+    "Open", 
+        CALCULATE(
+            FIRSTNONBLANK(Equity_Prices[Open], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Year] = EARLIER(Equity_Prices[Year]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MIN(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+                    )
+                )
+            )
+        ),
+    
+    // Get the max 'High' value by Ticker for the year
+    "High", 
+        CALCULATE(
+            MAX(Equity_Prices[High]),
+            FILTER(
+                ALL(Equity_Prices),
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+            )
+        ),
+    
+    // Get the min 'Low' value by Ticker for the year
+    "Low", 
+        CALCULATE(
+            MIN(Equity_Prices[Low]),
+            FILTER(
+                ALL(Equity_Prices),
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+            )
+        ),
+    
+    // Get the last 'Close' value by Ticker for the year (by MAX date)
+    "Close", 
+        CALCULATE(
+            LASTNONBLANK(Equity_Prices[Close], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Year] = EARLIER(Equity_Prices[Year]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MAX(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+                    )
+                )
+            )
+        ),
+    
+    // Get the last 'Volume' value fby Ticker for the year (by MAX date)
+    "Volume", 
+        CALCULATE(
+            LASTNONBLANK(Equity_Prices[Volume], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Year] = EARLIER(Equity_Prices[Year]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MAX(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+                    )
+                )
+            )
+        )
+)
+
+
+4. Go to "Model View" and create a "New table" called Equity_Prices_by_Quarter:
+
+Equity_Prices_by_Quarter = 
+SUMMARIZE(
+    ALL(Equity_Prices),  // Removes all filters on the Equity_Prices table
+    Equity_Prices[Ticker_ID],  // Group by Ticker_ID
+    Equity_Prices[Quarter],    // Group by Quarter
+
+    "Date", MAX(Equity_Prices[Date]),  // Get Max Date by Ticker and quarter
+
+    // Get the first `Open` value by Ticker for the quarter (by MIN date)
+    "Open", 
+        CALCULATE(
+            FIRSTNONBLANK(Equity_Prices[Open], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Quarter] = EARLIER(Equity_Prices[Quarter]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MIN(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Quarter] = EARLIER(Equity_Prices[Quarter])
+                    )
+                )
+            )
+        ),
+    
+    // Get the max `High` value by Ticker for the quarter
+    "High", 
+        CALCULATE(
+            MAX(Equity_Prices[High]),
+            FILTER(
+                ALL(Equity_Prices),
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Quarter] = EARLIER(Equity_Prices[Quarter])
+            )
+        ),
+    
+    // Get the min `Low` value by Ticker for the quarter
+    "Low", 
+        CALCULATE(
+            MIN(Equity_Prices[Low]),
+            FILTER(
+                ALL(Equity_Prices),
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Quarter] = EARLIER(Equity_Prices[Quarter])
+            )
+        ),
+    
+    // Get the last 'Close' value by Ticker for the quarter (by MAX date)
+    "Close", 
+        CALCULATE(
+            LASTNONBLANK(Equity_Prices[Close], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Quarter] = EARLIER(Equity_Prices[Quarter]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MAX(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Quarter] = EARLIER(Equity_Prices[Quarter])
+                    )
+                )
+            )
+        ),
+    
+    // Get the last 'Volume' value by Ticker for the quarter (by MAX date)
+    "Volume", 
+        CALCULATE(
+            LASTNONBLANK(Equity_Prices[Volume], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Quarter] = EARLIER(Equity_Prices[Quarter]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MAX(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Quarter] = EARLIER(Equity_Prices[Quarter])
+                    )
+                )
+            )
+        )
+)
+
+
+
+5. Go to "Model View" and create a "New table" called Equity_Prices_by_Month:
+
+Equity_Prices_by_Month = 
+SUMMARIZE(
+    ALL(Equity_Prices),  // Removes all filters on the Equity_Prices table
+    Equity_Prices[Ticker_ID],  // Group by Ticker_ID
+    Equity_Prices[Month No],    // Group by Month No
+
+    "Date", MAX(Equity_Prices[Date]),  // Get Max Date in the Month No
+    
+    // Get the first 'Open' value by Ticker for the month (by MIN date)
+    "Open", 
+        CALCULATE(
+            FIRSTNONBLANK(Equity_Prices[Open], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Month No] = EARLIER(Equity_Prices[Month No]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MIN(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Month No] = EARLIER(Equity_Prices[Month No])
+                    )
+                )
+            )
+        ),
+    
+    // Get the max 'High' value by Ticker for the month
+    "High", 
+        CALCULATE(
+            MAX(Equity_Prices[High]),
+            FILTER(
+                ALL(Equity_Prices),
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Month No] = EARLIER(Equity_Prices[Month No])
+            )
+        ),
+    
+    // Get the min 'Low' value by Ticker for the month
+    "Low", 
+        CALCULATE(
+            MIN(Equity_Prices[Low]),
+            FILTER(
+                ALL(Equity_Prices),
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Month No] = EARLIER(Equity_Prices[Month No])
+            )
+        ),
+    
+    // Get the last 'Close' value by Ticker for the month (by MAX date)
+    "Close", 
+        CALCULATE(
+            LASTNONBLANK(Equity_Prices[Close], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Month No] = EARLIER(Equity_Prices[Month No]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MAX(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Month No] = EARLIER(Equity_Prices[Month No])
+                    )
+                )
+            )
+        ),
+    
+    // Get the last 'Volume' value by Ticker for the month (by MAX date)
+    "Volume", 
+        CALCULATE(
+            LASTNONBLANK(Equity_Prices[Volume], 1),
+            FILTER(
+                ALL(Equity_Prices),  
+                Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                Equity_Prices[Month No] = EARLIER(Equity_Prices[Month No]) &&
+                Equity_Prices[Date] = CALCULATE(
+                    MAX(Equity_Prices[Date]),
+                    FILTER(
+                        ALL(Equity_Prices), 
+                        Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        Equity_Prices[Month No] = EARLIER(Equity_Prices[Month No])
+                    )
+                )
+            )
+        )
+)
+
+
+6. Under Data Pane, select the Equity_Prices_by_Year table, use "New measure" to create the following measures:
+
+YearLastDate = 
+CALCULATE(
+	MAX(Equity_Prices_by_Year[Date]),
+	FILTER(
+ 	   Equity_Prices_by_Year,
+ 	   Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID])
+	)
+)
+
+YearLastOpen = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Year[Open], 1),
+   FILTER(
+       Equity_Prices_by_Year,
+      Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+      Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+   )
+)
+
+YearLastHigh = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Year[High], 1),
+    FILTER(
+        Equity_Prices_by_Year,
+        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+    )
+)
+
+YearLastLow = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Year[Low], 1),
+    FILTER(
+        Equity_Prices_by_Year,
+        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+    )
+)
+
+YearLastClose = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Year[Close], 1),
+    FILTER(
+        Equity_Prices_by_Year,
+        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+    )
+)
+
+YearLastVolume = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Year[Volume], 1),
+    FILTER(
+        Equity_Prices_by_Year,
+       Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+       Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+    )
+)
+
+
+7. Under Data Pane, select the Equity_Prices_by_Quarter table, use "New measure" to create the following measures:
+
+QuarterLastDate = 
+CALCULATE(
+    MAX(Equity_Prices_by_Quarter[Date]),
+    FILTER(
+        Equity_Prices_by_Quarter,
+        Equity_Prices_by_Quarter[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Quarter[Ticker_ID])
+    )
+)
+
+QuarterLastOpen = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Quarter[Open], 1),
+    FILTER(
+        Equity_Prices_by_Quarter,
+        Equity_Prices_by_Quarter[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Quarter[Ticker_ID]) &&
+        Equity_Prices_by_Quarter[Date] = MAX(Equity_Prices_by_Quarter[Date])
+    )
+)
+
+QuarterLastHigh = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Quarter[High], 1),
+    FILTER(
+        Equity_Prices_by_Quarter,
+        Equity_Prices_by_Quarter[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Quarter[Ticker_ID]) &&
+        Equity_Prices_by_Quarter[Date] = MAX(Equity_Prices_by_Quarter[Date])
+    )
+)
+
+QuarterLastLow = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Quarter[Low], 1),
+    FILTER(
+        Equity_Prices_by_Quarter,
+        Equity_Prices_by_Quarter[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Quarter[Ticker_ID]) &&
+        Equity_Prices_by_Quarter[Date] = MAX(Equity_Prices_by_Quarter[Date])
+    )
+)
+
+QuarterLastClose = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Quarter[Close], 1),
+    FILTER(
+        Equity_Prices_by_Quarter,
+        Equity_Prices_by_Quarter[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Quarter[Ticker_ID]) &&
+        Equity_Prices_by_Quarter[Date] = MAX(Equity_Prices_by_Quarter[Date])
+    )
+)
+
+QuarterLastVolume = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Quarter[Volume], 1),
+    FILTER(
+        Equity_Prices_by_Quarter,
+        Equity_Prices_by_Quarter[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Quarter[Ticker_ID]) &&
+        Equity_Prices_by_Quarter[Date] = MAX(Equity_Prices_by_Quarter[Date])
+    )
+)
+
+
+8. Under Data Pane, select the Equity_Prices_by_Month table, use "New measure" to create the following measures:
+
+MonthLastDate = 
+CALCULATE(
+    MAX(Equity_Prices_by_Month[Date]),
+    FILTER(
+        Equity_Prices_by_Month,
+        Equity_Prices_by_Month[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Month[Ticker_ID])
+    )
+)
+
+MonthLastOpen = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Month[Open], 1),
+    FILTER(
+        Equity_Prices_by_Month,
+        Equity_Prices_by_Month[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Month[Ticker_ID]) &&
+        Equity_Prices_by_Month[Date] = MAX(Equity_Prices_by_Month[Date])
+    )
+)
+
+MonthLastHigh = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Month[High], 1),
+    FILTER(
+        Equity_Prices_by_Month,
+        Equity_Prices_by_Month[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Month[Ticker_ID]) &&
+        Equity_Prices_by_Month[Date] = MAX(Equity_Prices_by_Month[Date])
+    )
+)
+
+MonthLastLow = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Month[Low], 1),
+    FILTER(
+        Equity_Prices_by_Month,
+        Equity_Prices_by_Month[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Month[Ticker_ID]) &&
+        Equity_Prices_by_Month[Date] = MAX(Equity_Prices_by_Month[Date])
+    )
+)
+
+MonthLastClose = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Month[Close], 1),
+    FILTER(
+        Equity_Prices_by_Month,
+        Equity_Prices_by_Month[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Month[Ticker_ID]) &&
+        Equity_Prices_by_Month[Date] = MAX(Equity_Prices_by_Month[Date])
+    )
+)
+
+MonthLastVolume = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices_by_Month[Volume], 1),
+    FILTER(
+        Equity_Prices_by_Month,
+        Equity_Prices_by_Month[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Month[Ticker_ID]) &&
+        Equity_Prices_by_Month[Date] = MAX(Equity_Prices_by_Month[Date])
+    )
+)
+
+
+9. Under Data Pane, select the Equity_Prices table, use "New measure" to create the following measures:
+
+LastDate = 
+CALCULATE(
+    MAX(Equity_Prices[Date]),
+    FILTER(
+        Equity_Prices,
+        Equity_Prices[Ticker_ID] = SELECTEDVALUE(Equity_Prices[Ticker_ID])
+    )
+)
+
+LastOpen = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices[Open], 1),
+    FILTER(
+        Equity_Prices,
+        Equity_Prices[Ticker_ID] = SELECTEDVALUE(Equity_Prices[Ticker_ID]) &&
+        Equity_Prices[Date] = MAX(Equity_Prices[Date])
+    )
+)
+
+LastHigh = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices[High], 1),
+    FILTER(
+        Equity_Prices,
+        Equity_Prices[Ticker_ID] = SELECTEDVALUE(Equity_Prices[Ticker_ID]) &&
+        Equity_Prices[Date] = MAX(Equity_Prices[Date])
+    )
+) 
+
+LastLow = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices[Low], 1),
+    FILTER(
+        Equity_Prices,
+        Equity_Prices[Ticker_ID] = SELECTEDVALUE(Equity_Prices[Ticker_ID]) &&
+        Equity_Prices[Date] = MAX(Equity_Prices[Date])
+    )
+)
+
+LastVolume = 
+CALCULATE(
+    LASTNONBLANK(Equity_Prices[Volume], 1),
+    FILTER(
+        Equity_Prices,
+        Equity_Prices[Ticker_ID] = SELECTEDVALUE(Equity_Prices[Ticker_ID]) &&
+        Equity_Prices[Date] = MAX(Equity_Prices[Date])
+    )
+
+
+
+
+
+
