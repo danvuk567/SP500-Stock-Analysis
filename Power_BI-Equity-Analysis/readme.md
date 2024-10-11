@@ -247,5 +247,5 @@ We will be creating some line charts in Power BI and a good idea is also to disp
 	    )
 	)
 
-
+We'll do the same type of DAX code to create the last quarterly date pricing data in the Equity_Prices_by_Quarter table, last monthly date pricing data in the Equity_Prices_by_Month table and the last daily pricing data in the Equity_Prices table.
 
