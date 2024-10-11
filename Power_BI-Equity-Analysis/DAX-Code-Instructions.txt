@@ -1,0 +1,22 @@
+1. Go to "Model View" and create a "New table" called Calendar:
+
+Calendar = 
+	VAR StartDate = MIN(Equity_Prices[Date])
+	VAR EndDate = MAX(Equity_Prices[Date])
+
+	RETURN
+	    ADDCOLUMNS(
+    		CALENDAR(StartDate, EndDate),
+    		"Year", YEAR([Date]),
+    		"Quarter", YEAR([Date]) & "Q" & QUARTER([Date]),  // Combining Year and Quarter as a string value
+   		 "Month Long", FORMAT([Date], "MMMM"),
+   		 "Month Short", FORMAT([Date], "MMM"),
+    		"Month No", (YEAR([Date]) * 100) + MONTH([Date]),  // Combining Year and Month as a numeric value
+    		"Day", DAY([Date])
+		)
+
+2. Under Data Pane, use "New column" to create the following columns:
+
+Year = YEAR(Equity_Prices[Date])
+Quarter = YEAR([Date]) & "Q" & QUARTER([Date])
+Month No = (YEAR([Date]) * 100) + MONTH([Date])
