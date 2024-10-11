@@ -23,14 +23,14 @@ Before bringing in any  data source, let's consolidate the data we need into a d
         	ROUND(q1.[Low], 2) AS "Low",
         	ROUND(q1.[Close], 2) AS "Close",
         	q1.Volume AS "Volume"
-    	FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q1
-    	INNER JOIN [Financial_Securities].[Equities].[Equities] q2
-    	ON q1.Ticker_ID = q2.Ticker_ID
-    	INNER JOIN [Financial_Securities].[Equities].[Sub_Industries] q3
-    	ON q2.Sub_Industry_ID = q3.Sub_Industry_ID
-    	INNER JOIN [Financial_Securities].[Equities].[Industries] q4
-    	ON q3.Industry_ID = q4.Industry_ID
-    	INNER JOIN [Financial_Securities].[Equities].[Industry_Groups] q5
-    	ON q4.Industry_Group_ID = q5.Industry_Group_ID
-    	INNER JOIN [Financial_Securities].[Equities].[Sectors] q6
-    	ON q5.Sector_ID = q6.Sector_ID;
+    FROM [Financial_Securities].[Equities].[Yahoo_Equity_Prices] q1
+    INNER JOIN [Financial_Securities].[Equities].[Equities] q2
+    ON q1.Ticker_ID = q2.Ticker_ID
+    INNER JOIN [Financial_Securities].[Equities].[Sub_Industries] q3
+    ON q2.Sub_Industry_ID = q3.Sub_Industry_ID
+    INNER JOIN [Financial_Securities].[Equities].[Industries] q4
+    ON q3.Industry_ID = q4.Industry_ID
+    INNER JOIN [Financial_Securities].[Equities].[Industry_Groups] q5
+    ON q4.Industry_Group_ID = q5.Industry_Group_ID
+    INNER JOIN [Financial_Securities].[Equities].[Sectors] q6
+    ON q5.Sector_ID = q6.Sector_ID;
