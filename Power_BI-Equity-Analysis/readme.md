@@ -39,7 +39,7 @@ Before bringing in any data source in to Power BI to build a report, let's conso
 
 We'll click on **Transform** to load **Power Query**. We'll rename our view *VW_Yahoo_Equity_Prices* to *Equity_Prices* as a simpler naming convention. Next, we will need to extract the Dimension tables from the view. We'll start with extracting the *Sectors* Dimension table by duplicating the Equity_Prices table query. We select *Sector_ID* and *Sector* column and use *Remove Other Columns*. And lastly we use *Remove Duplicates*.
 
-![Power_BI_Import_Yahoo_Equty_Prices_View.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Import_Yahoo_Equty_Prices_View.jpg?raw=true)
+![Power_BI_Power_Query_Sectors_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Sectors_Transformation.jpg?raw=true)
 
 
 
