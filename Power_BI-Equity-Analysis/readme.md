@@ -94,6 +94,7 @@ Next, in the **Data Pane**, we will use **New Column** to create the *Year*, *Qu
     Quarter = YEAR([Date]) & "Q" & QUARTER([Date])
 	Month No = (YEAR([Date]) * 100) + MONTH([Date])
 
+The first pricing table we will create is called *Equity_Prices_by_Year* using DAX. We will use **SUMMARIZE** to aggregate the pricing data from *Equity_Prices*, **ALL** to use unfiltered data and group all column data by *Ticker_ID* and *Year*. We define the *Date* column as max date by Ticker_ID and Year. The *Open* column is fairly complex as we need to use **CALCULATE** and get the first non-blank Open price using **FIRSTNONBLANK** function. We use **FILTER** on the unfiltered table to filter by conditions involving Ticker_ID and Year and **EARLIER** function to access a value from an earlier row when dealing with multiple layers of filters or iterations. We also need a Date match as well in order to pull one valid record. We'll need to use another sub calculation using CALCULATE, **MIN** function and EARLIER to get the min date by Ticker_ID and Year. The *High* 
  
         
 
