@@ -2,7 +2,7 @@
 
 Before bringing in any data source in to Power BI to build a report, let's consolidate the data we need into a database view called *VW_Yahoo_Equity_Prices* in order to avoid bringing in unnecessary data. This is good practice when possibly dealing with large data sets and allows us to practice some data transformations in Power BI **Power Query**. We'll define the view joining the GICS Industry Dimension table hierarchy tables to the Fact table *Yahoo_Equity_Prices*.
 
-## *[Create-Data-Warehouse-Objects.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Create-VW_Yahoo_Equity_Prices-View.sql)*  
+## *[Create-VW_Yahoo_Equity_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Create-VW_Yahoo_Equity_Prices-View.sql)*  
 
 	CREATE VIEW [Equities].[VW_Yahoo_Equity_Prices] AS
     	SELECT 
@@ -67,8 +67,11 @@ Let's now join all the tables using foreign keys to create our initial data mode
 
 ![Power_BI_Initial_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Initial_Data_Model.jpg?raw=true)
 
+This project will require some custom table and fields that will be calculated using **DAX**. DAX stands for Data Analysis Expressions and is an expression language native to Power BI. The following link contains instruction and DAX code that we will refer to step by step going forward.
 
-We want to view our pricing data by Year, Quarter or Month and the best way to do that is to use and create a **Calendar** Dimension table. To do so, we can use an expression language native to Power BI called **DAX**. DAX stands for Data Analysis Expressions and we can create the DAX **calculated table** Calendar using the min and max dates from the *Equity_Prices* table. We define the columns *Date*, *Year*, *Quarter*, *Month Long* (long name), *Month Short* (short name), *Month No* and *Day* with the following DAX code:
+## *[DAX-Code-Instructions.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/DAX-Code-Instructions.txt)*    
+
+We want to view our pricing data by Year, Quarter or Month and to do that we'll first need to create a **Calendar** Dimension table using **New table** in the **Model View** section. We'll use **DAX** to create the **calculated table** Calendar using the min and max dates from the *Equity_Prices* table. We define the columns *Date*, *Year*, *Quarter*, *Month Long* (long name), *Month Short* (short name), *Month No* and *Day* with the following DAX code:
 
 	Calendar = 
   		VAR StartDate = MIN(Equity_Prices[Date])
@@ -85,7 +88,7 @@ We want to view our pricing data by Year, Quarter or Month and the best way to d
         		"Day", DAY([Date])
     		)
 
-Next we'll need to create the *Year*, *Quarter* and *Month No* **calculated columns** in the **Equity_Prices table** which we will use to create our aggregated calculated tables for Year, Quarter and Month.
+Next, in the **Data Pane**, we''' use **New Column** to create the *Year*, *Quarter* and *Month No* **calculated columns** in the **Equity_Prices table** which we will use to create our aggregated calculated tables for Year, Quarter and Month.
 
  	Year = YEAR(Equity_Prices[Date])
     Quarter = YEAR([Date]) & "Q" & QUARTER([Date])
