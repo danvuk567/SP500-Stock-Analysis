@@ -1,6 +1,6 @@
-# Power BI Equity Analysis
+# Power BI Equity Analysis Report
 
-Before bringing in any data source in to Power BI to build a report, let's consolidate the data we need into a database view called *VW_Yahoo_Equity_Prices* in order to avoid bringing in unnecessary data. This is good practice when possibly dealing with large data sets and allows us to practice some data transformations in Power BI Power Query. We'll define the view joining the GICS Industry Dimension table hierarchy tables to the Fact table *Yahoo_Equity_Prices*.
+Before bringing in any data source in to Power BI to build a report, let's consolidate the data we need into a database view called *VW_Yahoo_Equity_Prices* in order to avoid bringing in unnecessary data. This is good practice when possibly dealing with large data sets and allows us to practice some data transformations in Power BI **Power Query**. We'll define the view joining the GICS Industry Dimension table hierarchy tables to the Fact table *Yahoo_Equity_Prices*.
 
 ## *[Create-Data-Warehouse-Objects.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Create-VW_Yahoo_Equity_Prices-View.sql)*  
 
@@ -37,6 +37,9 @@ Before bringing in any data source in to Power BI to build a report, let's conso
 
 ![Power_BI_Import_Yahoo_Equty_Prices_View.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Import_Yahoo_Equty_Prices_View.jpg?raw=true)
 
-We'll click on **Transform** to load **Power Query**
+We'll click on **Transform** to load **Power Query**. We'll rename our view *VW_Yahoo_Equity_Prices* to *Equity_Prices* as a simpler naming convention. Next, we will need to extract the Dimension tables from the view. We'll start with extracting the *Sectors* Dimension table by duplicating the Equity_Prices table query. We select *Sector_ID* and *Sector* column and use *Remove Other Columns*. And lastly we use *Remove Duplicates*.
+
+![Power_BI_Import_Yahoo_Equty_Prices_View.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Import_Yahoo_Equty_Prices_View.jpg?raw=true)
+
 
 
