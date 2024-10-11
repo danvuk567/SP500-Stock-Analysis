@@ -183,6 +183,8 @@ The first pricing table we will create is called *Equity_Prices_by_Year* using D
               )
           )
     )
+
+We will then use DAX to create another table called *Equity_Prices_by_Quarter* which aggregates pricing data by quarter and a table called *Equity_Prices_by_Month* which aggregates pricing data by month in a similar fashion.
  
         
 
