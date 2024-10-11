@@ -75,7 +75,7 @@ We want to view our pricing data by Year, Quarter or Month and the best way to d
   		VAR EndDate = MAX(Equity_Prices[Date])
 
 		RETURN
-    	      ADDCOLUMNS(
+    	    ADDCOLUMNS(
         		CALENDAR(StartDate, EndDate),
         		"Year", YEAR([Date]),
         		"Quarter", YEAR([Date]) & "Q" & QUARTER([Date]),  // Combining Year and Quarter as a string value
