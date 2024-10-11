@@ -37,4 +37,6 @@ Before bringing in any data source in to Power BI to build a report, let's conso
 
 ![Power_BI_Import_Yahoo_Equty_Prices_View.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Import_Yahoo_Equty_Prices_View.jpg?raw=true)
 
+We'll click on **Transform** to load **Power Query**
+
 
