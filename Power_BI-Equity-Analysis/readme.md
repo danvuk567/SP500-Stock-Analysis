@@ -63,7 +63,7 @@ And lastly, we'll remove the unnecessary columns from *Equity_Prices* to normali
 
 ![Power_BI_Power_Query_Equity_Prices_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Prices_Transformation.jpg?raw=true)
 
-Let's now join all the tables using foreign keys to create our initial data model.
+Let's now create relationships between all the tables to create our initial data model.
 
 ![Power_BI_Initial_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Initial_Data_Model.jpg?raw=true)
 
