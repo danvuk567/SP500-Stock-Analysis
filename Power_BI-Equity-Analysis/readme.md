@@ -34,3 +34,7 @@ Before bringing in any data source in to Power BI to build a report, let's conso
     ON q4.Industry_Group_ID = q5.Industry_Group_ID
     INNER JOIN [Financial_Securities].[Equities].[Sectors] q6
     ON q5.Sector_ID = q6.Sector_ID;
+
+![Power_BI_Import_Yahoo_Equty_Prices_View.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Import_Yahoo_Equty_Prices_View.jpg?raw=true)
+
+
