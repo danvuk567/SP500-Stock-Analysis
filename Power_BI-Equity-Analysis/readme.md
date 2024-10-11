@@ -181,8 +181,8 @@ The first pricing table we will create is called *Equity_Prices_by_Year* using D
                         )
                     )
               )
-         )
-)
+          )
+    )
  
         
 
