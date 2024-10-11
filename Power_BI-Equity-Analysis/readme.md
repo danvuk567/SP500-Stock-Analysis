@@ -78,7 +78,7 @@ We want to view our pricing data by Year, Quarter or Month and the best way to d
     		ADDCOLUMNS(
         		CALENDAR(StartDate, EndDate),
         		"Year", YEAR([Date]),
-        		"Quarter", YEAR([Date]) & "Q" & QUARTER([Date]),  // Combining Year and Quarter as a numeric value
+        		"Quarter", YEAR([Date]) & "Q" & QUARTER([Date]),  // Combining Year and Quarter as a string value
        		 "Month Long", FORMAT([Date], "MMMM"),
        		 "Month Short", FORMAT([Date], "MMM"),
         		"Month No", (YEAR([Date]) * 100) + MONTH([Date]),  // Combining Year and Month as a numeric value
