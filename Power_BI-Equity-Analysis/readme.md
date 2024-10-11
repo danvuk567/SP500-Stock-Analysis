@@ -1,6 +1,6 @@
 # Power BI Equity Analysis
 
-Before bringing in any  data source, let's consolidate the data we need into a database view called *VW_Yahoo_Equity_Prices* in order to avoid bringing in unnecessary data. This is good practice when possibly dealing with large data sets and allows us to practice some data transformations in Power BI Power Query. We'll define the view joining the GICS Industry Dimension table hierarchy tables to the Fact table *Yahoo_Equity_Prices*.
+Before bringing in any data source in to Power BI to build a report, let's consolidate the data we need into a database view called *VW_Yahoo_Equity_Prices* in order to avoid bringing in unnecessary data. This is good practice when possibly dealing with large data sets and allows us to practice some data transformations in Power BI Power Query. We'll define the view joining the GICS Industry Dimension table hierarchy tables to the Fact table *Yahoo_Equity_Prices*.
 
 ## *[Create-Data-Warehouse-Objects.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Create-VW_Yahoo_Equity_Prices-View.sql)*  
 
