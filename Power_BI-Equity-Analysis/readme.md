@@ -249,3 +249,16 @@ We will be creating some line charts in Power BI and a good idea is also to disp
 
 We'll do the same type of DAX code to create the last quarterly date pricing data in the Equity_Prices_by_Quarter table, last monthly date pricing data in the Equity_Prices_by_Month table and the last daily pricing data in the Equity_Prices table.
 
+Next, we create new relationships to all our tables as follows:
+
+![Power_BI_Pricing_Data_Model_Relationships.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Data_Model_Relationships.jpg?raw=true)
+
+And our Data Model now looks like this:
+
+![Power_BI_Pricing_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Data_Model.jpg?raw=true)
+
+
+
+
+
+
