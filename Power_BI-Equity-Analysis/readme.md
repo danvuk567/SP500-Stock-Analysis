@@ -186,66 +186,66 @@ The first pricing table we will create is called *Equity_Prices_by_Year* using D
 
 We will then use DAX to create another table called *Equity_Prices_by_Quarter* which aggregates pricing data by quarter, and a table called *Equity_Prices_by_Month* which aggregates pricing data by month in a similar fashion.
  
-We will be creating some line charts in Power BI and a good idea is also to display the last date pricing data. To do this, we'll need to create some **DAX measures** to achieve this. For the *Equity_Prices_by_Year* table, we'll go to the Data Panel, click on **New measure** and create the following fields *YearLastDate* which represents the last date, *YearLastOpen* which represents last Open, *YearLastHigh* which represents last  High, *YearLastLow* which represents last Low, *YearLastClose* which represents last Close and *YearLastVolume* which represents last Volume by Year. Here is the simple DAX code to create these measures.   
+We will be creating some line charts in Power BI and a good idea is also to display the last date pricing data. To achieve this, we'll need to create some **DAX measures**. For the *Equity_Prices_by_Year* table, we'll go to the Data Panel, click on **New measure** and create the following measures: *YearLastDate* which represents the last Date, *YearLastOpen* which represents last Open, *YearLastHigh* which represents last High, *YearLastLow* which represents last Low, *YearLastClose* which represents last Close and *YearLastVolume* which represents last Volume by Year. Here is the simple DAX code to create these measures.   
 
-YearLastDate = 
-CALCULATE(
-    MAX(Equity_Prices_by_Year[Date]),
-    FILTER(
-        Equity_Prices_by_Year,
-        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID])
-    )
-)
+	YearLastDate = 
+	CALCULATE(
+    	MAX(Equity_Prices_by_Year[Date]),
+    	FILTER(
+     	   Equity_Prices_by_Year,
+     	   Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID])
+    	)
+	)
 
-YearLastOpen = 
-CALCULATE(
-    LASTNONBLANK(Equity_Prices_by_Year[Open], 1),
-    FILTER(
-        Equity_Prices_by_Year,
-        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
-        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
-    )
-)
+	YearLastOpen = 
+	CALCULATE(
+	    LASTNONBLANK(Equity_Prices_by_Year[Open], 1),
+ 	   FILTER(
+ 	       Equity_Prices_by_Year,
+  	      Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+  	      Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+ 	   )
+	)
 
-YearLastHigh = 
-CALCULATE(
-    LASTNONBLANK(Equity_Prices_by_Year[High], 1),
-    FILTER(
-        Equity_Prices_by_Year,
-        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
-        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
-    )
-)
+	YearLastHigh = 
+	CALCULATE(
+	    LASTNONBLANK(Equity_Prices_by_Year[High], 1),
+	    FILTER(
+	        Equity_Prices_by_Year,
+	        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+	        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+	    )
+	)
 
-YearLastLow = 
-CALCULATE(
-    LASTNONBLANK(Equity_Prices_by_Year[Low], 1),
-    FILTER(
-        Equity_Prices_by_Year,
-        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
-        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
-    )
-)
+	YearLastLow = 
+	CALCULATE(
+	    LASTNONBLANK(Equity_Prices_by_Year[Low], 1),
+	    FILTER(
+	        Equity_Prices_by_Year,
+	        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+	        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+	    )
+	)
 
-YearLastClose = 
-CALCULATE(
-    LASTNONBLANK(Equity_Prices_by_Year[Close], 1),
-    FILTER(
-        Equity_Prices_by_Year,
-        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
-        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
-    )
-)
+	YearLastClose = 
+	CALCULATE(
+	    LASTNONBLANK(Equity_Prices_by_Year[Close], 1),
+	    FILTER(
+	        Equity_Prices_by_Year,
+	        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+	        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+	    )
+	)
 
-YearLastVolume = 
-CALCULATE(
-    LASTNONBLANK(Equity_Prices_by_Year[Volume], 1),
-    FILTER(
-        Equity_Prices_by_Year,
-        Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
-        Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
-    )
-)
+	YearLastVolume = 
+	CALCULATE(
+	    LASTNONBLANK(Equity_Prices_by_Year[Volume], 1),
+	    FILTER(
+	        Equity_Prices_by_Year,
+ 	       Equity_Prices_by_Year[Ticker_ID] = SELECTEDVALUE(Equity_Prices_by_Year[Ticker_ID]) &&
+ 	       Equity_Prices_by_Year[Date] = MAX(Equity_Prices_by_Year[Date])
+	    )
+	)
 
 
 
