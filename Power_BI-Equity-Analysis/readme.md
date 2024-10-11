@@ -94,7 +94,95 @@ Next, in the **Data Pane**, we will use **New Column** to create the *Year*, *Qu
     Quarter = YEAR([Date]) & "Q" & QUARTER([Date])
 	Month No = (YEAR([Date]) * 100) + MONTH([Date])
 
-The first pricing table we will create is called *Equity_Prices_by_Year* using DAX. We will use **SUMMARIZE** to aggregate the pricing data from *Equity_Prices*, **ALL** to use unfiltered data and group all column data by *Ticker_ID* and *Year*. We define the *Date* column as max date by Ticker_ID and Year. The *Open* column is fairly complex as we need to use **CALCULATE** and get the first non-blank Open price using **FIRSTNONBLANK** function. We use **FILTER** on the unfiltered table to filter by conditions involving Ticker_ID and Year and **EARLIER** function to access a value from an earlier row when dealing with multiple layers of filters or iterations. We also need a Date match as well in order to pull one valid record. We'll need to use another sub calculation using CALCULATE, **MIN** function and EARLIER to get the min date by Ticker_ID and Year. The *High* 
+The first pricing table we will create is called *Equity_Prices_by_Year* using DAX. We will use **SUMMARIZE** to aggregate the pricing data from *Equity_Prices*, **ALL** to use unfiltered data and group all column data by *Ticker_ID* and *Year*. We define the *Date* column as max date by Ticker_ID and Year. The *Open* column is fairly complex as we need to use **CALCULATE** and get the first non-blank Open price using **FIRSTNONBLANK** function. We use **FILTER** on the unfiltered table to filter by conditions involving Ticker_ID and Year and **EARLIER** function to access a value from an earlier row when dealing with multiple layers of filters or iterations. We also need a Date match as well in order to pull one valid record. We'll need to use another sub calculation using CALCULATE, **MIN** function and EARLIER to get the min date by Ticker_ID and Year. The *High* column is simply caluclated using the **MAX** function and is spanning all dates by Ticker_ID and Year. The *Low* column is simply caluclated using the **MIN** function and is spanning all dates by Ticker_ID and Year. The *Close* column is calculated using similar conditional logic as the Open column calculation but instead uses the **LASTNONBLANK** function to pull the last non-blank Close price. And lastly, the *Volume* column is calculated the same way as the Close column. Here is the complex DAX code to achieve the desired results.
+
+	Equity_Prices_by_Year = 
+	SUMMARIZE(
+    	ALL(Equity_Prices),  // Removes all filters on the Equity_Prices table
+    	Equity_Prices[Ticker_ID],  // Group by Ticker_ID
+    	Equity_Prices[Year],    // Group by Year
+
+    	"Date", MAX(Equity_Prices[Date]),  // Get Max Date by Ticker and year
+    
+    	// Get the first 'Open' value by Ticker for the year (by MIN date)
+    	"Open", 
+           CALCULATE(
+            	FIRSTNONBLANK(Equity_Prices[Open], 1),
+            	FILTER(
+                	ALL(Equity_Prices),  
+                	Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                	Equity_Prices[Year] = EARLIER(Equity_Prices[Year]) &&
+                	Equity_Prices[Date] = CALCULATE(
+                    	    MIN(Equity_Prices[Date]),
+                    	    FILTER(
+                        	ALL(Equity_Prices), 
+                        	Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                        	Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+                    	    )
+                	)
+            	 )
+           ),
+    
+    	// Get the max 'High' value by Ticker for the year
+    	"High", 
+        	CALCULATE(
+            	MAX(Equity_Prices[High]),
+            	FILTER(
+                	ALL(Equity_Prices),
+                	Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                	Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+            	)
+       	 ),
+    
+    	// Get the min 'Low' value by Ticker for the year
+    	"Low", 
+     	   	CALCULATE(
+     	        MIN(Equity_Prices[Low]),
+     	        FILTER(
+     	           	ALL(Equity_Prices),
+     	           	Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+     	           	Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+     	       )
+      	  ),
+    
+    	// Get the last 'Close' value by Ticker for the year (by MAX date)
+ 	"Close", 
+  	   CALCULATE(
+   	        LASTNONBLANK(Equity_Prices[Close], 1),
+    	        FILTER(
+     	            ALL(Equity_Prices),  
+     	            Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+      	            Equity_Prices[Year] = EARLIER(Equity_Prices[Year]) &&
+     	            Equity_Prices[Date] = CALCULATE(
+     	                MAX(Equity_Prices[Date]),
+      	                FILTER(
+                   	    ALL(Equity_Prices), 
+                   	    Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                            Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+                        )
+                    )
+ 	       )
+      	  ),
+    
+    	// Get the last 'Volume' value fby Ticker for the year (by MAX date)
+        "Volume", 
+           CALCULATE(
+                LASTNONBLANK(Equity_Prices[Volume], 1),
+                FILTER(
+                    ALL(Equity_Prices),  
+                    Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                    Equity_Prices[Year] = EARLIER(Equity_Prices[Year]) &&
+                    Equity_Prices[Date] = CALCULATE(
+                        MAX(Equity_Prices[Date]),
+                        FILTER(
+                            ALL(Equity_Prices), 
+                            Equity_Prices[Ticker_ID] = EARLIER(Equity_Prices[Ticker_ID]) &&
+                            Equity_Prices[Year] = EARLIER(Equity_Prices[Year])
+                        )
+                    )
+              )
+         )
+)
  
         
 
