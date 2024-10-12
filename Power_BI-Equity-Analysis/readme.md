@@ -186,7 +186,7 @@ The first pricing table we will create is called *Equity_Prices_by_Year* using D
 
 We will then use DAX to create another table called *Equity_Prices_by_Quarter* which aggregates pricing data by quarter, and a table called *Equity_Prices_by_Month* which aggregates pricing data by month in a similar fashion.
  
-We will be creating some line charts in Power BI and a good idea is also to display the last date pricing data. To achieve this, we'll need to create some **DAX measures**. For the *Equity_Prices_by_Year* table, we'll go to the Data Panel, click on **New measure** and create the following measures: *YearLastDate* which represents the last Date, *YearLastOpen* which represents last Open, *YearLastHigh* which represents last High, *YearLastLow* which represents last Low, *YearLastClose* which represents last Close and *YearLastVolume* which represents last Volume by Year. Here is the simple DAX code to create these measures.   
+a good idea is also to display the last date pricing data in a card visual. To achieve this, we'll need to create some **DAX measures**. For the *Equity_Prices_by_Year* table, we'll go to the Data Panel, click on **New measure** and create the following measures: *YearLastDate* which represents the last Date, *YearLastOpen* which represents last Open, *YearLastHigh* which represents last High, *YearLastLow* which represents last Low, *YearLastClose* which represents last Close and *YearLastVolume* which represents last Volume by Year. Here is the simple DAX code to create these measures.   
 
 	YearLastDate = 
 	CALCULATE(
@@ -249,7 +249,7 @@ We will be creating some line charts in Power BI and a good idea is also to disp
 
 We'll do the same type of DAX code to create the last quarterly date pricing data in the Equity_Prices_by_Quarter table, last monthly date pricing data in the Equity_Prices_by_Month table and the last daily pricing data in the Equity_Prices table.
 
-Next, we create new relationships to all our tables as follows:
+Next, we create new relationships to the calculated tables that we created. We'll create a **one-to-many relationship** between *Ticker_ID* in the *Equities* table to *Ticker_ID* in the *Equity_Prices_by_Year*, *Equity_Prices_by_Quarter* and *Equity_Prices_by_Month* tables. We'll also create a one-to-many relationship between *Date* in the *Calendar* table to *Date* in the *Equity_Prices_by_Year*, *Equity_Prices_by_Quarter* and *Equity_Prices_by_Month* tables.
 
 ![Power_BI_Pricing_Data_Model_Relationships.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Data_Model_Relationships.jpg?raw=true)
 
