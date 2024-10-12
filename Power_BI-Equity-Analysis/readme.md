@@ -90,8 +90,8 @@ We want to view our pricing data by Year, Quarter or Month and to do that we'll 
         		"Quarter", YEAR([Date]) & "Q" & QUARTER([Date]),  // Combining Year and Quarter as a string value
        		 "Month Long", FORMAT([Date], "MMMM"),
        		 "Month Short", FORMAT([Date], "MMM"),
-        		"Month No", (YEAR([Date]) * 100) + MONTH([Date]),  // Combining Year and Month as a numeric value
-        		"Day", DAY([Date])
+        		 "Month No", (YEAR([Date]) * 100) + MONTH([Date]),  // Combining Year and Month as a numeric value
+        		 "Day", DAY([Date])
     		)
 
 Next, in the **Data Pane**, we will use **New Column** to create the *Year*, *Quarter* and *Month No* **calculated columns** in the **Equity_Prices table** which we will use to create our aggregated calculated tables for Year, Quarter and Month.
