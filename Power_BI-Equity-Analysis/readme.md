@@ -63,7 +63,13 @@ And lastly, we'll remove the unnecessary columns from *Equity_Prices* to normali
 
 ![Power_BI_Power_Query_Equity_Prices_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Prices_Transformation.jpg?raw=true)
 
-Let's now create relationships between all the tables to create our initial data model.
+Let's now create relationships between all the tables we defined.
+
+We'll create a **one-to-many relationship** between *Sector_ID* in the *Sectors* table to *Sector_ID* in the *Industry_Groups* table, a **one-to-many relationship** between *Industry_Group_ID* in the *Industry_Groups* table to *Industry_Group_ID* in the *Industries* table, a **one-to-many relationship** between *Industry_ID* in the *Industries* table to *Industry_ID* in the *Sub_Industries* table, a **one-to-many relationship** between *Sub_Industry_ID* in the *Sub_Industries* table to *Sub_Industry_ID* in the *Equities* table, and a **one-to-many relationship** between *Ticker_ID* in the *Equities* table to *Ticker_ID* in the *Equity_Prices* table.
+
+![Power_BI_Pricing_Data_Model_Relationships.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Data_Model_Relationships.jpg?raw=true)
+
+And our initial Data Model now looks like this:
 
 ![Power_BI_Initial_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Initial_Data_Model.jpg?raw=true)
 
@@ -251,7 +257,7 @@ We'll do the same type of DAX code to create the last quarterly date pricing dat
 
 Next, we create new relationships to the calculated tables that we created. We'll create a **one-to-many relationship** between *Ticker_ID* in the *Equities* table to *Ticker_ID* in the *Equity_Prices_by_Year*, *Equity_Prices_by_Quarter* and *Equity_Prices_by_Month* tables. We'll also create a one-to-many relationship between *Date* in the *Calendar* table to *Date* in the *Equity_Prices_by_Year*, *Equity_Prices_by_Quarter* and *Equity_Prices_by_Month* tables.
 
-![Power_BI_Pricing_Data_Model_Relationships.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Data_Model_Relationships.jpg?raw=true)
+![Power_BI_Pricing_Data_Model_Relationships2.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Data_Model_Relationships2.jpg?raw=true)
 
 And our Data Model now looks like this:
 
