@@ -32,6 +32,9 @@ conda install scipy
 
 conda install sklearn
 
+pip install cryptography
+
+
 
 ## Create custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom_Python_Functions/custom_python_functions.py)*  
 
@@ -78,6 +81,109 @@ In all SQL operations, we will need to create a connection to the database. We w
     
         # Return the sessionmaker class and the engine
         return s, e
+
+Usernames and passwords should not be visible in code for security purposes and manually entering them each time they are required can be tedious and not feasible for automated processes. 
+We can use encrypted username and passwords with the help of a Python module called *Fernet* within the *cryptography* package. The function *write_key* will generate a key and save it to a key file. 
+The *load_key* function will read the key from the key file and the *encrypt* function will use that key to encrypt the data in our target file. We can use the the *write_key*, *load_key* and the *encrypt* functions
+to encrypt text files containing usernames and passwords. The *decrypt* function is used to to decrypt the data from the encrypted file using the same key we retrieved from the *load_key* function. This way, we can retrieve the username and password and store them in variables. For more information on how to use Fernet, you can refer to this link: [Fernet (symmetric encryption)](https://cryptography.io/en/latest/fernet/#cryptography.fernet.Fernet.generate_key).
+
+        from cryptography.fernet import Fernet
+
+        def write_key(path, key_file):
+    
+            """
+            Generates a key and saves it into a file.
+    
+            Parameters:
+            path (str): The directory path where the key file will be saved.
+            key_file (str): The name of the file (including extension) to save the key.
+            """
+    
+            # Generate a new cryptographic key using Fernet
+            key = Fernet.generate_key()
+    
+            # Open a file in binary write mode to save the key
+            with open(path + key_file, "wb") as key_file:
+                # Write the generated key to the file
+                key_file.write(key)
+        
+            key_file.close()
+
+
+        def load_key(path, key_file):
+    
+            """
+            Loads a cryptographic key from a specified file.
+
+            Parameters:
+            path (str): The directory path where the key file is located.
+            key_file (str): The name of the file (including extension) from which to load the key.
+
+            Returns:
+            bytes: The cryptographic key read from the file.
+            """
+    
+            # Open the specified key file in binary read mode and return its contents
+            with open(path + key_file, "rb") as key_file:
+                return key_file.read()
+
+
+        def encrypt(path, filename, key):
+    
+            """
+            Encrypts a file using the provided cryptographic key.
+
+            Parameters:
+            path (str): The directory path where the file is located.
+            filename (str): The name of the file to be encrypted.
+            key (bytes): The cryptographic key used for encryption.
+            """
+    
+            # Create a Fernet cipher object using the provided key
+            f = Fernet(key)
+
+            # Open the specified file in binary read mode
+            with open(path + filename, "rb") as file:
+                # Read all file data into memory
+                file_data = file.read()
+
+            # Encrypt the file data using the Fernet cipher
+            encrypted_data = f.encrypt(file_data)
+
+            # Open the same file in binary write mode to overwrite it with the encrypted data
+            with open(path + filename, "wb") as file:
+                # Write the encrypted data back to the file
+                file.write(encrypted_data)
+
+
+        def decrypt(path, filename, key):
+    
+            """
+            Decrypts a file using the provided cryptographic key.
+
+            Parameters:
+            path (str): The directory path where the file is located.
+            filename (str): The name of the file to be decrypted.
+            key (bytes): The cryptographic key used for decryption.
+
+            Returns:
+            str: The decrypted file data as a UTF-8 string.
+            """
+    
+            # Create a Fernet cipher object using the provided key
+            f = Fernet(key)
+    
+            # Open the specified file in binary read mode
+            with open(path + filename, "rb") as file:
+                # Read the encrypted data from the file
+                encrypted_data = file.read()
+    
+            # Decrypt the encrypted data using the Fernet cipher
+            decrypted_data = f.decrypt(encrypted_data)
+    
+            # Convert the decrypted bytes to a UTF-8 string and return it
+            return str(decrypted_data, 'utf-8')
+
 
 *clear_table* will pass a session instance and database table name. The table is cleared using a *TRUNCATE* DDL SQL statement and committing the transaction through our session.
 
@@ -129,7 +235,8 @@ In all SQL operations, we will need to create a connection to the database. We w
 
 ## Stage the Sectors data: *[Load-Sectors_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Sectors_STG.ipynb)*  
 
-For this project, we'll simply use a Windows computer database. We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our  *custom_python_functions.py* Python file in our *Custom_Python_Functions* folder. We can define the path to this folder using our Windows username and sys package. We use our local server name and our database name to connect and then create a session instance s1 we will use in our code. We then declare our *Data_STG* table and call our clear_table function to clear the table.
+We will now import the packages we need and create a database connection by calling our custom function *create_connection*, that can be found in our *custom_python_functions.py* Python file in our *Custom_Python_Functions* folder. We can define the path to this folder using our Windows username and sys package. To connect to our Microsoft Azure database using this function, we will pass the server name,
+the database name along with the username and password. For this project, we have stored our username in the file *user_key.txt* that we encrypted using *Fernet* along with the key file *user_key.ky*. The password is stored in *pass_key.txt* along with the key file *pass_key.ky*. Both files are found in the *Custom_Python_Functions* folder. We use the *load_key* function to retrieve our keys and the *decrypt* function to decrypt and retrieve our username and password using the keys. Both these functions can be found in our  *custom_python_functions.py* Python file in our *Custom_Python_Functions* folder. Once the connection is established, we create a session instance s1 that we will use to interact with the database. We then declare our *Data_STG* table and call our clear_table function to clear the table.
 
         import datetime as dt
         import sqlalchemy as sa
@@ -137,18 +244,28 @@ For this project, we'll simply use a Windows computer database. We will now impo
         import sys
         import pandas as pd
 
-        # Setup connection parameters
-        comp = os.environ["COMPUTERNAME"]  # Get the computer name from environment variables
-        dbase = "Financial_Securities"     # Define the name of the database
-
         username = os.getlogin()
-        external_folder_path = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Custom_Python_Functions'
+        external_folder_path = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Custom_Python_Functions/'
         sys.path.append(external_folder_path)
-        from custom_python_functions import create_connection, clear_table
+        from custom_python_functions import create_connection, clear_table, load_key, decrypt
 
+        key1 = 'user_key.ky'
+        key_file1 = 'user_key.txt'
+        key2 = 'pass_key.ky'
+        key_file2 = 'pass_key.txt'
 
+        key1 = load_key(f_path, key1)
+        uid = decrypt(f_path, key_file1, key1)
+
+        key2 = load_key(f_path, key2)
+        passwd = decrypt(f_path, key_file2, key2) 
+
+        # Setup connection parameters
+        server = 'danvuk.database.windows.net'
+        dbase = 'Financial_Securities'
+        
         # Create a connection to the database
-        s, e = create_connection(comp, dbase, "", "")
+        s, e = create_connection(server, dbase, uid, passwd)
         s1 = s()  # Instantiate a session object
 
         Base = sa.orm.declarative_base()
@@ -247,20 +364,6 @@ We establish a database connection and then query the *Data_STG* table and bind 
         import sys
         import urllib.parse as url
         import pandas as pd
-
-        # Setup connection parameters
-        comp = os.environ["COMPUTERNAME"]  # Get the computer name from environment variables
-        dbase = "Financial_Securities"     # Define the name of the database
-
-        username = os.getlogin()
-        external_folder_path = 'C:/Users/' + username + '/Documents/Projects/Financial_Securities/Custom_Python_Functions'
-        sys.path.append(external_folder_path)
-        from custom_python_functions import create_connection, clear_table
-
-
-        # Create a connection to the database
-        s, e = create_connection(comp, dbase, "", "")
-        s1 = s()  # Instantiate a session object
 
         # SQL query to select values and trim description field from the Data_STG table
         sql_stat = """SELECT 
@@ -389,7 +492,7 @@ This process will load the *Industries* table with Sub_Industry data and Industr
 
 ## Stage Equities data: *[Load-Equities_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Equities_STG.ipynb)*
 
-We load the file *SP500_GICS_Combined.csv* that we merged with all Equity data as long as the tickers matches the tickers found in the *SP500_Equities_Prices.csv* file. The last row in the *SP500_Equities_Prices.csv* file is removed as there are usually comments at the end of the data from Barchart. We compare the 2 sources to ensure we have the latest valid list of S&P500 tickers. If the tickers are valid, we keep the Ticker, Name and Sub_Industry_ID records from *SP500_GICS_Combined.csv*. We then load the data into the *Data_STG* table.
+We load the file *SP500_GICS_Combined.csv* that we merged with all Equity data if the tickers match the tickers found in the *SP500_Equities_Prices.csv* file. The last row in the *SP500_Equities_Prices.csv* file is removed as there are usually comments at the end of the data from Barchart. We compare the 2 sources to ensure we have the latest valid list of S&P500 tickers. If the tickers are valid, we keep the Ticker, Name and Sub_Industry_ID records from *SP500_GICS_Combined.csv*. We then load the data into the *Data_STG* table.
 
 ## Load Equities data: *[Load-Equities.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Equities.ipynb)* 
 
@@ -406,7 +509,7 @@ For this process, we'll go into some new types of code. We will import the packa
         import pandas as pd
         import yfinance as yf
         import time
-
+        
         Base = sa.orm.declarative_base()
 
         class Data_STG(Base):
@@ -459,12 +562,12 @@ Next, we'll use the Tickers we have loaded in the Equities table and store them 
                 s1.close()
                 raise
 
-We then call the custom function *get_dates_for_years* function for 3 years back from the current year and 0 years forward in order to use dates to fetch the last 4 years of pricing data.
+We then call the custom function *get_dates_for_years* function for 3 years back from the current year and 0 years forward to use dates to fetch the last 4 years of pricing data.
 
             # Generate the date range of 3 years back as of yesterday
             start_date, end_date = get_dates_for_years(3, 0)
 
-Next, we define a function to get the pricing data from Yahoo Finance API for the ticker, start_date and end_date we pass. Closing prices simply refer to the cost of shares at the end of the day, whereas adjusted closing prices take dividends, stock splits, and new stock offerings into account. For more information on this, refer to this link: [Adjusted Closing Price: How It Works, Types, Pros & Cons](https://www.investopedia.com/terms/a/adjusted_closing_price.asp). For our analysis, we only want prices that are influenced by buyers and sellers, so we want to retrieve adjusted prices. In order to make sure all prices are adjusted, we retrieve the Open, High, Low and Close prices and divide all the prices by the *Factor = Close / Adj Close*. Some stocks have multiple classes and so those tickers will have a suffix of class A, B or C. For more information on this, refer to this link: [Dual Class Stock: Definition, Structure, and Controversy](https://www.investopedia.com/terms/d/dualclassstock.asp). For those cases, the ticker notation may have a "." or "-" or "/" denoting the suffix. Our multi-class Equity tickers were suffixed using "." and Yahoo Finance uses "-" so we will replace the string for thos cases when calling the API funtion. Finally, we check if all the tickers were fetched from our ticker list.
+Next, we define a function to get the pricing data from Yahoo Finance API for the ticker, start_date and end_date we pass. Closing prices simply refer to the cost of shares at the end of the day, whereas adjusted closing prices take dividends, stock splits, and new stock offerings into account. For more information on this, refer to this link: [Adjusted Closing Price: How It Works, Types, Pros & Cons](https://www.investopedia.com/terms/a/adjusted_closing_price.asp). For our analysis, we only want prices that are influenced by buyers and sellers, so we want to retrieve adjusted prices. To to make sure all prices are adjusted, we retrieve the Open, High, Low and Close prices and divide all the prices by the *Factor = Close / Adj Close*. Some stocks have multiple classes and so those tickers will have a suffix of class A, B or C. For more information on this, refer to this link: [Dual Class Stock: Definition, Structure, and Controversy](https://www.investopedia.com/terms/d/dualclassstock.asp). For those cases, the ticker notation may have a "." or "-" or "/" denoting the suffix. Our multi-class Equity tickers were suffixed using "." and Yahoo Finance uses "-" so we will replace the string for thos cases when calling the API function. Finally, we check if all the tickers were fetched from our ticker list.
 
 
         def create_daily_pricing(ticker, start_date, end_date):
@@ -516,7 +619,7 @@ Next, we define a function to get the pricing data from Yahoo Finance API for th
         else:
             print(f"All {len(ticker_list)} records were fetched!")
 
-We will then loop through our Tickers in our ticker list and store our pricing data using our create_daily_pricing function in the df_equities dataframe. We allow 1 second to pass using the sleep function from the time package before fetching each Ticker data to avoid any API rate limits. This will take some time to run in order to fetch pricing history for roughly 500 Tickers.
+We will then loop through our Tickers in our ticker list and store our pricing data using the create_daily_pricing function in the df_equities dataframe. We allow 1 second to pass using the sleep function from the time package before fetching each Ticker data to avoid any API rate limits. This will take some time to run to fetch pricing history for roughly 500 Tickers.
 
         # Initialize variables for processing
         first_ticker = True
@@ -538,7 +641,7 @@ We will then loop through our Tickers in our ticker list and store our pricing d
 
         print("Pricing data fetch is complete")
       
-We load the data into Data_STG and raise an exception to halt further processing if there are any issues so that we ensure all thepricing data is loaded.
+We load the data into Data_STG and raise an exception to halt further processing if there are any issues so that we ensure all the pricing data is loaded.
 
         # Insert the data into the Data_STG table
         for index, row in df_equities.iterrows():
@@ -592,7 +695,7 @@ And finally, we check if all records were loaded in the *Data_STG* table and clo
 
 ## Load Market Calendar data: *[Load-US_Market_Calendar.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-US_Market_Calendar.ipynb)*
 
-To determine if there is missing Equity pricing data for any Ticker for the same range of dates, we need to validate it against US market dates. We can retrieve the calendar from any global Stock exchange from [Pandas Market Calendars](https://pandas-market-calendars.readthedocs.io/en/latest/) which should serve our purpose. After we install pandas_market_calendars, we can import it along with other needed packages. For the purpose of this project, we'll fetch 3 years back and 6 years forward for the calendar. Let's define a function called *get_market_calendar* using the exchange, start_date, end_date and timezone paramaters that returns a dataframe. We will then call the function using the *NYSE* stock exchange with our date range and using the *America/New_York* timezone.
+To determine if there is missing Equity pricing data for any Ticker for the same range of dates, we need to validate it against US market dates. We can retrieve the calendar from any global Stock exchange from [Pandas Market Calendars](https://pandas-market-calendars.readthedocs.io/en/latest/) which should serve our purpose. After we install pandas_market_calendars, we can import it along with other needed packages. For this project, we'll fetch 3 years back and 6 years forward for the calendar. Let's define a function called *get_market_calendar* using the exchange, start_date, end_date and timezone paramaters that returns a dataframe. We will then call the function using the *NYSE* stock exchange with our date range and using the *America/New_York* timezone.
 
         import datetime as dt
         import sqlalchemy as sa
@@ -640,7 +743,7 @@ To determine if there is missing Equity pricing data for any Ticker for the same
             # Fetch the calendar data for the NYSE
             df_dates = get_calendar('NYSE', start_date, end_date, 'America/New_York')
 
-Once we create a database connection, we will declare our *Market_Calendar* table. We will load the data directly into the table as this is a one time load with respect to any future projects.
+Once we create a database connection, we will declare our *Market_Calendar* table. We will load the data directly into the table as this is a one-time load with respect to any future projects.
 
         Base = sa.orm.declarative_base()
 
@@ -869,34 +972,4 @@ And lastly, we validate if all the records have been loaded and close the sessio
             print(f"All {cnt_recs2} records were loaded into Yahoo_Equity_Prices database table!") 
 
         s1.close()  # Close the session
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
