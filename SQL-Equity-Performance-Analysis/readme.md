@@ -2,7 +2,7 @@
 
 ## Create Equity Yearly Price View: *[Create-VW_Yahoo_Equity_Year_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-VW_Yahoo_Equity_Year_Prices-View.sql)*
 
-Let's start by doing some analysis on yearly pricing data. We can aggregate the data in the *Yahoo_Equity_Prices* table and create a view called *VW_Yahoo_Equity_Year_Prices* that we will use in the project. Here we make use of various **WINDOW functions** to capture the **last date** of the year by Ticker using **MAX**. The *Date* for yearly data will be represented by the **last date**. We'll get the 1st Open price by Ticker and year as *"Open"* using **FIRST_VALUE**, the highest High price by Ticker and year as *"High"* using **MAX**, the lowest Low price by Ticker and year as *"Low"* using **MIN**, the last Close price by Ticker and year as *"Close"* using **LAST_VALUE**, and the last Volume by Ticker and year as *"Volume"* using **LAST_VALUE**. We group the data using **PARTITION BY** Ticker_ID and Year, **ORDER BY** date and use **UNBOUNDED PRECEDING and UNBOUNDED FOLLOWING** clauses to scan and all the rows within the year. In doing so, duplication of our desired output wiil occur for all the records by year by ticker and in order to produce unique values, we can use **ROW_NUMBER**() as *Row_Num* and query for *Row_Num = 1*.
+Let's start by doing some analysis on yearly pricing data. We can aggregate the data in the *Yahoo_Equity_Prices* table and create a view called *VW_Yahoo_Equity_Year_Prices* that we will use in the project. Here we make use of various **WINDOW functions** to capture the **last date** of the year by Ticker using **MAX**. The *Date* for yearly data will be represented by the **last date**. We'll get the 1st Open price by Ticker and year as *"Open"* using **FIRST_VALUE**, the highest High price by Ticker and year as *"High"* using **MAX**, the lowest Low price by Ticker and year as *"Low"* using **MIN**, the last Close price by Ticker and year as *"Close"* using **LAST_VALUE**, and the last Volume by Ticker and year as *"Volume"* using **LAST_VALUE**. We group the data using **PARTITION BY** Ticker_ID and Year, **ORDER BY** date and use **UNBOUNDED PRECEDING and UNBOUNDED FOLLOWING** clauses to scan and all the rows within the year. In doing so, duplication of our desired output will occur for all the records by year by ticker and to produce unique values, we can use **ROW_NUMBER**() as *Row_Num* and query for *Row_Num = 1*.
 
 	CREATE VIEW [Equities].[VW_Yahoo_Equity_Year_Prices] AS
 	WITH q1 AS
@@ -94,7 +94,7 @@ We can observe that in the past 4 years, **MSFT** had the lowest return of **-28
 
 ## Create Equity Yearly Price View: *[Create-VW_Yahoo_Equity_Quarter_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-VW_Yahoo_Equity_Quarter_Prices-View.sql)*
 
-We create a Quarterly Returns function similar to the logic in the Yearly Returns function but based on Year and Quarter.
+We create a Quarterly Returns function like the logic in the Yearly Returns function but based on Year and Quarter.
 
 ## Quarterly Ticker % Return Query Function: *[Create-FN_Yahoo_Ticker_Quarter_Returns.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-FN_Yahoo_Ticker_Quarter_Returns.sql)*
 
@@ -106,12 +106,12 @@ Let's now examine Quarter returns for **MSFT** to see if we can identify the rea
 
  ![MSFT_Quarterly_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Returns_Data.jpg?raw=true)
 
- We can observe **MSFT** had **3 Quarters** in **2023** with high returns of roughly **18% to 20%** which impacted to the high return of **58.19%** in **2023**. And we had low returns in the **1st** and **3rd Quarter** of **2022** and a significant return of **-16.5%** in the **2nd Quarter** of **2022**. This impacted the low return of **-28.02%** in **2022**.
+We can observe **MSFT** had **3 Quarters** in **2023** with high returns of roughly **18% to 20%** which impacted to the high return of **58.19%** in **2023**. And we had low returns in the **1st** and **3rd Quarter** of **2022** and a significant return of **-16.5%** in the **2nd Quarter** of **2022**. This impacted the low return of **-28.02%** in **2022**.
 
 
 ## Quarterly Ticker % Return by Year Statistics Query Function: *[Create-FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Create-FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics.sql)*
 
-Now let’s explore some statistical measures in SQL using Quarterly Returns. One statisitical measure, called the **Median**, does not have a direct function in SQL Server. For more information on the Meidan, refer to this link: [Median: What It Is and How to Calculate It, With Examples](https://www.investopedia.com/terms/m/median.asp). Let's derive the Median Quarterly Return by year for the Ticker that is specified. We can use the concept of counting how many Quarters exist in a given year and if there are an even number of Quarters, we retrieve the 2 middle rows and if there is an odd number of Quarters, we retrieve the singular middle row. We then apply the average which works in both cases to the find the Median. We can also retrieve the lowest Quarterly Return, the highest Quarterly Return, average Quarterly Return, median Quarterly return and Quarterly return variance for a Ticker specified combining Yearly returns with Quarterly Returns, calculating the Median using the logic we explored and using the built-in SQL aggregate functions:  **MIN**, **MAX**, **AVG** and **STDEVP** (standard deviation). Here is the complex query that will produce the Quarterly Return Statistics by Year.
+Now let’s explore some statistical measures in SQL using Quarterly Returns. One statistical measure, called the **Median**, does not have a direct function in SQL Server. For more information on the Median, refer to this link: [Median: What It Is and How to Calculate It, With Examples](https://www.investopedia.com/terms/m/median.asp). Let's derive the Median Quarterly Return by year for the Ticker that is specified. We can use the concept of counting how many Quarters exist each year and if there are an even number of Quarters, we retrieve the 2 middle rows and if there is an odd number of Quarters, we retrieve the singular middle row. We then apply the average which works in both cases to the find the Median. We can also retrieve the lowest Quarterly Return, the highest Quarterly Return, average Quarterly Return, median Quarterly return and Quarterly return variance for a Ticker specified combining Yearly returns with Quarterly Returns, calculating the Median using the logic we explored and using the built-in SQL aggregate functions:  **MIN**, **MAX**, **AVG** and **STDEVP** (standard deviation). Here is the complex query that will produce the Quarterly Return Statistics by Year.
 
 	CREATE OR ALTER FUNCTION [Equities].[FN_Yahoo_Ticker_Quarter_Returns_by_Year_Statistics](@input nchar(10))
 	RETURNS TABLE
@@ -201,7 +201,7 @@ Let's find out what the lowest Quarterly Return, the highest Quarterly Return, a
 
 ![MSFT_Quarterly_Return_by_Year_Statistics_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/MSFT_Quarterly_Return_by_Year_Statistics_Data.jpg?raw=true)
 
-Looking at **2022**, the average quarterly return was **-7.63%** which is higher than the median quarterly return of **-8.64%** and we can see that the positive **3.26%** highest return in Q4 had an impact. The highest variance appears to be in **2023** at **11.5%** and we can see a very high Median of **18.86%** is close the highest return of **20.51%** indicating that there were Quarters that had returns that were much much lower. We can see that the lowest negative return of **-7.08%** in Q3 had a strong impact on variance from the average.
+Looking at **2022**, the average quarterly return was **-7.63%** which is higher than the median quarterly return of **-8.64%** and we can see that the positive **3.26%** highest return in Q4 had an impact. The highest variance appears to be in **2023** at **11.5%** and we can see a very high Median of **18.86%** is close the highest return of **20.51%** indicating that there were Quarters that had returns that were much lower. We can see that the lowest negative return of **-7.08%** in Q3 had a strong impact on variance from the average.
 
 ## Yearly Equity Return Ranking Query: *[Yearly-Equity-Return-Ranking-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Equity-Return-Ranking-Query.sql)*
 
@@ -241,7 +241,7 @@ We see that **NVDA** is in the top 5 in all 5 years except 2022. **SMCI** and **
 
 ## Yearly Equity Return Percentile Query: *[Yearly-Equity-Return-Percentile-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Equity-Return-Percentile-Query.sql)*
 
-We can also look at bucketing yearly performance in percentiles using the **NTILE** WINDOW function. The top perfrorming stocks would be in the highest percentile (100) and worst performing stocks would be in the lowest percentile (1). Let's query stocks from the S&P 500 that were in the 100th percentile.
+We can also look at bucketing yearly performance in percentiles using the **NTILE** WINDOW function. The top performing stocks would be in the highest percentile (100) and worst performing stocks would be in the lowest percentile (1). Let's query stocks from the S&P 500 that were in the 100th percentile.
 
 		WITH q1 AS
 		   (SELECT
@@ -273,11 +273,11 @@ We can also look at bucketing yearly performance in percentiles using the **NTIL
 
 ![SP500_Equity_100th_Percentile_Returns_by_Year_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_100th_Percentile_Returns_by_Year_Data.jpg?raw=true)
 
-Because we are bucketing in 100 different ranges depending how the returns are dispersed, you may get a different ranking range. For 2021 and 2022, we only got 4 stocks in the top 100th percentile. This time around, **NVDA** appeared 2 out of 4 years,  **CEG** apeared 2 out of 4 years and **SMCI** appears once.
+Because we are bucketing in 100 different ranges depending how the returns are dispersed, you may get a different ranking range. For 2021 and 2022, we only got 4 stocks in the top 100th percentile. This time around, **NVDA** appeared 2 out of 4 years, **CEG** appeared 2 out of 4 years and **SMCI** appears once.
 
 ## Equity Cumulative Return Rank Query: *[Equity-Cumulative-Return-Rank-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Equity-Cumulative-Return-Rank-Query.sql)*
 
-Comparing simple returns by year by Ticker gives you a good idea of which stocks performed the best at the end of the year. And if we want to compare stocks across a longer timeframe, we could calculate the simple returns for all 4 years. But what if we did not have prices but only had returns? We could not add these simple returns to capture a total. We could use geometric mean but the simplest way is could to use **Log Returns** since they are **additive**. This basically captures the compounding effect and gives a more accurate picture of long-term performance. Also, with simple returns, periods of high volatility with large positive or negative returns can skew the perception of a stock’s performance at a certain point in time. With log returns, we can capture volatility and risk much better. Let’s explore using daily log returns to capture the cumulative returns over the past 4 years. The cumulative returns are calculated by subtracting 1 from the exponential of the sum of all the log returns for a stock. Let’s do this in SQL using the LOG, SUM and EXP functions.
+Comparing simple returns by year by Ticker gives you a good idea of which stocks performed the best at the end of the year. And if we want to compare stocks across a longer timeframe, we could calculate the simple returns for all 4 years. But what if we did not have prices but only had returns? We could not add these simple returns to capture a total. We could use geometric mean but the simplest way is to use **Log Returns** since they are **additive**. This basically captures the compounding effect and gives a more accurate picture of long-term performance. Also, with simple returns, periods of high volatility with large positive or negative returns can skew the perception of a stock’s performance at a certain point in time. With log returns, we can capture volatility and risk much better. Let’s explore using daily log returns to capture the cumulative returns over the past 4 years. The cumulative returns are calculated by subtracting 1 from the exponential of the sum of all the log returns for a stock. Let’s do this in SQL using the LOG, SUM and EXP functions.
 
 	WITH q1 AS
 	(SELECT
@@ -319,7 +319,7 @@ Comparing simple returns by year by Ticker gives you a good idea of which stocks
 
 ![SP500_Equity_Top_10_Cumulative_Returns_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Cumulative_Returns_Data.jpg?raw=true)
 
-Here we see that **SMCI** had the highest cumulative return across the span of 4 years even though **NVDA** was in the top 5 performing stock using simple returns in most years. Of course, cumulative returns don't take into account any drawdowns that could have occured on a monthly, quarterly or yearly basis. Usually, the best performing stocks come with a risk to volatility and it's a price to pay for higher returns over time. What's interesting is the **LLY** appear in the top 10 cumulative returns but did not appear in the top 5 in any of the past 4 years. This indicates that **LLY** was trending with less volatility than the top perfroming stocks.
+Here we see that **SMCI** had the highest cumulative return across the span of 4 years even though **NVDA** was in the top 5 performing stock using simple returns in most years. Of course, cumulative returns don't consider any drawdowns that could have occurred on a monthly, quarterly or yearly basis. Usually, the best performing stocks come with a risk to volatility and it's a price to pay for higher returns over time. What's interesting is the **LLY** appear in the top 10 cumulative returns but did not appear in the top 5 in any of the past 4 years. This indicates that **LLY** was trending with less volatility than the top performing stocks.
 
 
 
