@@ -1,15 +1,13 @@
 # Data Warehouse Creation File Description
 
-For this project, we will use an **SQL Server** database. The sql file described below will create database objects in our small **Data Warehouse** using a **Snowflake schema**. For more information on Snowflake schemas, you can reference this site: [Snowflake Schema in Data Warehouse Model](https://www.geeksforgeeks.org/snowflake-schema-in-data-warehouse-model/). I will describe what the purpose of each step is going forward. 
+For this project, we will use an **Azure SQL database**. You will need a Microsoft account to log into the Azure portal: [Microsoft Azure](https://portal.azure.com/) and create an Azure Subscription. You will need to create a **Resource Group** and we can call it **FINSEC**. To create a resource for the database, we’ll search for “Azure SQL” and create a **DTU (Database Transaction Unit)** model with a **Standard Service Tier** with 250G of storage. Azure will then prompt you to create a new **SQL Server resource** and specify a server name, admin username and password and region. For this project, I set up a **server name** as **danvuk**. After setting up the server, you will need to configure the database resource which we can name **Financial_Securities**. Our resource group now has 2 resources, the server and the database. For more information on working with Azure, this link provides some great demo videos: [Getting Started with Azure demo series](https://azure.microsoft.com/en-us/get-started/on-demand/)
 
 Equities fall into a type of business and although every business is unique, businesses can be grouped and classified with similar criteria as industries such as manufacturing, retail, financial services etc. The most common Industry classification is the **Global Industry Classification Standard (GICS)** which is also used by S&P Indices. There are 4 levels of GICS industry classification: **Sector**, **Industry Group**, **Industry** and **Sub-Industry**. For more information on GICS industry classification, refer to these official websites: [The Global Industry Classification Standard](https://www.msci.com/our-solutions/indexes/gics) and [GICS: Global Industry Classification Standard](https://www.spglobal.com/spdji/en/landing/topic/gics/). In order to aggregate and analyze data at higher levels, we can create these Dimension tables using some of the **DDL** statements described below. These tables will be part of a relational hierarchy that is linked to the *Equities* **Dimension table** that stores the unique information for our S&P 500 Equities. Below are the steps described in the sql file: 
 
 
 ## *[Create-Data-Warehouse-Objects.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects/Create-Data-Warehouse-Objects.sql)*  
 
-These DDL statements will create the database called *Financial_Securities* which will house the Financial Securities data. It will also create a schema called *Equities* which is the type of Financial Securities we will be focusing on.
-
-    CREATE DATABASE Financial_Securities;
+This DDL statement will create a schema called *Equities* in the *Financial_Securities* database focused on the type of Financial Securities we will be working with.
 
     CREATE SCHEMA Equities;
 
