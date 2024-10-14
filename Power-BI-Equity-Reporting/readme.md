@@ -24,19 +24,21 @@ Our Yearly Pricing Chart is defined a **Line Chart** with *Year* on the *X-Axis*
 
   Ticker_Label = [Ticker] & " - " & [Name]
    
-![Power_BI_Pricing_Tickers_Slicer.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Tickers_Slicer.jpg?raw=true)
+![Power_BI_Year_Pricing_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Year_Pricing_Line_Chart.jpg?raw=true)
 
 Our Quarterly Pricing Chart is defined a **Line Chart** with *Quarter* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Quarter* table. We incorporate *Date*, *Open*, *High*, *Low* and *Volume* in the *Tooltips*. We'll use *Ticker_Label* from the *Equities* table in the *Legend*.
 
-![Power_BI_Pricing_Tickers_Slicer.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Tickers_Slicer.jpg?raw=true)
+![Power_BI_Quarter_Pricing_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Quarter_Pricing_Line_Chart.jpg?raw=true)
 
 Our Monthly Pricing Chart is defined a **Line Chart** with *Date* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Month* table. We incorporate *Date*, *Open*, *High*, *Low* and *Volume* in the *Tooltips*. We'll also use *Ticker_Label* from the *Equities* table in the *legend*. And we incorporate the *Month Short* column from the *Equity_Prices_by_Month* table in the *Tooltips* which is defined as:
 
   Month Short = FORMAT([Date], "MMM")
 
+![Power_BI_Month_Pricing_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Month_Pricing_Line_Chart.jpg?raw=true)
+
 Our Daily Pricing Chart is defined a **Line Chart** with *Date* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices* table. We incorporate *Open*, *High*, *Low* and *Volume* in the *Tooltips*. We'll also use *Ticker_Label* from the *Equities* table in the *legend*.
 
-![Power_BI_Pricing_Tickers_Slicer.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Tickers_Slicer.jpg?raw=true)
+![Power_BI_Daily_Pricing_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Daily_Pricing_Line_Chart.jpg?raw=true)
   
 
 
