@@ -40,7 +40,28 @@ Our Daily Pricing Chart is defined as a **Line Chart** with *Date* on the *X-Axi
 
 ![Power_BI_Daily_Pricing_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Daily_Pricing_Line_Chart.jpg?raw=true)
   
-To display Yearly Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the 
+To display Yearly Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Yearly metrics *YearLastDate*, *YearLastOpen*, *YearLastHigh*, *YearLastLow* and *YearLastVolume* from the *Equity_Prices_by_Year* table.
+
+![Power_BI_Year_Pricing_Multi_Row_Card_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Year_Pricing_Multi_Row_Card_Chart.jpg?raw=true)
+
+To display Quarterly Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Quarterly metrics *QuarterLastDate*, *QuarterLastOpen*, *QuarterLastHigh*, *QuarterLastLow* and *QuarterLastVolume* from the *Equity_Prices_by_Quarter* table.
+
+![Power_BI_Quarter_Pricing_Multi_Row_Card_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Quarter_Pricing_Multi_Row_Card_Chart.jpg?raw=true)
+
+To display Monthly Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Monthly metrics *MonthLastDate*, *MonthLastOpen*, *MonthLastHigh*, *MonthLastLow* and *MonthLastVolume* from the *Equity_Prices_by_Month* table.
+
+![Power_BI_Month_Pricing_Multi_Row_Card_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Month_Pricing_Multi_Row_Card_Chart.jpg?raw=true)
+
+To display Daily Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Daily metrics *LastDate*, *LastOpen*, *LastHigh*, *LastLow* and *LastVolume* from the *Equity_Pricesh* table.
+
+![Power_BI_Daily_Pricing_Multi_Row_Card_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Daily_Pricing_Multi_Row_Card_Chart.jpg?raw=true)
+
+
+
+
+
+
+
 
    
 
