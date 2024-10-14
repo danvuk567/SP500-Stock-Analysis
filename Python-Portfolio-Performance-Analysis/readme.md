@@ -106,7 +106,7 @@ Let's define a function called *calculate_portfolio_return* which will calculate
             return df_tmp  # Return the modified DataFrame
 
 
-If we want to see how the returns are distributed for a particular Ticker, we can plot it as a **Histogram** using the **matplotlib** package. This function called *plot_return_histogram* will plot a Histogram and calculate the number of bins based on the **Freedman-Diaconis rule** that uses quartile range. For more information on this rule. refer to this link: [Freedman–Diaconis rule](https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule). We can also compare how the returns measure up against all the returns that are normalized and plotted as a line representing a **Normal Distribution**. The **scipy** package would need to be imported. Another line can be drawn that can smooth the Ticker return bins using the **Gaussion KDE (Kernel Density Estimation) function** from the scipy package. For more informtion on this, refer to this link: [Kernel density estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation). The *plot_return_histogram* function takes the return dataframe, return type and security class type value as input parameters.
+If we want to see how the returns are distributed for a particular Ticker, we can plot it as a **Histogram** using the **matplotlib** package. This function called *plot_return_histogram* will plot a Histogram and calculate the number of bins based on the **Freedman-Diaconis rule** that uses quartile range. For more information on this rule. refer to this link: [Freedman–Diaconis rule](https://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule). We can also compare how the returns measure up against all the returns that are normalized and plotted as a line representing a **Normal Distribution**. The **scipy** package would need to be imported. Another line can be drawn that can smooth the Ticker return bins using the **Gaussion KDE (Kernel Density Estimation) function** from the scipy package. For more information on this, refer to this link: [Kernel density estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation). The *plot_return_histogram* function takes the return dataframe, return type and security class type value as input parameters.
 
 
     from scipy.stats import norm, gaussian_kde
@@ -415,7 +415,7 @@ If we want to see how the returns are correlated, we can use the **Pearson corre
 
 ## Portfolio Performance Analysis: *[Portfolio-Performance-Analysis.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-Portfolio-Performance-Analysis/Portfolio-Performance-Analysis.ipynb)*
 
-Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment portfolio. We will import the necessary packages, connect to the database, query the database for our pricing data bind it to the         df_pricing dataframe. Before we proceed any futher, we want to focus on stocks that existed from the start of the 4 year data we stored so that any aggregated return comparison is not skewed by newer stocks that         were traded later on.
+Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment portfolio. We will import the necessary packages, connect to the database, query the database for our pricing data bind it to the df_pricing dataframe. Before we proceed any further, we want to focus on stocks that existed from the start of the 4 year data we stored so that any aggregated return comparison is not skewed by newer stocks that were traded later on.
 
         # Determine the first date for each ticker
         first_dates = df_pricing.groupby('Ticker')['Date'].min().reset_index()
@@ -448,7 +448,7 @@ Let's go ahead and analyze a basket of stocks from the S&P 500 as an investment 
 
 We originally had **503** Tickers and now we have **496** Tickers that we will work with to create a portfolio.    
 
-Let's say we want to determine what the top 10 stocks are for the 1st 2 years (2021 to 2022) based on Annualize Sortino Retio. First, We can do this calculating the returns, using a risk free rate of 1.5 which is roughly average at the time and then rank the top 10.
+Let's say we want to determine what the top 10 stocks are for the 1st 2 years (2021 to 2022) based on Annualize Sortino Ratio. First, We can do this calculating the returns, using a risk-free rate of 1.5 which is roughly average at the time and then rank the top 10.
 
         two_years_after_min_date = min_valid_first_date + pd.DateOffset(days=(365)*2)
         two_years_after_min_date_str = two_years_after_min_date.strftime('%Y-%m-%d')
@@ -565,7 +565,7 @@ What would happen if we invested in the top 10 Annualized Sortino Ratio Tickers 
 
 ![SP500_Portfolio_Annualized_Sortino_Ratio_Python2.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Annualized_Sortino_Ratio_Python2.jpg?raw=true)
 
-It turns out that our portfolio is not in the top 10 Annualized Sortino Ratio for the past 2 year returns.
+It turns out that our portfolio is not in the top 10 Annualized Sortino Ratio for the past 2-year returns.
 
 After using percentile ranking logic, we determined that in fact, our portfolio was in the 70th percentile which is not bad but not ideal.
 
@@ -585,7 +585,7 @@ Let's use a **Histogram** plot using our custom function *plot_return_histogram*
 
 ![SP500_Portfolio_Histogram_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Histogram_Chart_Python.jpg?raw=true)
 
-Our portfolio **PFL** has a shape that is more narrow and longer with less fatter tails than the normal distribution of the S&P 500 Tickers. The portfolio has a higher frequency of small negative returns between 0% and -1% but also has a higher frequency of small positive returns of 0% to 1.5%.
+Our portfolio **PFL** has a shape that is narrower and longer with less fatter tails than the normal distribution of the S&P 500 Tickers. The portfolio has a higher frequency of small negative returns between 0% and -1% but also has a higher frequency of small positive returns of 0% to 1.5%.
 
 Another way to view our portfolio returns compared to the broader market is to use a benchmark. We can calculate the returns for all Tickers as a portfolio and define it as the benchmark labelled **BM**. We then plot the Portfolio **PFL** and benchmark **BM** Cumulative % Returns in a **Line Chart** using our custom function *plot_returns_line_chart*.
 
@@ -607,14 +607,14 @@ Looking at a **Box Plot** using our custom function *plot_period_returns_by_tick
     
 ![SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Portfolio_Benchmark_Returns_Box_Chart_Python.jpg?raw=true)
 
-From the persepctive of risk vs. return alpha for our portfolio vs. the broader market, we can calculate the **Information Ratio** using our custom function *calculate_information_ratio*.
+From the perspective of risk vs. return alpha for our portfolio vs. the broader market, we can calculate the **Information Ratio** using our custom function *calculate_information_ratio*.
 
     information_ratio = calculate_information_ratio(df_ret_after_second_year_comb2, 'Ticker', 'PFL', 'BM')
     print(f'Information Ratio: {information_ratio}')
 
 We get **Information Ratio: -0.0** which means there is no real alpha and confirms a lot of the observations we have made from the last **Line Chart** and the **Box Plot**.
 
-Finally, let's explore the monthly smple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the **Correlation Matrix**.
+Finally, let's explore the monthly simple returns for our portfolio and look at the correlations of each Ticker. We'll use our custom function *plot_ticker_correlations* to plot the **Correlation Matrix**.
 
     df_pricing_mth = get_pricing_data(df_pricing_filtered.copy(), 'Month')
     date_filter3 = (df_pricing_mth['Date'] >= two_years_after_min_date_str)
