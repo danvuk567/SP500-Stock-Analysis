@@ -32,7 +32,7 @@ Our Quarterly Pricing Chart is defined as a **Line Chart** with *Quarter* on the
 
 Our Monthly Pricing Chart is defined as a **Line Chart** with *Date* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Month* table. We incorporate *Date*, *Open*, *High*, *Low* and *Volume* in the *Tooltips*. We'll also use *Ticker_Label* from the *Equities* table in the *legend*. And we incorporate the *Month Short* column from the *Equity_Prices_by_Month* table in the *Tooltips* which is defined as:
 
-  Month Short = FORMAT([Date], "MMM")
+      Month Short = FORMAT([Date], "MMM")
 
 ![Power_BI_Month_Pricing_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Month_Pricing_Line_Chart.jpg?raw=true)
 
