@@ -1,6 +1,6 @@
 # Power BI Equity Reporting
 
-## Python packages needed for the project
+## Equity Hierarchical Dimension Slicers
 
 For the 1st report tab, we'll focus on building Pricing data visuals. 
 We start by building a **Slicer** using *Sector* from the *Sectors* table and define the *Style* as *Tile*.
