@@ -2,7 +2,7 @@
 
 ## Equity Hierarchical Dimension Slicers
 
-For the 1st report tab, we'll focus on building Pricing data visuals. 
+For the 1st report tab called *S&P 500 Equity Pricing*, we'll focus on building Pricing data visuals. 
 We start by building a **Slicer** using *Sector* from the *Sectors* table and define the *Style* as *Tile*.
 This will allow us to choose Equities from a particular Sector.
 
@@ -55,6 +55,10 @@ To display Monthly Pricing data for the last Date, we'll use a **Mulit-row Card*
 To display Daily Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Daily metrics *LastDate*, *LastOpen*, *LastHigh*, *LastLow* and *LastVolume* from the *Equity_Pricesh* table.
 
 ![Power_BI_Daily_Pricing_Multi_Row_Card_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Daily_Pricing_Multi_Row_Card_Chart.jpg?raw=true)
+
+Here is the final version of the *S&P 500 Equity Pricing* report tab:
+
+![Power_BI_Equity_Report_1st_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_1st_tab.jpg?raw=true)
 
 
 
