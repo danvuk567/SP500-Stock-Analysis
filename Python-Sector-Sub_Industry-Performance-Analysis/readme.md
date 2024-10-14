@@ -4,7 +4,7 @@ Let's do some analysis on a Sectors and Sub-Industries. We will also be adding a
 
 ## Modify custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom-Python-Functions/custom_python_functions.py)*
 
-Let's define a function called *scatter_plot* which will plot a **Scatter Plot** of the our returns. It usese the **matplotlib** and **sklearn** packages, and draws a **Regression Line** to predict future outcomes. The function requires a returns dataframe and return type as input parameters.
+Let's define a function called *scatter_plot* which will plot a **Scatter Plot** of the returns. It uses the **matplotlib** and **sklearn** packages and draws a **Regression Line** to predict future outcomes. The function requires a returns dataframe and return type as input parameters.
 
         def scatter_plot(df_tmp, return_type):
 
@@ -57,7 +57,7 @@ Let's look out how many unique Sectors, Industry Groups, Indistries and Sub-Indu
 
 There are 11 Sectors, 25 Industry Groups, 68 Industries and 127 Sub-Industries that we have pricing data for.
 
-How may Tickers exist by Sector? How many have positive Cumulative % Returns? How many have negative Cumulative % Returns? Let's calculate the returns and aggregate the results.
+How many Tickers exist by Sector? How many have positive Cumulative % Returns? How many have negative Cumulative % Returns? Let's calculate the returns and aggregate the results.
 
          df_ret = calculate_return(df_pricing.copy(), 'Daily')
          df_ret.sort_values(by=['Ticker', 'Date'], inplace=True)
@@ -107,7 +107,7 @@ Now, let's look at Cumulative % Return, Annualized % Return, Annualized Volatili
 
 ![SP500_GICS_Sector_Returns_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Sector_Returns_Python.jpg?raw=true)
 
-We can see that the **Communication Services** Sector had the lowest Annualized % Return of **-1.50%**. The **Consumer Staples** Sector has the lowest Annualized Volatility at **14.32%**. Consumer Staples stocks are not growth stocks and are usually a safe haven during economic downturns and/or used for more consistent returns and dividends. That is why they don't typically reflect high volatility. Over the past 4 years, the economy exhibited resiliance and periods of strong growth causing stronger investments in other Sectors. We see that the **Energy** Sector had the highest Annualized % Return of **26.72%** but came at a cost of highest Annualized Downside Volatility of **21.90%**. The Energy Sector is often subject to significant discrepancies in supply and demand for oil and gas, leading to volatile price fluctuations, particularly during economic downturns or geopolitical risks.
+We can see that the **Communication Services** Sector had the lowest Annualized % Return of **-1.50%**. The **Consumer Staples** Sector has the lowest Annualized Volatility at **14.32%**. Consumer Staples stocks are not growth stocks and are usually a safer haven during economic downturns and/or used for more consistent returns and dividends. That is why they don't typically reflect high volatility. Over the past 4 years, the economy exhibited resilience and periods of strong growth causing stronger investments in other Sectors. We see that the **Energy** Sector had the highest Annualized % Return of **26.72%** but came at a cost of highest Annualized Downside Volatility of **21.90%**. The Energy Sector is often subject to significant discrepancies in supply and demand for oil and gas, leading to volatile price fluctuations, particularly during economic downturns or geopolitical risks.
 
 We can show the Sector Cumulative % Return impact in a **Bubble Chart** using our custom function *plot_returns_bubble_chart*.
 
@@ -123,7 +123,7 @@ Let's plot the Cumulative % Returns by Sector in a **Line Chart** to show how th
 
  The **Energy** Sector clearly outperformed all Sectors but also experiencing a number of large drawdowns clearly exhibiting high volatility.
 
-Let's now take a look at determining how a Sector is trending over the past 4 years. We can plot a **Linear Regression** line using the Cumulative % Returns and plot it on a **Line Chart**. The steeper the slope, the stronger the positive or negative trend. We'll use our custom function *scatter_plot* to plot a **Scatter Plot** and regression line for the **Communication Services** Sector.
+Let's now look at determining how a Sector is trending over the past 4 years. We can plot a **Linear Regression** line using the Cumulative % Returns and plot it on a **Line Chart**. The steeper the slope, the stronger the positive or negative trend. We'll use our custom function *scatter_plot* to plot a **Scatter Plot** and regression line for the **Communication Services** Sector.
 
         sector = 'Communication Services'
         df_ret_sector = df_ret_sectors[df_ret_sectors['Sector'] == sector].copy()
@@ -141,7 +141,7 @@ Let's compare it to the **Energy** Sector.
 
 ![SP500_GICS_Energy_Sector_Cumulative_Return_Regression_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_GICS_Energy_Sector_Cumulative_Return_Regression_Line_Chart.jpg?raw=true)
 
-We can observe that the **Energy** Sector is in a fairly strong long-term positive trend.
+We can observe that the **Energy** Sector is in a strong long-term positive trend.
 
 And finally, let's look at Cumulative % Returns for Sub-Industries and observe the strongest performing. We can plot the top 20 Sub-Industries and highlight the top 10 in a **Bubble Chart** using our custom plot_returns_bubble_chart function.
 
