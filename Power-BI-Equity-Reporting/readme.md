@@ -40,7 +40,7 @@ Our Daily Pricing Chart is defined as a **Line Chart** with *Date* on the *X-Axi
 
 ![Power_BI_Daily_Pricing_Line_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Daily_Pricing_Line_Chart.jpg?raw=true)
   
-
+To display Yearly Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the 
 
    
 
