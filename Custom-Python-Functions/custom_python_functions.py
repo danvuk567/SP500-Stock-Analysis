@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """
+Created on Mon Sep 23 13:23:10 2024
+
 @author: Daniel
 """
 
+from cryptography.fernet import Fernet
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 import urllib.parse as url
@@ -21,8 +24,104 @@ from scipy.stats import norm, gaussian_kde
 from sklearn.linear_model import LinearRegression
 
 
+def write_key(path, key_file):
+    
+    """
+    Generates a key and saves it into a file.
+    
+    Parameters:
+    path (str): The directory path where the key file will be saved.
+    key_file (str): The name of the file (including extension) to save the key.
+    """
+    
+    # Generate a new cryptographic key using Fernet
+    key = Fernet.generate_key()
+    
+    # Open a file in binary write mode to save the key
+    with open(path + key_file, "wb") as key_file:
+        # Write the generated key to the file
+        key_file.write(key)
+        
+    key_file.close()
+
+
+def load_key(path, key_file):
+    
+    """
+    Loads a cryptographic key from a specified file.
+
+    Parameters:
+    path (str): The directory path where the key file is located.
+    key_file (str): The name of the file (including extension) from which to load the key.
+
+    Returns:
+    bytes: The cryptographic key read from the file.
+    """
+    
+    # Open the specified key file in binary read mode and return its contents
+    with open(path + key_file, "rb") as key_file:
+        return key_file.read()
+
+
+def encrypt(path, filename, key):
+    
+    """
+    Encrypts a file using the provided cryptographic key.
+
+    Parameters:
+    path (str): The directory path where the file is located.
+    filename (str): The name of the file to be encrypted.
+    key (bytes): The cryptographic key used for encryption.
+    """
+    
+    # Create a Fernet cipher object using the provided key
+    f = Fernet(key)
+
+    # Open the specified file in binary read mode
+    with open(path + filename, "rb") as file:
+        # Read all file data into memory
+        file_data = file.read()
+
+    # Encrypt the file data using the Fernet cipher
+    encrypted_data = f.encrypt(file_data)
+
+    # Open the same file in binary write mode to overwrite it with the encrypted data
+    with open(path + filename, "wb") as file:
+        # Write the encrypted data back to the file
+        file.write(encrypted_data)
+
+
+def decrypt(path, filename, key):
+    
+    """
+    Decrypts a file using the provided cryptographic key.
+
+    Parameters:
+    path (str): The directory path where the file is located.
+    filename (str): The name of the file to be decrypted.
+    key (bytes): The cryptographic key used for decryption.
+
+    Returns:
+    str: The decrypted file data as a UTF-8 string.
+    """
+    
+    # Create a Fernet cipher object using the provided key
+    f = Fernet(key)
+    
+    # Open the specified file in binary read mode
+    with open(path + filename, "rb") as file:
+        # Read the encrypted data from the file
+        encrypted_data = file.read()
+    
+    # Decrypt the encrypted data using the Fernet cipher
+    decrypted_data = f.decrypt(encrypted_data)
+    
+    # Convert the decrypted bytes to a UTF-8 string and return it
+    return str(decrypted_data, 'utf-8')
+
 
 def create_connection(serv, dbase, uid, passwd):
+    
     """
     Creates a connection to a SQL Server database using SQLAlchemy and returns a session and engine.
 
