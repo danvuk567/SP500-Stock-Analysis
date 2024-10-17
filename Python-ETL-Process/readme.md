@@ -254,11 +254,11 @@ the database name along with the username and password. For this project, we hav
         key2 = 'pass_key.ky'
         key_file2 = 'pass_key.txt'
 
-        key1 = load_key(f_path, key1)
-        uid = decrypt(f_path, key_file1, key1)
+        key1 = load_key(external_folder_path, key1)
+        uid = decrypt(external_folder_path, key_file1, key1)
 
-        key2 = load_key(f_path, key2)
-        passwd = decrypt(f_path, key_file2, key2) 
+        key2 = load_key(external_folder_path, key2)
+        passwd = decrypt(external_folder_path, key_file2, key2) 
 
         # Setup connection parameters
         server = 'danvuk.database.windows.net'
