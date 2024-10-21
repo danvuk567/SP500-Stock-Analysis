@@ -2,7 +2,7 @@
 
 The 2nd reporting tab called *S&P 500 Equity Performance* contains the same slicers as the 1st tab for *Sector*, *Industry Group*, *Industry*, *Sub-Industry* and *Equities* and also interacts with the 1st tab.
 
-## Equity Return Line Charts
+## Equity Return Line and Column Charts
 
 Our Yearly Return Chart called *% Return by Year and Ticker* is defined as a **Line and Clustered Column Chart** with *Year* on the *X-Axis*, *% Return* on the *Column y-axis* and *Cumulative % Return* on the 
 *Line y-axis* from the *Equity_Returns_by_Year* table. The *Ticker* is added in the *Tooltips*. 
