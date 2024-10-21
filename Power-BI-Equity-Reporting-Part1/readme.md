@@ -16,24 +16,24 @@ and interacts with the 2nd tab as well.
 
 ## Equity Pricing Line Charts
 
-Our Yearly Pricing Chart is defined as a **Line Chart** with *Year* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Year* table. 
+Our Yearly Pricing Chart called *Close by Year and Ticker* is defined as a **Line Chart** with *Year* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Year* table. 
 We'll show a *Min line* of the *Close* and a *Max Line* of the *Close*. We incorporate *Date*, *Open*, *High*, *Low* and *Volume* in the *Tooltips*. 
 We'll also use *Ticker_Label* from the *Equities* table in the *Legend* which is defined a column using *Ticker* and *Name*:
 
     Ticker_Label = [Ticker] & " - " & [Name]
 
-Our Quarterly Pricing Chart is defined as a **Line Chart** with *Quarter* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Quarter* table. 
+Our Quarterly Pricing Chart called *Close by Quarter and Ticker* is defined as a **Line Chart** with *Quarter* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Quarter* table. 
 We'll show a *Min line* of the *Close* and a *Max Line* of the *Close*. We incorporate *Date*, *Open*, *High*, *Low* and *Volume* in the *Tooltips*. 
 We'll use *Ticker_Label* from the *Equities* table in the *Legend*.
 
-Our Monthly Pricing Chart is defined as a **Line Chart** with *Date* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Month* table. 
+Our Monthly Pricing Chart called *Close by Month and Ticker* is defined as a **Line Chart** with *Date* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices_by_Month* table. 
 We'll show a *Min line* of the *Close*, a *Max Line* of the *Close* and a *Trend Line* of the *Close*. We incorporate *Date*, *Open*, *High*, *Low* and *Volume* in the *Tooltips*. 
 We'll also use *Ticker_Label* from the *Equities* table in the *legend*. We'll include a *Zoom Slider* to zoom in on different month ranges.
 And we incorporate the *Month Short* column from the *Equity_Prices_by_Month* table in the *Tooltips* which is defined as:
 
       Month Short = FORMAT([Date], "MMM")
 
-Our Daily Pricing Chart is defined as a **Line Chart** with *Date* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices* table.
+Our Daily Pricing Chart called *Close by Date and Ticker* is defined as a **Line Chart** with *Date* on the *X-Axis* and *Close* on the *Y-Axis* from the *Equity_Prices* table.
 We'll show a *Min line* of the *Close*, a *Max Line* of the *Close* and a *Trend Line* of the *Close*. We incorporate *Open*, *High*, *Low* and *Volume* in the *Tooltips*. 
 We'll also use *Ticker_Label* from the *Equities* table in the *legend*. We'll include a *Zoom Slider* to zoom in on different date ranges.
 
