@@ -281,6 +281,8 @@ The main goal of this project was to look at measuring performance focused on Eq
 
 We'll start with the Yearly Returns and create a table called *Equity_Returns_by_Year* by duplicating the *Equity_Prices* table in Power Query and keeping only the *Date*, *Ticker_ID* and *Close* columns. Next we can click on the *Transform* menu and then *Run Python script* to transform the data into Yearly Returns. When working with pandas, the default pandas dataframe is called *dataset*. We will calculate the *% Return* and the *Cumulative % Return* using log returns by Ticker_ID and Year similar to what we did independently earlier on the project.
 
+## Equity_Returns_by_Year table Power Query Python code: *[Equity_Returns_by_Year_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Year_Python_Code.txt)*  
+
 	# 'dataset' holds the input data for this script
  
 	import pandas as pd
