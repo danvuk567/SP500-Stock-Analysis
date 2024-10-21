@@ -2,14 +2,14 @@
 
 ## Equity Hierarchical Dimension Slicers
 
-For the 1st report tab called *S&P 500 Equity Pricing*, we'll focus on building Pricing data visuals. 
-We start by building a **Slicer** using *Sector* from the *Sectors* table and define the *Style* as *Tile*.
-This will allow us to choose Equities from a particular Sector.
+For the 1st report tab called *S&P 500 Equity Pricing*, we'll focus on building Pricing data visuals. We start by building a **Slicer** using *Sector* from the *Sectors* table 
+and define the *Style* as *Tile*. This slicer will also interact with the 2nd tab and allows us to choose Equities from a particular Sector.
 
 ![Power_BI_Pricing_Sector_Slicer.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Sector_Slicer.jpg?raw=true)
 
 Next, we'll create 4 slicers using the *Style* as *Vertical List*, one using *Industry Group* from the *Industry_Groups* table, one using *Industry* from the *Industies* table, 
-one using *Sub_industry* from the *Sub_Industries* table, and another using *Ticker* from the *Equities* table. This will allow us to further filter Equities from specific Industry categories.
+one using *Sub_industry* from the *Sub_Industries* table, and another using *Ticker* from the *Equities* table. This will allow us to further filter Equities from specific Industry categories
+and interacts with the 2nd tab as well.
 
 ![Power_BI_Pricing_Industry_Group_Industry_Sub_Industry_Equity_Slicers.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Industry_Group_Industry_Sub_Industry_Equity_Slicers.jpg?raw=true)
 
