@@ -1,6 +1,6 @@
 # Power BI Equity Data Model Development
 
-Before bringing in any data source in to Power BI to build a report, let's consolidate the data we need into a database view called *VW_Yahoo_Equity_Prices* to avoid bringing in unnecessary data. This is good practice when possibly dealing with large data sets and allows us to practice some data transformations in Power BI **Power Query**. We want to compare the stocks that have been active throughout the whole period in to avoid any performance bias. To do that, we'll define the view joining the GICS Industry Dimension table hierarchy tables to the Fact table *Yahoo_Equity_Prices* and filter out stocks that don't share the same min date of existing pricing data.
+Before bringing in any data source in to Power BI to build a report, let's consolidate the data we need into a database view called *VW_Yahoo_Equity_Prices* to avoid bringing in unnecessary data. This is good practice when possibly dealing with large data sets and allows us to practice some data transformations in Power BI **Power Query**. We want to compare the stocks that have been active throughout the whole period in to avoid any performance bias. To do that, we'll define the view joining the GICS Industry Dimension hierarchy tables to the Fact table *Yahoo_Equity_Prices* and filter out stocks that don't share the same min date of existing pricing data.
 
 ## *[Create-VW_Yahoo_Equity_Prices-View.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Create-VW_Yahoo_Equity_Prices-View.sql)*  
 
