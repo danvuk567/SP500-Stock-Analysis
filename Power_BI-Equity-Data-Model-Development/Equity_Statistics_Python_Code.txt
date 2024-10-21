@@ -1,0 +1,156 @@
+# 'dataset' holds the input data for this script
+
+import pandas as pd
+import numpy as np
+
+# Converting the 'Date' column in 'dataset' to datetime format; invalid parsing will be set to NaT
+dataset['Date'] = pd.to_datetime(dataset['Date'], errors='coerce')
+
+# Sorting the dataset by 'Ticker_ID' and 'Date' to prepare for analysis
+dataset.sort_values(by=['Ticker_ID', 'Date'], inplace=True)
+
+# Creating a summary statistics DataFrame by grouping data by 'Ticker_ID'
+dataset_stats = dataset.copy().groupby('Ticker_ID').agg(
+    Lowest_Return=('% Return', 'min'),  # Minimum % Return for each ticker
+    Percentile_25=('% Return', lambda x: x.quantile(0.25)),  # 25th percentile % Return
+    Median_Return=('% Return', 'median'),  # Median % Return
+    Percentile_75=('% Return', lambda x: x.quantile(0.75)),  # 75th percentile % Return
+    Highest_Return=('% Return', 'max'),  # Maximum % Return
+    Average_Return=('% Return', 'mean'),  # Average % Return
+    Return_Variance=('% Return', lambda x: x.std(ddof=0)),  # Variance of % Return
+    Annualized_Return=('% Return', lambda x: (1 + x).prod() ** (252 / x.count()) - 1),  # Annualized % Return
+    Annualized_Volatility=('% Return', lambda x: x.std(ddof=0) * np.sqrt(252)),  # Annualized Volatility
+    Annualized_Downside_Volatility=('% Return', lambda x: x[x < 0].std(ddof=0) * np.sqrt(252) if len(x[x < 0]) > 0 else 0)  # Annualized Downside Volatility
+).reset_index()  # Resetting the index to keep 'Ticker_ID' as a column
+
+# Renaming the columns for better readability
+dataset_stats.rename(columns={
+    'Lowest_Return': 'Lowest % Return',
+    'Percentile_25': '25th Percentile % Return',
+    'Median_Return': 'Median % Return',
+    'Percentile_75': '75th Percentile % Return',
+    'Highest_Return': 'Highest % Return',
+    'Average_Return': 'Average % Return',
+    'Return_Variance': 'Return % Variance',
+    'Annualized_Return': 'Annualized % Return',
+    'Annualized_Volatility': 'Annualized Volatility',
+    'Annualized_Downside_Volatility': 'Annualized Downside Volatility'
+}, inplace=True)
+
+# Merging the summary statistics back into the original dataset based on 'Ticker_ID'
+dataset = dataset.merge(dataset_stats, on='Ticker_ID', how='left')
+
+# Creating a copy of the dataset where 'Date' is not null for further analysis
+dataset_stats = dataset[dataset['Date'].notnull()].copy()
+
+# Updating 'dataset' to only keep the non-null dates
+dataset = dataset_stats
+
+# Sorting the dataset again by 'Ticker_ID' and 'Date'
+dataset.sort_values(by=['Ticker_ID', 'Date'], inplace=True)
+
+# Deleting the temporary dataset_stats variable to free up memory
+del dataset_stats
+
+# Finding the last date in the dataset
+last_date = dataset['Date'].max()
+
+# Calculating the date three years ago from the last date
+three_years_ago = last_date - pd.DateOffset(days=365 * 3)
+
+# Filtering the dataset to include only rows from the last three years
+date_filter = (dataset['Date'] >= three_years_ago)
+dataset_filtered = dataset.loc[date_filter].copy()
+
+# Calculating the peak of the 'Cumulative % Return' for each 'Ticker_ID'
+dataset_filtered['Peak'] = dataset_filtered.groupby('Ticker_ID')['Cumulative % Return'].cummax()
+
+# Calculating the drawdown based on the peak value
+dataset_filtered['Drawdown'] = np.where(
+    dataset_filtered['Cumulative % Return'] >= 0,
+    dataset_filtered['Peak'] - dataset_filtered['Cumulative % Return'],
+    dataset_filtered['Peak'] + abs(dataset_filtered['Cumulative % Return'])
+)
+
+# Calculating the percentage drawdown
+dataset_filtered['% Drawdown'] = np.where(
+    dataset_filtered['Peak'] != 0,
+    round((dataset_filtered['Drawdown'] / dataset_filtered['Peak']), 2),
+    0
+)
+
+# Calculating the maximum percentage drawdown for each ticker
+dataset_filtered['Max % Drawdown'] = dataset_filtered.groupby('Ticker_ID')['% Drawdown'].transform('max')
+
+# Extracting the last dates for each ticker
+dataset_filtered_last_dates = dataset_filtered.loc[dataset_filtered.groupby('Ticker_ID')['Date'].idxmax()]
+
+# Calculating the Calmar Ratio for each ticker
+dataset_filtered_last_dates['Calmar Ratio'] = np.where(
+    dataset_filtered_last_dates['Max % Drawdown'] == 0,
+    0,  # Avoid division by zero
+    dataset_filtered_last_dates['Annualized % Return'] / dataset_filtered_last_dates['Max % Drawdown']
+)
+
+# Updating the dataset to only include the last date entries
+dataset_filtered = dataset_filtered_last_dates
+
+# Deleting the temporary dataset_filtered_last_dates variable to free up memory
+del dataset_filtered_last_dates
+
+# Selecting only relevant columns for the final dataset
+dataset_filtered = dataset_filtered[['Ticker_ID', 'Max % Drawdown', 'Calmar Ratio']]
+
+# Extracting the last dates for each ticker from the original dataset
+dataset_last_dates = dataset.loc[dataset.groupby('Ticker_ID')['Date'].idxmax()]
+
+# Updating the dataset to only include the last date entries
+dataset = dataset_last_dates
+
+# Deleting the temporary dataset_last_dates variable to free up memory
+del dataset_last_dates
+
+# Setting a risk-free rate for financial calculations
+risk_free_rate = 0.025
+
+# Calculating the Annualized Sharpe Ratio for each ticker
+dataset['Annualized Sharpe Ratio'] = np.where(
+    dataset['Annualized Volatility'] == 0,
+    0,  # Avoid division by zero
+    (dataset['Annualized % Return'] - risk_free_rate) / dataset['Annualized Volatility']
+)
+
+# Calculating the Annualized Sortino Ratio for each ticker
+dataset['Annualized Sortino Ratio'] = np.where(
+    dataset['Annualized Volatility'] == 0,
+    0,  # Avoid division by zero
+    (dataset['Annualized % Return'] - risk_free_rate) / dataset['Annualized Downside Volatility']
+)
+
+# Merging the filtered dataset back into the main dataset based on 'Ticker_ID'
+dataset = dataset.merge(dataset_filtered, on='Ticker_ID', how='left')
+
+# Deleting the temporary dataset_filtered variable to free up memory
+del dataset_filtered
+
+# Rounding specific columns to improve readability
+columns_to_round = [
+    "25th Percentile % Return",
+    "Median % Return",
+    "75th Percentile % Return",
+    "Average % Return",
+    "Return % Variance",
+    "Annualized % Return",
+    "Annualized Volatility",
+    "Annualized Downside Volatility",
+    "Max % Drawdown"
+]
+dataset[columns_to_round] = dataset[columns_to_round].round(4)  # Rounding to 4 decimal places
+
+# Rounding additional columns for improved readability
+columns_to_round2 = [
+    "Annualized Sharpe Ratio",
+    "Annualized Sortino Ratio",
+    "Calmar Ratio"
+]
+dataset[columns_to_round2] = dataset[columns_to_round2].round(2)  # Rounding to 2 decimal places
