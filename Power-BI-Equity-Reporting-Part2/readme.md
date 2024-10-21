@@ -16,3 +16,5 @@ Our Daily Return Chart called *Cumulative % Return by Date and Ticker* is define
 A Trend Line of the Cumulative % Return is shown. The *Ticker_Label* from the Equities table is added to the Legend.
 
 ![Power_BI_Return_Line__Columns_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Return_Line__Columns_Charts.jpg?raw=true)
+
+To display the performance statistics for the last Date, we'll use a **Multi-row Card** visual with the metrics *% Return*, *Cumulative % Return*, *Lowest % Return*, *25th Percentile Return*, *Median % Return*, *75th Percentile Return*, *Highest % Return*, *Average % Return*, *Return % Variance*, *Annualized % Return*, *Annualized Volatility*, *Annualized Sharpe Ratio*, *Annualized Sortino Ratio*, and *Calmar Ratio* from the *Equity_Statistics* table.
