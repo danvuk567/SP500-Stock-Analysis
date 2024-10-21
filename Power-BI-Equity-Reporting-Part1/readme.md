@@ -39,13 +39,13 @@ We'll also use *Ticker_Label* from the *Equities* table in the *legend*. We'll i
 
 ![Power_BI_Pricing_Line_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Line_Charts.jpg?raw=true)
   
-To display Yearly Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Yearly metrics *YearLastDate*, *YearLastOpen*, *YearLastHigh*, *YearLastLow* and *YearLastVolume* from the *Equity_Prices_by_Year* table.
+To display Yearly Pricing data for the last Date, we'll use a **Multi-row Card** visual with the Yearly metrics *YearLastDate*, *YearLastOpen*, *YearLastHigh*, *YearLastLow* and *YearLastVolume* from the *Equity_Prices_by_Year* table.
 
-To display Quarterly Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Quarterly metrics *QuarterLastDate*, *QuarterLastOpen*, *QuarterLastHigh*, *QuarterLastLow* and *QuarterLastVolume* from the *Equity_Prices_by_Quarter* table.
+To display Quarterly Pricing data for the last Date, we'll use a **Multi-row Card** visual with the Quarterly metrics *QuarterLastDate*, *QuarterLastOpen*, *QuarterLastHigh*, *QuarterLastLow* and *QuarterLastVolume* from the *Equity_Prices_by_Quarter* table.
 
-To display Monthly Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Monthly metrics *MonthLastDate*, *MonthLastOpen*, *MonthLastHigh*, *MonthLastLow* and *MonthLastVolume* from the *Equity_Prices_by_Month* table.
+To display Monthly Pricing data for the last Date, we'll use a **Multi-row Card** visual with the Monthly metrics *MonthLastDate*, *MonthLastOpen*, *MonthLastHigh*, *MonthLastLow* and *MonthLastVolume* from the *Equity_Prices_by_Month* table.
 
-To display Daily Pricing data for the last Date, we'll use a **Mulit-row Card** visual with the Daily metrics *LastDate*, *LastOpen*, *LastHigh*, *LastLow* and *LastVolume* from the *Equity_Pricesh* table.
+To display Daily Pricing data for the last Date, we'll use a **Multi-row Card** visual with the Daily metrics *LastDate*, *LastOpen*, *LastHigh*, *LastLow* and *LastVolume* from the *Equity_Prices* table.
 
 ![Power_BI_Pricing_Multi_Row_Card_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Multi_Row_Card_Charts.jpg?raw=true)
 
