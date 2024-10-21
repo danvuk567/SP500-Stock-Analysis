@@ -377,6 +377,8 @@ The Power Query transformations are similar for the next 3 tables *Equity_Return
 The final table we will create will contain various performance statistics by Ticker for the latest date in a table called *Equity_Statistics. We will use **Python** code in **Power Query** to calculate these metrics. Essentially, we will reference the *Equity_Returns* table in Power Query and then aggregate the dataframe *dataset* as *dataset_stats* for the full time series by *Ticker_ID*. The fileds that are calculated in *dataset_stats* are The fields we will calculate are *% Return*, *Cumulative % Return*, *Lowest % Return*, *25th Percentile % Return*, *Median % Return*, *75th Percentile % Return*, *Highest % Return*, *Average % Return*, *Return % Variance*, *Annualized % Return*, *Annualized Volatility* and *Annualized_Downside_Volatility*. *dataset_stats* will be merged to *dataset* by *Ticker_ID* and then the last date will be kept. A new dataframe *dataset_filtered* will be extracted for the last 3 years of data by *Ticker_ID*. 
 We compute the *Max % Drawdown* by *Ticker_ID* and the *Calmar Ratio* = *Annualized % Return / Max % Drawdown* and keep the last date. *dataset_filtered* is then merged to *dataset*. Finally *Annualized Sharpe Ratio* is computed as *(Annualized % Return - risk_free_rate) / Annualized Volatility* and *Annualized Sortino Ratio* is computed as *(Annualized % Return' - risk_free_rate) / Annualized Downside Volatility*. Lastly, values are rounded off in the dataframe *dataset*.
 
+*[Equity_Statistics_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Statistics_Python_Code.txt)*
+
 	# 'dataset' holds the input data for this script
 
 	import pandas as pd
