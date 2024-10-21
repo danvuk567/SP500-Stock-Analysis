@@ -372,7 +372,9 @@ The Power Query transformations are similar for the next 3 tables *Equity_Return
 ![Power_BI_Power_Query_Equity_Return_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Return_Transformation.jpg?raw=true)
 
 
+## *Equity_Statistics* table
 
+The final table we will create will contain various performance statistics for the latest date. 
 
 
 
