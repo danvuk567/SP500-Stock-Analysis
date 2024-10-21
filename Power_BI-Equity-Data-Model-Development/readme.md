@@ -540,3 +540,11 @@ The dataframe *dataset* is returned as a table and after a few more cleanup step
 
 ![Power_BI_Power_Query_Equity_Statistics_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Statistics_Transformation.jpg?raw=true)
 
+Now, we create new relationships to the perfromance tables that we created. We'll create a **one-to-many relationship** between *Ticker_ID* in the *Equities* table to *Ticker_ID* in the *Equity_Returns_by_Year*, *Equity_Returns_by_Quarter*, *Equity_Returns_by_Month*, *Equity_Returns* and *Equity_Statistics* tables.
+
+![Power_BI_Return_Data_Model_Relationships.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Return_Data_Model_Relationships.jpg?raw=true)
+
+And our final Data Model now looks like this:
+
+![Power_BI_Final_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Final_Data_Model.jpg?raw=true)
+
