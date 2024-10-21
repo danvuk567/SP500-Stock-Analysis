@@ -1,4 +1,4 @@
-# Power BI Equity Reporting
+# Power BI S&P 500 Equity Reporting - Part 1
 
 ## Equity Hierarchical Dimension Slicers
 
