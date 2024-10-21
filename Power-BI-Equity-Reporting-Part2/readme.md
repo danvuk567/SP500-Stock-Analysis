@@ -20,3 +20,7 @@ A Trend Line of the Cumulative % Return is shown. The *Ticker_Label* from the Eq
 To display the performance statistics for the last Date, we'll use a **Multi-row Card** visual called *Latest Perfromance* with the metrics *% Return*, *Cumulative % Return*, *Lowest % Return*, *25th Percentile % Return*, *Median % Return*, *75th Percentile % Return*, *Highest % Return*, *Average % Return*, *Return % Variance*, *Annualized % Return*, *Annualized Volatility*, *Annualized Sharpe Ratio*, *Annualized Sortino Ratio*, *Calmar Ratio* and *Max % Drawdown* from the *Equity_Statistics* table.
 
 ![Power_BI_Return_Multi_Row_Card_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Return_Multi_Row_Card_Chart.jpg?raw=true)
+
+Here is the final version of the *S&P 500 Equity Perfromance* report tab:
+
+![Power_BI_Equity_Report_2nd_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_2nd_tab.jpg?raw=true)
