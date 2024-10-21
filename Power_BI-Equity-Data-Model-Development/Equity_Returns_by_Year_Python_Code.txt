@@ -13,11 +13,11 @@ dataset['Year'] = dataset['Date'].dt.year
 dataset2 = dataset.groupby(['Ticker_ID', 'Year']).agg(
            {
                'Date': 'last',   # Get the last date for each ticker and year
-                'Open': "first",  # Get the first opening price for each ticker and year
+               'Open': "first",  # Get the first opening price for each ticker and year
                'High': 'max',    # Get the maximum high price for each ticker and year
                'Low': 'min',     # Get the minimum low price for each ticker and year
-              'Close': 'last',  # Get the last closing price for each ticker and year
-              'Volume': 'last'  # Get the last volume for each ticker and year
+               'Close': 'last',  # Get the last closing price for each ticker and year
+               'Volume': 'last'  # Get the last volume for each ticker and year
          }
       ).reset_index()  # Resetting the index to keep 'Ticker_ID' and 'Year' as columns
 
