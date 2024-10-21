@@ -1,0 +1,64 @@
+# 'dataset' holds the input data for this script
+
+import pandas as pd
+import numpy as np
+
+# Converting the 'Date' column in 'dataset' to datetime format; invalid parsing will be set to NaT
+dataset['Date'] = pd.to_datetime(dataset['Date'], errors='coerce')
+
+# Extracting the year from the 'Date' column and creating a new 'Year' column
+dataset['Year'] = dataset['Date'].dt.year
+
+# Extracting the month number from the 'Date' column and creating a new 'Month No' column
+dataset['Month No'] = dataset['Date'].dt.month
+
+# Grouping the dataset by 'Ticker_ID', 'Year', and 'Month No', and aggregating various metrics for each group
+dataset2 = dataset.groupby(['Ticker_ID', 'Year', 'Month No']).agg(
+            {
+                'Date': 'last',   # Get the last date for each group
+                'Open': "first",  # Get the first opening price for each group
+                'High': 'max',    # Get the maximum high price for each group
+                'Low': 'min',     # Get the minimum low price for each group
+                'Close': 'last',  # Get the last closing price for each group
+                'Volume': 'last'  # Get the last volume for each group
+            }
+        ).reset_index()  # Resetting the index to keep 'Ticker_ID', 'Year', and 'Month No' as columns
+
+# Sorting the aggregated dataset by 'Ticker_ID' and 'Date'
+dataset2.sort_values(by=['Ticker_ID', 'Date'], inplace=True)
+
+# Creating a new column 'Prev Close' to hold the previous closing price for each ticker
+dataset2['Prev Close'] = dataset2.groupby('Ticker_ID')['Close'].shift(1)
+
+# Identifying the first period for each ticker where 'Prev Close' is NaN
+is_first_period = dataset2['Prev Close'].isna()
+
+# Initializing '% Return' column with zeros
+dataset2['% Return'] = 0
+
+# Calculating % Return for the first period using Open and Close prices
+dataset2.loc[is_first_period, '% Return'] = np.round((dataset2['Close'] / dataset2['Open']) - 1.0, 4)
+
+# Creating a boolean mask to identify rows with the same Ticker_ID as the previous row
+same_ticker = dataset2['Ticker_ID'] == dataset2['Ticker_ID'].shift(1)
+
+# Calculating % Return for subsequent periods for the same ticker
+dataset2.loc[~is_first_period & same_ticker, '% Return'] = np.round((dataset2['Close'] / dataset2['Prev Close']) - 1.0, 4)
+
+# Calculating Log Return for the first period
+dataset2.loc[is_first_period, 'Log Return'] = np.log(dataset2['Close'] / dataset2['Open'])
+
+# Calculating Log Return for subsequent periods for the same ticker
+dataset2.loc[~is_first_period & same_ticker, 'Log Return'] = np.log(dataset2['Close'] / dataset2['Prev Close'])
+
+# Calculating Cumulative Log Return for each ticker by summing Log Returns
+dataset2['Cumulative Log Return'] = dataset2.groupby('Ticker_ID')['Log Return'].cumsum()
+
+# Calculating Cumulative % Return based on Cumulative Log Return
+dataset2['Cumulative % Return'] = np.round(np.exp(dataset2['Cumulative Log Return']) - 1.0, 4)
+
+# Updating 'dataset' with the transformed data in 'dataset2'
+dataset = dataset2
+
+# Deleting 'dataset2' to free up memory
+del dataset2

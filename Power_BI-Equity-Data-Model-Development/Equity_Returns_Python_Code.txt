@@ -1,0 +1,48 @@
+# 'dataset' holds the input data for this script
+
+import pandas as pd
+import numpy as np
+
+# Creating a copy of the original 'dataset' to avoid modifying it directly
+dataset2 = dataset.copy()
+
+# Sorting the copied dataset by 'Ticker_ID' and 'Date' to prepare for further analysis
+dataset2.sort_values(by=['Ticker_ID', 'Date'], inplace=True)
+
+# Creating a new column 'Prev Close' to hold the previous closing price for each ticker
+dataset2['Prev Close'] = dataset2.groupby('Ticker_ID')['Close'].shift(1)
+
+# Identifying the first period for each ticker where 'Prev Close' is NaN
+is_first_period = dataset2['Prev Close'].isna()
+
+# Initializing '% Return' column with zeros
+dataset2['% Return'] = 0
+
+# Calculating % Return for the first period using Open and Close prices
+# This applies to the periods where 'Prev Close' is NaN
+dataset2.loc[is_first_period, '% Return'] = np.round((dataset2['Close'] / dataset2['Open']) - 1.0, 4)
+
+# Creating a boolean mask to identify rows with the same Ticker_ID as the previous row
+same_ticker = dataset2['Ticker_ID'] == dataset2['Ticker_ID'].shift(1)
+
+# Calculating % Return for subsequent periods for the same ticker
+# This applies to periods where 'Prev Close' is not NaN
+dataset2.loc[~is_first_period & same_ticker, '% Return'] = np.round((dataset2['Close'] / dataset2['Prev Close']) - 1.0, 4)
+
+# Calculating Log Return for the first period using Open prices
+dataset2.loc[is_first_period, 'Log Return'] = np.log(dataset2['Close'] / dataset2['Open'])
+
+# Calculating Log Return for subsequent periods for the same ticker
+dataset2.loc[~is_first_period & same_ticker, 'Log Return'] = np.log(dataset2['Close'] / dataset2['Prev Close'])
+
+# Calculating Cumulative Log Return for each ticker by summing Log Returns
+dataset2['Cumulative Log Return'] = dataset2.groupby('Ticker_ID')['Log Return'].cumsum()
+
+# Calculating Cumulative % Return based on Cumulative Log Return
+dataset2['Cumulative % Return'] = np.round(np.exp(dataset2['Cumulative Log Return']) - 1.0, 4)
+
+# Updating 'dataset' with the transformed data in 'dataset2'
+dataset = dataset2
+
+# Deleting 'dataset2' to free up memory
+del dataset2
