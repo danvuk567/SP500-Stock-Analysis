@@ -279,9 +279,11 @@ And our Data Model now looks like this:
 
 The main goal of this project was to look at measuring performance focused on Equity returns. As we did with pricing, we can focus on YEarly, Quarterly, Monthly and Daily Returns. We had previously explored this in the project using Python code so rather than going down a long and complex path with DAX, we can use **Python** in **Power Query** to create some tables. 
 
+## *Equity_Returns_by_Year* table
+
 We'll start with the Yearly Returns and create a table called *Equity_Returns_by_Year* by duplicating the *Equity_Prices* table in Power Query and keeping only the *Date*, *Ticker_ID* and *Close* columns. Next we can click on the *Transform* menu and then *Run Python script* to transform the data into Yearly Returns. When working with pandas, the default pandas dataframe is called *dataset*. We will calculate the *% Return* and the *Cumulative % Return* using log returns by Ticker_ID and Year similar to what we did independently earlier on the project.
 
-## *[Equity_Returns_by_Year_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Year_Python_Code.txt)*  
+*[Equity_Returns_by_Year_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Year_Python_Code.txt)*  
 
 	# 'dataset' holds the input data for this script
  
@@ -348,6 +350,31 @@ We'll start with the Yearly Returns and create a table called *Equity_Returns_by
 The dataframe *dataset* is returned as a table and after a few more cleanup steps in Power Query, we have the final table called *Equity_Returns_by_Year*.
 
 ![Power_BI_Power_Query_Yearly_Equity_Return_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Yearly_Equity_Return_Transformation.jpg?raw=true)
+
+The Power Query transformations are similar for the next 3 tables *Equity_Returns_by_Quarter*, *Equity_Returns_by_Month* and *Equity_Returns*.
+
+## *Equity_Returns_by_Quarter* table
+
+*[Equity_Returns_by_Quarter_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Quarter_Python_Code.txt)*
+
+![Power_BI_Power_Query_Quarterly_Equity_Return_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Quarterly_Equity_Return_Transformation.jpg?raw=true)
+
+## *Equity_Returns_by_Month* table
+
+*[Equity_Returns_by_Month_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Month_Python_Code.txt)*
+
+![Power_BI_Power_Query_Monthly_Equity_Return_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Monthly_Equity_Return_Transformation.jpg?raw=true)
+
+## *Equity_Returns* table
+
+*[Equity_Returns_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_Python_Code.txt)*
+
+![Power_BI_Power_Query_Equity_Return_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Return_Transformation.jpg?raw=true)
+
+
+
+
+
 
 
 
