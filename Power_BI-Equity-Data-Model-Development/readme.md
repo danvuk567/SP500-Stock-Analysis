@@ -339,7 +339,7 @@ We'll start with the Yearly Returns and create a table called *Equity_Returns_by
 	# Updating 'dataset' with the transformed data in 'dataset2'
 	dataset = dataset2
 
-	# drop the 'dataset2' dataframe
+	# Deleting 'dataset2' to free up memory
 	del dataset2
 
 The dataframe *dataset* is returned as a table and after a few more cleanup steps in Power Query, we have the final table called *Equity_Returns_by_Year*.
