@@ -538,5 +538,5 @@ We compute the *Max % Drawdown* by *Ticker_ID* and the *Calmar Ratio* = *Annuali
 
 The dataframe *dataset* is returned as a table and after a few more cleanup steps in Power Query, we have the final table called *Equity_Statistics*.
 
-
+![Power_BI_Power_Query_Equity_Statistics_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Statistics_Transformation.jpg?raw=true)
 
