@@ -276,3 +276,72 @@ Next, we create new relationships to the calculated tables that we created. We'l
 And our Data Model now looks like this:
 
 ![Power_BI_Pricing_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Data_Model.jpg?raw=true)
+
+The main goal of this project was to look at measuring performance focused on Equity returns. As we did with pricing, we can focus on YEarly, Quarterly, Monthly and Daily Returns. We had previously explored this in the project using Python code so rather than going down a long and complex path with DAX, we can use **Python** in **Power Query** to create some tables. 
+
+We'll start with the Yearly Returns and create a table called *Equity_Returns_by_Year* by duplicating the *Equity_Prices* table in Power Query and keeping only the *Date*, *Ticker_ID* and *Close* columns. Next we can click on the *Transform* menu and then *Run Python script* to transform the data into Yearly Returns. When working with pandas, the default pandas dataframe is called *dataset*. We will calculate the *% Return* and the *Cumulative % Return* using log returns by Ticker_ID and Year similar to what we did independently earlier on the project.
+
+
+	import pandas as pd
+	import numpy as np
+
+	# Converting the 'Date' column in 'dataset' to datetime format; invalid parsing will be set to NaT
+	dataset['Date'] = pd.to_datetime(dataset['Date'], errors='coerce')
+
+	# Extracting the year from the 'Date' column and creating a new 'Year' column
+	dataset['Year'] = dataset['Date'].dt.year
+
+	# Grouping the dataset by 'Ticker_ID' and 'Year', aggregating various metrics for each group
+	dataset2 = dataset.groupby(['Ticker_ID', 'Year']).agg(
+ 	           {
+ 	               'Date': 'last',   # Get the last date for each ticker and year
+	                'Open': "first",  # Get the first opening price for each ticker and year
+ 	               'High': 'max',    # Get the maximum high price for each ticker and year
+ 	               'Low': 'min',     # Get the minimum low price for each ticker and year
+  	              'Close': 'last',  # Get the last closing price for each ticker and year
+  	              'Volume': 'last'  # Get the last volume for each ticker and year
+   	         }
+  	      ).reset_index()  # Resetting the index to keep 'Ticker_ID' and 'Year' as columns
+
+	# Sorting the aggregated dataset by 'Ticker_ID' and 'Date'
+	dataset2.sort_values(by=['Ticker_ID', 'Date'], inplace=True)
+
+	# Creating a new column 'Prev Close' to hold the previous closing price for each ticker
+	dataset2['Prev Close'] = dataset2.groupby('Ticker_ID')['Close'].shift(1)
+
+	# Identifying the first period for each ticker where 'Prev Close' is NaN
+	is_first_period = dataset2['Prev Close'].isna()
+
+	# Initializing '% Return' column with zeros
+	dataset2['% Return'] = 0
+
+	# Calculating % Return for the first period using Open and Close prices
+	dataset2.loc[is_first_period, '% Return'] = np.round((dataset2['Close'] / dataset2['Open']) - 1.0, 4)
+
+	# Creating a boolean mask to identify rows with the same Ticker_ID as the previous row
+	same_ticker = dataset2['Ticker_ID'] == dataset2['Ticker_ID'].shift(1)
+
+	# Calculating % Return for subsequent periods for the same ticker
+	dataset2.loc[~is_first_period & same_ticker, '% Return'] = np.round((dataset2['Close'] / dataset2['Prev Close']) - 1.0, 4)
+
+	# Calculating Log Return for the first period
+	dataset2.loc[is_first_period, 'Log Return'] = np.log(dataset2['Close'] / dataset2['Open']) 
+
+	# Calculating Log Return for subsequent periods for the same ticker
+	dataset2.loc[~is_first_period & same_ticker, 'Log Return'] = np.log(dataset2['Close'] / dataset2['Prev Close'])
+
+	# Calculating Cumulative Log Return for each ticker by summing Log Returns
+	dataset2['Cumulative Log Return'] = dataset2.groupby('Ticker_ID')['Log Return'].cumsum()
+
+	# Calculating Cumulative % Return based on Cumulative Log Return
+	dataset2['Cumulative % Return'] = np.round(np.exp(dataset2['Cumulative Log Return']) - 1.0, 4)
+
+	# Updating 'dataset' with the transformed data in 'dataset2'
+	dataset = dataset2
+
+	# drop the 'dataset2' dataframe
+	del dataset2
+
+The dataframe *dataset* is returned as a table and after a few more cleanup steps in Power Query, we have the final table called *Equity_Returns_by_Year*.
+
+
