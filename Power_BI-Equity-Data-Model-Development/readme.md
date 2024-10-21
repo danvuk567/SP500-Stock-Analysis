@@ -447,7 +447,7 @@ We compute the *Max % Drawdown* by *Ticker_ID* and the *Calmar Ratio* = *Annuali
 	# Calculating the drawdown based on the peak value
 	dataset_filtered['Drawdown'] = np.where(
 	    dataset_filtered['Cumulative % Return'] >= 0,
- 	   dataset_filtered['Peak'] - dataset_filtered['Cumulative % Return'],
+ 	    dataset_filtered['Peak'] - dataset_filtered['Cumulative % Return'],
 	    dataset_filtered['Peak'] + abs(dataset_filtered['Cumulative % Return'])
 	)
 
@@ -515,11 +515,11 @@ We compute the *Max % Drawdown* by *Ticker_ID* and the *Calmar Ratio* = *Annuali
 	# Rounding specific columns to improve readability
 	columns_to_round = [
 	    "25th Percentile % Return",
- 	   "Median % Return",
-  	  "75th Percentile % Return",
-  	  "Average % Return",
-  	  "Return % Variance",
- 	   "Annualized % Return",
+ 	    "Median % Return",
+  	    "75th Percentile % Return",
+  	    "Average % Return",
+  	    "Return % Variance",
+ 	    "Annualized % Return",
 	    "Annualized Volatility",
 	    "Annualized Downside Volatility",
 	    "Max % Drawdown"
@@ -529,8 +529,8 @@ We compute the *Max % Drawdown* by *Ticker_ID* and the *Calmar Ratio* = *Annuali
 	# Rounding additional columns for improved readability
 	columns_to_round2 = [
 	    "Annualized Sharpe Ratio",
- 	   "Annualized Sortino Ratio",
- 	   "Calmar Ratio"
+ 	    "Annualized Sortino Ratio",
+ 	    "Calmar Ratio"
 	]
 	dataset[columns_to_round2] = dataset[columns_to_round2].round(2)  # Rounding to 2 decimal places
 
