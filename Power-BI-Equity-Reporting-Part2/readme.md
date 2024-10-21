@@ -15,3 +15,4 @@ A Trend Line of the Cumulative % Return is shown. And the *Month* and *% Return*
 Our Daily Return Chart called *Cumulative % Return by Date and Ticker* is defined as a **Line Chart** with *Date* on the *X-Axis* and *Cumulative % Return* on the *Y-Axis* from the *Equity_Returns_by_Quarter* table. 
 A Trend Line of the Cumulative % Return is shown. The *Ticker_Label* from the Equities table is added to the Legend.
 
+![Power_BI_Return_Line__Columns_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Return_Line__Columns_Charts.jpg?raw=true)
