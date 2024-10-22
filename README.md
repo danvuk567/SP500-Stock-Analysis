@@ -4,8 +4,8 @@
 
 ## **Objective** ##
 
-In this project, I designed and implemented a full stack process involving end-to-end ETL processes long with analytics and visualizations. 
-The focus was transform, load and study S&P 500 stock return data. The sections below describe, in great detail, the methodologies, 
+In this project, I designed and implemented a full stack workflow involving end-to-end ETL processes, analytics and visualizations. 
+The focus was to transform, load and study S&P 500 stock return data. The sections below describe, in great detail, the methodologies, 
 technologies and exploratory result observations.
 
 ## **Table of Contents** ##
