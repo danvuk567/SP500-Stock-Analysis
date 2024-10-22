@@ -1,7 +1,7 @@
 datetime>=4.7
 pandas>=1.5.1
 numpy>=1.22.3
-sqlalchemy 1.4.32
+sqlalchemy>=1.4.32
 urllib>=1.26.9
 yfinance>=0.2.22
 pandas-market-calendars>=4.4.1
