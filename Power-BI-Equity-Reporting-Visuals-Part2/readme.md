@@ -1,6 +1,6 @@
 # Power BI S&P 500 Equity Reporting Visuals - Part 2
 
-The 2nd reporting tab called *S&P 500 Equity Performance* contains the same slicers as the 1st tab for *Sector*, *Industry Group*, *Industry*, *Sub-Industry* and *Equities* and interacts with the 1st tab.
+The 2nd reporting tab called *S&P 500 Equity Performance* contains the same slicers as the 1st tab for *Sector*, *Industry Group*, *Industry*, *Sub-Industry* and *Equities* as well as the *Clear Filters* button which all interact with the 1st tab.
 
 ## Equity Return Line and Column Charts
 
