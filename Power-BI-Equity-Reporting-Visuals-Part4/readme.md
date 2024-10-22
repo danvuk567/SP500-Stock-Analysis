@@ -12,7 +12,7 @@ The **Clustered Column Chart** called *Average % Return by Year and Sub-Industry
 
 ![Power_BI_Sub_Industry_Year_Return_Column_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Sub_Industry_Year_Return_Column_Chart.jpg?raw=true)
 
-The last visual is a **Treemap** called *Top 5 Annualized % Return by Sub-Industry* displays the top 5 Tickers by Annualized Return and Sub-Industry. The *Sub_Industry* from the *Sub-Industries* table is used for *Category*, the *Ticker* from the *Equities* table in *Details*, *Annualized % Return* from the *Equity_Statistics* table in *Values* and *Name* from the *Equities* table in the *Tooltips*.
+The last visual is a **Treemap** called *Top 5 Annualized % Return by Sub-Industry* displays the top 5 Tickers by Annualized Return and Sub-Industry. The *Sub_Industry* from the *Sub-Industries* table is used for *Category*, the *Ticker* from the *Equities* table in *Details*, *Annualized % Return* from the *Equity_Statistics* table in *Values* and *Name* from the *Equities* table in the *Tooltips*. An advanced filter is added using the *RankAnnualizedReturnsbySub_Industry* measure from the *Equity_Statistics* table with value <= 5.
 
 ![Power_BI_Sub_Industry_Treemap.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Sub_Industry_Treemap.jpg?raw=true)
 
