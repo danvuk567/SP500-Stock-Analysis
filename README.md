@@ -30,6 +30,7 @@ technologies and exploratory result observations.
 - GLOBAL INDUSTRY CLASSIFICATION STANDARD (GICS®) METHODOLOGY (MSCI): (https://www.msci.com/documents/1296102/11185224/GICS+Methodology+2020.pdf)
 - S&P 500 Equities Latest Pricing data (Barchart, as of September 2024): (https://www.barchart.com/stocks/indices/sp/sp500?viewName=main)
 - YFinance API: (https://pypi.org/project/yfinance/)
+- Pandas Market Calendars API: (https://pandas-market-calendars.readthedocs.io/en/latest/)
 
 ## **Technologies** ##
 
