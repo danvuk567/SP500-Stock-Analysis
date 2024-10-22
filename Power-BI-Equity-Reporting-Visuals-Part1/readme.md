@@ -49,6 +49,10 @@ To display Daily Pricing data for the last Date, we'll use a **Multi-row Card** 
 
 ![Power_BI_Pricing_Multi_Row_Card_Charts.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Multi_Row_Card_Charts.jpg?raw=true)
 
+A *Clear Filters* button is added with the *Action* to *Clear all slicers*.
+
+![Power_BI_Pricing_Clear_Filters_Button.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Clear_Filters_Button.jpg?raw=true)
+
 Here is the final version of the *S&P 500 Equity Pricing* report tab:
 
 ![Power_BI_Equity_Report_1st_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_1st_tab.jpg?raw=true)
