@@ -1,6 +1,6 @@
 # Power BI S&P 500 Equity Reporting Visuals - Part 4
 
-The 4th reporting tab called *S&P 500 Equity Performance by Sub-Industry* independantly visualizes Equity performance by Sub-Industry. The **Slicer** dropdown visual uses *Sector* from the *Sectors* table to filter Returns by Sub-Industry for the Sector in the other visuals.
+The 4th reporting tab called *S&P 500 Equity Performance by Sub-Industry* independently visualizes Equity performance by Sub-Industry. The **Slicer** dropdown visual uses *Sector* from the *Sectors* table to filter Returns by Sub-Industry for the Sector in the other visuals.
 
 ![Power_BI_Sector_Sub_Industry_Slicer.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Sector_Sub_Industry_Slicer.jpg?raw=true)
 
