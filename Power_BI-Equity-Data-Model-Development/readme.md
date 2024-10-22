@@ -267,7 +267,7 @@ a good idea is also to display the last date pricing data in a card visual. To a
 	    )
 	)
 
-We'll do the same type of DAX code to create the last quarterly date pricing data in the Equity_Prices_by_Quarter table, last monthly date pricing data in the Equity_Prices_by_Month table and the last daily pricing data in the Equity_Prices table.
+We'll do the same type of DAX code to create the last quarterly date pricing data in the *Equity_Prices_by_Quarter* table, last monthly date pricing data in the *Equity_Prices_by_Month* table and the last daily pricing data in the *Equity_Prices* table.
 
 Next, we create new relationships to the calculated tables that we created. We'll create a **one-to-many relationship** between *Ticker_ID* in the *Equities* table to *Ticker_ID* in the *Equity_Prices_by_Year*, *Equity_Prices_by_Quarter* and *Equity_Prices_by_Month* tables. We'll also create a one-to-many relationship between *Date* in the *Calendar* table to *Date* in the *Equity_Prices_by_Year*, *Equity_Prices_by_Quarter* and *Equity_Prices_by_Month* tables.
 
@@ -277,11 +277,11 @@ And our Data Model now looks like this:
 
 ![Power_BI_Pricing_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Pricing_Data_Model.jpg?raw=true)
 
-The main goal of this project was to look at measuring performance focused on Equity returns. As we did with pricing, we can focus on YEarly, Quarterly, Monthly and Daily Returns. We had previously explored this in the project using Python code so rather than going down a long and complex path with DAX, we can use **Python** in **Power Query** to create some tables. 
+The main goal of this project was to look at measuring performance focused on Equity returns. As we did with pricing, we can focus on Yearly, Quarterly, Monthly and Daily Returns. We had previously explored this in the project using Python code so rather than going down a long and complex path with DAX, we can use **Python** in **Power Query** to create some tables. 
 
 ## *Equity_Returns_by_Year* table
 
-We'll start with the Yearly Returns and create a table called *Equity_Returns_by_Year* by duplicating the *Equity_Prices* table in Power Query and keeping only the *Date*, *Ticker_ID* and *Close* columns. Next we can click on the *Transform* menu and then *Run Python script* to transform the data into Yearly Returns. When working with pandas, the default pandas dataframe is called *dataset*. We will calculate the *% Return* and the *Cumulative % Return* using log returns by Ticker_ID and Year similar to what we did independently earlier on the project.
+We'll start with the Yearly Returns and create a table called *Equity_Returns_by_Year* by duplicating the *Equity_Prices* table in Power Query and keeping only the *Date*, *Ticker_ID* and *Close* columns. Next, we can click on the *Transform* menu and then *Run Python script* to transform the data into Yearly Returns. When working with pandas, the default pandas dataframe is called *dataset*. We will calculate the *% Return* and the *Cumulative % Return* using log returns by Ticker_ID and Year like what we did independently earlier on the project.
 
 ### *[Equity_Returns_by_Year_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Year_Python_Code.txt)*  
 
@@ -374,8 +374,8 @@ The Power Query transformations are similar for the next 3 tables *Equity_Return
 
 ## *Equity_Statistics* table
 
-The final table we will create will contain various performance statistics by Ticker for the latest date in a table called *Equity_Statistics. We will use **Python** code in **Power Query** to calculate these metrics. Essentially, we will reference the *Equity_Returns* table in Power Query and then aggregate the dataframe *dataset* as *dataset_stats* for the full time series by *Ticker_ID*. The fileds that are calculated in *dataset_stats* are The fields we will calculate are *% Return*, *Cumulative % Return*, *Lowest % Return*, *25th Percentile % Return*, *Median % Return*, *75th Percentile % Return*, *Highest % Return*, *Average % Return*, *Return % Variance*, *Annualized % Return*, *Annualized Volatility* and *Annualized_Downside_Volatility*. *dataset_stats* will be merged to *dataset* by *Ticker_ID* and then the last date will be kept. A new dataframe *dataset_filtered* will be extracted for the last 3 years of data by *Ticker_ID*. 
-We compute the *Max % Drawdown* by *Ticker_ID* and the *Calmar Ratio* = *Annualized % Return / Max % Drawdown* and keep the last date. *dataset_filtered* is then merged to *dataset*. Finally *Annualized Sharpe Ratio* is computed as *(Annualized % Return - risk_free_rate) / Annualized Volatility* and *Annualized Sortino Ratio* is computed as *(Annualized % Return' - risk_free_rate) / Annualized Downside Volatility*. Lastly, values are rounded off in the dataframe *dataset*.
+The final table we will create will contain various performance statistics by Ticker for the latest date in a table called *Equity_Statistics. We will use **Python** code in **Power Query** to calculate these metrics. Essentially, we will reference the *Equity_Returns* table in Power Query and then aggregate the dataframe *dataset* as *dataset_stats* for the full time series by *Ticker_ID*. The fields that are calculated in *dataset_stats* are The fields we will calculate are *% Return*, *Cumulative % Return*, *Lowest % Return*, *25th Percentile % Return*, *Median % Return*, *75th Percentile % Return*, *Highest % Return*, *Average % Return*, *Return % Variance*, *Annualized % Return*, *Annualized Volatility* and *Annualized_Downside_Volatility*. *dataset_stats* will be merged to *dataset* by *Ticker_ID* and then the last date will be kept. A new dataframe *dataset_filtered* will be extracted for the last 3 years of data by *Ticker_ID*. 
+We compute the *Max % Drawdown* by *Ticker_ID* and the *Calmar Ratio* = *Annualized % Return / Max % Drawdown* and keep the last date. *dataset_filtered* is then merged to *dataset*. Finally, *Annualized Sharpe Ratio* is computed as *(Annualized % Return - risk free rate) / Annualized Volatility* and *Annualized Sortino Ratio* is computed as *(Annualized % Return' - risk free rate) / Annualized Downside Volatility*. Lastly, values are rounded off in the dataframe *dataset*.
 
 ### *[Equity_Statistics_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Statistics_Python_Code.txt)*
 
@@ -540,7 +540,7 @@ The dataframe *dataset* is returned as a table and after a few more cleanup step
 
 ![Power_BI_Power_Query_Equity_Statistics_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Statistics_Transformation.jpg?raw=true)
 
-Now, we create new relationships to the perfromance tables that we created. We'll create a **one-to-many relationship** between *Ticker_ID* in the *Equities* table to *Ticker_ID* in the *Equity_Returns_by_Year*, *Equity_Returns_by_Quarter*, *Equity_Returns_by_Month*, *Equity_Returns* and *Equity_Statistics* tables.
+Now, we create new relationships to the performance tables that we created. We'll create a **one-to-many relationship** between *Ticker_ID* in the *Equities* table to *Ticker_ID* in the *Equity_Returns_by_Year*, *Equity_Returns_by_Quarter*, *Equity_Returns_by_Month*, *Equity_Returns* and *Equity_Statistics* tables.
 
 ![Power_BI_Return_Data_Model_Relationships.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Return_Data_Model_Relationships.jpg?raw=true)
 
