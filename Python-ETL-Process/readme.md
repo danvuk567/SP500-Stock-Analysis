@@ -470,7 +470,7 @@ This process will load the *Equities* table with Equity data and Sub_Industry_ID
 
 ## Stage Yahoo Equity Pricing data: *[Load-Yahoo_Equity_Prices_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Yahoo_Equity_Prices_STG.ipynb)*
 
-For this process, we'll go into some new types of code. We will import the packages needed and 2 other packages, *yfinance* and *time*. After establishing a connection, we define the staging table *Data_STG* to store the pricing data we will retrieve from the **Yahoo Finance** API. We then clear the *Data_STG* table.
+For this process, we'll go into some new types of code. We will import the packages needed and 2 other packages, *yfinance* and *time*. After establishing a connection, we define the staging table *Data_STG* to store the pricing data we will retrieve from the [YFinance](https://pypi.org/project/yfinance/)) API. We then clear the *Data_STG* table.
 
         import datetime as dt
         import sqlalchemy as sa
