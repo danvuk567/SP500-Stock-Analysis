@@ -4,37 +4,7 @@
 
 For this project, we will be running Python 3.9 in a conda environment. For more information on getting started with conda, please refer to this link: [Getting started with conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html). 
 
-The following packages will need be installed if they do not already exist using conda or pip with the following commands:
-
-conda install datetime
-
-conda install sqlalchemy
-
-conda install numpy
-
-conda install pandas
-
-conda install urllib
-
-pip install yfinance
-
-conda install time
-
-pip install pandas_market_calendars
-
-pip install plotly
-
-conda install matplotlib
-
-conda install seaborn
-
-conda install scipy
-
-conda install sklearn
-
-pip install cryptography
-
-
+The python package requirments are listed in the requirements.txt file: ### *[requirements.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/requirements.txt)*  
 
 ## Create custom re-usable functions: *[custom_python_functions.py](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Custom_Python_Functions/custom_python_functions.py)*  
 
