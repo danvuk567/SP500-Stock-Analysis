@@ -27,9 +27,10 @@ technologies and exploratory result observations.
 
 ## **Technologies** ##
 
-- Language: SQL, Python
+- Language: SQL, Python, DAX
 - Extraction and transformation: Excel Power Query, Jupyter Notebook
-- Storage: SQL Server 2022 Database
+- Storage: Microsoft Azure SQL Database
+- Visualization Tool: Power BI
 
 ## **Snowflake Schema Data Modelling** ##
 
