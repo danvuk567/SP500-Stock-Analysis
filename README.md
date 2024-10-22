@@ -18,6 +18,10 @@ technologies and exploratory result observations.
 - [Python Portfolio Performance Analysis](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Portfolio-Performance-Analysis)
 - [Python Sector/Sub-Industry Performance Analysis](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Sector-Sub_Industry-Performance-Analysis)
 - [Power_BI-Equity-Data-Model-Development](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power_BI-Equity-Data-Model-Development)
+- [Power-BI-Equity-Reporting-Visuals-Part1](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part1)
+- [Power-BI-Equity-Reporting-Visuals-Part2](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part2)
+- [Power-BI-Equity-Reporting-Visuals-Part3](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part3)
+- [Power-BI-Equity-Reporting-Visuals-Part4](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part4)
 
 ## **Free Data Sources Used** ##
 
