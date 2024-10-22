@@ -4,8 +4,8 @@
 
 ## **Objective** ##
 
-In this project, I designed and implemented an end-to-end ETL process along with analytics and visualizations. 
-The focus was transform, load and study S&P 500 stock pricing data. The sections below describe, in great detail, the 
+In this project, I designed and implemented an end-to-end ETL process from scratch along with analytics and visualizations. 
+The focus was transform, load and study S&P 500 stock return data. The sections below describe, in great detail, the 
 methodologies, technologies and exploratory result observations.
 
 ## **Table of Contents** ##
