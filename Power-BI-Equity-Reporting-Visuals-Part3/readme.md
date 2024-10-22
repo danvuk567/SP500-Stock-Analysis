@@ -1,6 +1,6 @@
 # Power BI S&P 500 Equity Reporting Visuals - Part 3
 
-The 3rd reporting tab called *S&P 500 Equity Performance by Sector* independantly visualizes Equity performance by Sector. The **Donut Chart** called *# of S&P 500 Equities per Sector* simply displays the count of Tickers per Sector using *Sector* from the *Sectors* table in the *Legend* and *Ticker_ID* from the *Equities* table in the *Values*.
+The 3rd reporting tab called *S&P 500 Equity Performance by Sector* independently visualizes Equity performance by Sector. The **Donut Chart** called *# of S&P 500 Equities per Sector* simply displays the count of Tickers per Sector using *Sector* from the *Sectors* table in the *Legend* and *Ticker_ID* from the *Equities* table in the *Values*.
 
 ![Power_BI_Sector_Ticker_Count_Donut_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Sector_Ticker_Count_Donut_Chart.jpg?raw=true)
 
