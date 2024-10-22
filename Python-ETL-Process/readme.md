@@ -470,7 +470,7 @@ This process will load the *Equities* table with Equity data and Sub_Industry_ID
 
 ## Stage Yahoo Equity Pricing data: *[Load-Yahoo_Equity_Prices_STG.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-Yahoo_Equity_Prices_STG.ipynb)*
 
-For this process, we'll go into some new types of code. We will import the packages needed and 2 other packages, *yfinance* and *time*. After establishing a connection, we define the staging table *Data_STG* to store the pricing data we will retrieve from **Yahoo Finance**. We then clear the *Data_STG* table.
+For this process, we'll go into some new types of code. We will import the packages needed and 2 other packages, *yfinance* and *time*. After establishing a connection, we define the staging table *Data_STG* to store the pricing data we will retrieve from the **Yahoo Finance** API. We then clear the *Data_STG* table.
 
         import datetime as dt
         import sqlalchemy as sa
@@ -665,7 +665,7 @@ And finally, we check if all records were loaded in the *Data_STG* table and clo
 
 ## Load Market Calendar data: *[Load-US_Market_Calendar.ipynb](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process/Load-US_Market_Calendar.ipynb)*
 
-To determine if there is missing Equity pricing data for any Ticker for the same range of dates, we need to validate it against US market dates. We can retrieve the calendar from any global Stock exchange from [Pandas Market Calendars](https://pandas-market-calendars.readthedocs.io/en/latest/) which should serve our purpose. After we install pandas_market_calendars, we can import it along with other needed packages. For this project, we'll fetch 3 years back and 6 years forward for the calendar. Let's define a function called *get_market_calendar* using the exchange, start_date, end_date and timezone paramaters that returns a dataframe. We will then call the function using the *NYSE* stock exchange with our date range and using the *America/New_York* timezone.
+To determine if there is missing Equity pricing data for any Ticker for the same range of dates, we need to validate it against US market dates. We can retrieve the calendar from any global Stock exchange from the [Pandas Market Calendars](https://pandas-market-calendars.readthedocs.io/en/latest/) API. which should serve our purpose. After we install pandas_market_calendars, we can import it along with other needed packages. For this project, we'll fetch 3 years back and 6 years forward for the calendar. Let's define a function called *get_market_calendar* using the exchange, start_date, end_date and timezone paramaters that returns a dataframe. We will then call the function using the *NYSE* stock exchange with our date range and using the *America/New_York* timezone.
 
         import datetime as dt
         import sqlalchemy as sa
