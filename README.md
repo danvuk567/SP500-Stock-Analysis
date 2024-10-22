@@ -1,11 +1,11 @@
-# **Data Analysis: S&P 500 Stocks**
+# **Data Analysis: S&P 500 Equities**
 
 ![Forbes Line Chart](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/stock_chart.jpg?raw=true)
 
 ## **Objective** ##
 
 In this project, I designed and implemented a full stack workflow involving end-to-end ETL processes, analytics and visualizations. 
-The focus was to transform, load and study S&P 500 stock return data. The sections below describe, in great detail, the methodologies, 
+The focus was to transform, load and study S&P 500 Equity return data. The sections below describe, in great detail, the methodologies, 
 technologies and exploratory result observations.
 
 ## **Table of Contents** ##
