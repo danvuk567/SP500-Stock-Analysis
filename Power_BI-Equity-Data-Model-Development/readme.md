@@ -540,7 +540,7 @@ The dataframe *dataset* is returned as a table and after a few more cleanup step
 
 ![Power_BI_Power_Query_Equity_Statistics_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equity_Statistics_Transformation.jpg?raw=true)
 
-We'll add a measure to rank Annualized Return by Sector. We'll copy the *Sector_ID* column from the *Sectors* table to *Equity_Statistics*. and then use the **DAX** **RANK** function as a dense rank using *Annualized % Return* and *Sector_ID* from the *Equity_Statistics* table.
+We'll add a measure to rank Annualized Return by Sector. We'll copy the *Sector_ID* column from the *Sectors* table to *Equity_Statistics*. We use the **DAX** **RANK** function as a dense rank using *Annualized % Return* and *Sector_ID* from the *Equity_Statistics* table.
 
 	Sector_ID = RELATED(Sectors[Sector_ID])
 
@@ -550,7 +550,7 @@ We'll add a measure to rank Annualized Return by Sector. We'll copy the *Sector_
              PARTITIONBY('Equity_Statistics'[Sector_ID])
 	)
 
-And lastly, we'll add a measure to rank Annualized Return by Sub-Industry. We'll copy the *Sub_Industry_ID* column from the *Sub_Industries* table to *Equity_Statistics*. and then use the **DAX** **RANK** function as a dense rank using *Annualized % Return* and *Sub_Industry_ID* from the *Equity_Statistics* table.
+And lastly, we'll add another measure to rank Annualized Return by Sub-Industry. We'll copy the *Sub_Industry_ID* column from the *Sub_Industries* table to *Equity_Statistics*. We use the **DAX** **RANK** function as a dense rank using *Annualized % Return* and *Sub_Industry_ID* from the *Equity_Statistics* table.
 
 	Sub_Industry_ID = RELATED(Sub_Industries[Sub_Industry_ID])
 
