@@ -13,6 +13,7 @@ The **Funnel Chart** called *Top 10 Annualized % Returns* displays the top 10 Ti
 ![Power_BI_Equity_Funnel_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Funnel_Chart.jpg?raw=true)
 
 The last visual is a **Treemap** called *Top 5 Annualized % Return by Sector* displays the top 5 Tickers by Annualized Return and Sector. The *Sector* from the *Sectors* table is used for *Category*, the *Ticker* from the *Equities* table in *Details*, *Annualized % Return* from the *Equity_Statistics* table in *Values* and *Name* from the *Equities* table in the *Tooltips*.
+An advanced filter is added using the *RankAnnualizedReturnsbySector* measure value <= 5.
 
 ![Power_BI_Sector_Treemap.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Sector_Treemap.jpg?raw=true)
 
