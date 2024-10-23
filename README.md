@@ -37,7 +37,7 @@ technologies and exploratory result observations.
 - Language: SQL, Python, DAX
 - Extraction and transformation: Excel Power Query, Jupyter Notebook
 - Storage: Microsoft Azure SQL Database
-- Visualization Tool: Power BI
+- Dashboard: Power BI
 
 ## **Snowflake Schema Data Modelling** ##
 
