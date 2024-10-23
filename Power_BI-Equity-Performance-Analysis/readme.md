@@ -1,7 +1,6 @@
 # Power BI Equity Performance Analysis
 
-The following sections describe the detailed steps involved to create the dashboards for this project within the 
-Power BI file called *Equity-Performance-Analysis.pbix*.
+The following sections describe the detailed steps involved in creating the dashboards within the Power BI file called *Equity-Performance-Analysis.pbix*.
 
 - [Power_BI Equity Data Model Development](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power_BI-Equity-Data-Model-Development)
 - [Power-BI Equity Reporting Visuals Part 1](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part1)
