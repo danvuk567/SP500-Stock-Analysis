@@ -1,4 +1,4 @@
-# **Data Analysis: S&P 500 Equities**
+# **Data Analysis: S&P 500 Stocks**
 
 ![Forbes Line Chart](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/stock_chart.jpg?raw=true)
 
@@ -17,11 +17,11 @@ technologies and exploratory result observations.
 - [Python Equity Performance Analysis](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Equity-Performance-Analysis)
 - [Python Portfolio Performance Analysis](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Portfolio-Performance-Analysis)
 - [Python Sector/Sub-Industry Performance Analysis](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Sector-Sub_Industry-Performance-Analysis)
-- [Power_BI-Equity-Data-Model-Development](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power_BI-Equity-Data-Model-Development)
-- [Power-BI-Equity-Reporting-Visuals-Part1](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part1)
-- [Power-BI-Equity-Reporting-Visuals-Part2](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part2)
-- [Power-BI-Equity-Reporting-Visuals-Part3](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part3)
-- [Power-BI-Equity-Reporting-Visuals-Part4](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part4)
+- [Power_BI Equity Data Model Development](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power_BI-Equity-Data-Model-Development)
+- [Power-BI Equity Reporting Visuals Part 1](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part1)
+- [Power-BI-Equity Reporting Visuals Part 2](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part2)
+- [Power-BI-Equity Reporting Visuals Part 3](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part3)
+- [Power-BI-Equity Reporting Visuals Part 4](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part4)
 - [Power-BI Report File](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power_BI-Files)
 
 ## **Free Data Sources Used** ##
