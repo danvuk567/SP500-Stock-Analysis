@@ -22,6 +22,7 @@ technologies and exploratory result observations.
 - [Power-BI-Equity-Reporting-Visuals-Part2](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part2)
 - [Power-BI-Equity-Reporting-Visuals-Part3](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part3)
 - [Power-BI-Equity-Reporting-Visuals-Part4](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part4)
+- [Power-BI Report File](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power_BI-Files)
 
 ## **Free Data Sources Used** ##
 
