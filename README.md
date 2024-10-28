@@ -5,9 +5,19 @@
 ## **Objective** ##
 
 In this project, I designed and implemented a full stack workflow involving end-to-end ETL processes, analytics and visualizations. 
-The focus was to transform, load and study S&P 500 Equity return data. The sections below describe, in great detail, the methodologies, 
-technologies and exploratory result observations.
+The focus was to transform, load and study S&P 500 Equity return data from Jan 1st, 2021 to Sep 20, 2024. 
+The sections below describe, in great detail, the methodologies, technologies and exploratory result observations.
 
+## **Highlights** ##
+
+* NVDA (Nvidia Corporation) was in the top 4 yearly returns in all 4 years from Jan 1st, 2021 to Sep 20, 2024 except in 2022.
+* SMCI (Super Micro Computer, Inc) had the highest annualized return of 105.13% from Jan 1st, 2021 to Sep 20, 2024 but also had the highest annualized volatility of 72.64%.
+* LLY (Eli Lilly and Company) had the highest risk-adjusted return performance with an Annualized Sharpe Ratio of 1.87, Annualized Sortino Ratio of 3.1 and Calmar Ratio of 1.41.
+* With respect to industry sector return performance, equally weighted average returns of all stocks from Jan 1st, 2021 to Sep 20, 2024 within their respective industry Sector were used.
+  Overall, the Information Technology sector was in the top 4 performing sectors in all 4 years except 2022.
+  The Energy sector had the highest Annualized Return of 26.72% but also had the highest Annualized Volatility of 31.14%.
+  The Consumer Staples sector had a zero (0.03%) Annualized Return but also had the lowest Annualized Volatility of 14.32%.
+  
 ## **Table of Contents** ##
 
 - [Data Sources and File Transformation Overview](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Data-Source-Files/readme.md)
