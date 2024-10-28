@@ -12,7 +12,7 @@ The sections below describe, in great detail, the methodologies, technologies an
 
 * NVDA (Nvidia Corporation) was in the top 4 yearly returns in all 4 years from Jan 1st, 2021 to Sep 20, 2024 except in 2022.
 * SMCI (Super Micro Computer, Inc) had the highest annualized return of 105.13% from Jan 1st, 2021 to Sep 20, 2024 but also had the highest annualized volatility of 72.64%.
-* LLY (Eli Lilly and Company) had the highest risk-adjusted return performance with an Annualized Sharpe Ratio of 1.87, Annualized Sortino Ratio of 3.1 and Calmar Ratio of 1.41.
+* LLY (Eli Lilly and Company) had the highest risk-adjusted return performance measures with an Annualized Sharpe Ratio of 1.87, Annualized Sortino Ratio of 3.1 and Calmar Ratio of 1.41.
 * With respect to industry sector return performance, equally weighted average returns of all stocks from Jan 1st, 2021 to Sep 20, 2024 within their respective industry Sector were used.
   Overall, the Information Technology sector was in the top 4 performing sectors in all 4 years except 2022.
   The Energy sector had the highest Annualized Return of 26.72% but also had the highest Annualized Volatility of 31.14%.
