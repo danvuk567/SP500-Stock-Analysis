@@ -4,7 +4,7 @@ The 3rd reporting tab called *S&P 500 Equity Performance by Sector* independentl
 
 ![Power_BI_Sector_Ticker_Count_Donut_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Sector_Ticker_Count_Donut_Chart.jpg?raw=true)
 
-The **Clustered Column Chart** called *Average % Return by Year and Sector* displays the Average of Yearly Returns by Sector using *Year* from the *Equity_Returns_by_Year* table in the *X-Axis*, the average of the *% Return* from the *Equity_Returns_by_Year* table in the *Y-Axis* and *Sector* from the *Sectors* table in the *Legend*.
+The **Clustered Column Chart** called *Average % Return by Year and Sector* displays the Average of Yearly Returns by Sector using *Year* from the *Equity_Returns_by_Year* table in the *X-Axis*, the average of the *% Return* from the *Equity_Returns_by_Year* table in the *Y-Axis* and *Sector* from the *Sectors* table in the *Legend*. Overall, the **Information Technology** was in the top 4 performing sectors in all 4 years except 2022.
 
 ![Power_BI_Sector_Year_Return_Column_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Sector_Year_Return_Column_Chart.jpg?raw=true)
 
