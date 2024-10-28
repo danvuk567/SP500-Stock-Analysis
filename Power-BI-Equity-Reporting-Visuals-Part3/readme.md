@@ -8,7 +8,7 @@ The **Clustered Column Chart** called *Average % Return by Year and Sector* disp
 
 ![Power_BI_Sector_Year_Return_Column_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Sector_Year_Return_Column_Chart.jpg?raw=true)
 
-The **Funnel Chart** called *Top 10 Annualized % Returns* displays the top 10 Tickers by Annualized Return. It did not fit in our *S&P 500 Equity Performance* tab but can be compared to the *Top 5 Annualized % Return by Sector* visual. The *Ticker* from the *Equities* table is used for *Category*, *Annualized % Return* from the *Equity_Statistics* table in *Values* and *Name* from the *Equities* table in the *Tooltips*. We use a *Filter* with *Top N* type as 10 for *Annualized % Return* from the *Equity_Statistics* table.
+The **Funnel Chart** called *Top 10 Annualized % Returns* displays the top 10 Tickers by Annualized Return. It did not fit in our *S&P 500 Equity Performance* tab but can be compared to the *Top 5 Annualized % Return by Sector* visual. The *Ticker* from the *Equities* table is used for *Category*, *Annualized % Return* from the *Equity_Statistics* table in *Values* and *Name* from the *Equities* table in the *Tooltips*. We use a *Filter* with *Top N* type as 10 for *Annualized % Return* from the *Equity_Statistics* table. SMCI had the highest annualized return of 105.13% for the past 4 years.
 
 ![Power_BI_Equity_Funnel_Chart.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Funnel_Chart.jpg?raw=true)
 
