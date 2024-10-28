@@ -237,7 +237,7 @@ If we want to compare which stocks from the S&P 500 performed the best by Year, 
 
 ![SP500_Equity_Top_5_Returns_by_Year_Data.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_5_Returns_by_Year_Data.jpg?raw=true)
 
-We see that **NVDA** is in the top 5 in all 5 years except 2022. **SMCI** and **CEG** are the only other stock that appears more than once. Both **NVDA** and **SMCI** are computer hardware types and in one of the top performing industries of the decade. 
+We see that **NVDA** is in the top 5 in all 4 years except 2022. **SMCI** and **CEG** are the only other stock that appears more than once. Both **NVDA** and **SMCI** are computer hardware types and in one of the top performing industries of the decade. 
 
 ## Yearly Equity Return Percentile Query: *[Yearly-Equity-Return-Percentile-Query.sql](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/SQL-Equity-Performance-Analysis/Yearly-Equity-Return-Percentile-Query.sql)*
 
