@@ -51,7 +51,7 @@ Before bringing in any data source in to Power BI to build a report, let's conso
 
 ![Power_BI_Import_Yahoo_Equty_Prices_View.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Import_Yahoo_Equty_Prices_View.jpg?raw=true)
 
-We'll click on **Transform** to load **Power Query**. We'll rename our view *VW_Yahoo_Equity_Prices* to *Equity_Prices* as a simpler naming convention. Next, we will need to extract the Dimension tables from the view. 
+We'll click on **Transform** to load **Power Query**. We'll rename our view *VW_Yahoo_Equity_Prices* to *Equity_Prices* as a simpler naming convention for our Fact table. Next, we will need to extract the Dimension tables from the view. 
 
 We'll start with extracting the *Sectors* Dimension table query by duplicating the Equity_Prices table query. We select *Sector_ID* and *Sector* columns and use *Remove Other Columns*. And lastly, we use *Remove Duplicates*.
 
@@ -69,7 +69,7 @@ We also extract our *Sub_Industries* Dimension Dimension table query by duplicat
 
 ![Power_BI_Power_Query_Sub_Industries_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Sub_Industries_Transformation.jpg?raw=true)
 
-We extract our *Equities* Dimension Dimension table query by duplicating the Equity_Prices table query. We select *Industry_Group_ID*, *Industry*, and *Industry_ID* columns and use *Remove Other Columns* and then *Remove Duplicates*.
+We extract our *Equities* Dimension table query by duplicating the Equity_Prices table query. We select *Industry_Group_ID*, *Industry*, and *Industry_ID* columns and use *Remove Other Columns* and then *Remove Duplicates*.
 
 ![Power_BI_Power_Query_Equities_Transformation.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Power_Query_Equities_Transformation.jpg?raw=true)
 
@@ -88,6 +88,71 @@ And our initial Data Model now looks like this:
 ![Power_BI_Initial_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Initial_Data_Model.jpg?raw=true)
 
 This project will require some custom table and fields that will be calculated using **DAX**. DAX stands for Data Analysis Expressions and is an expression language native to Power BI. The following link contains instruction and DAX code that we will refer to step by step going forward.
+
+## *Python Code to further Transform Data*
+
+To transform existing data into other tables using more complex logic, we can run Python scripts within the Transform section in Power Query. 
+
+To create the *Equity_Returns_by_Year* table, which calculates Equity returns by year, we can run the following Python script. Both the simple *Yearly % Returns* as well as the *Cumulative Yearly % Returns* (using Log Returns) are caluclated by Ticker.
+
+[Equity Returns by Year Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Returns_by_Year_Python_Code.txt)
+
+		# 'dataset' holds the input data for this script
+		import pandas as pd
+		import numpy as np
+
+		dataset['Date'] = pd.to_datetime(dataset['Date'], errors='coerce')
+		dataset['Year'] = dataset['Date'].dt.year
+
+		dataset2 = dataset.groupby(['Ticker_ID', 'Year']).agg(
+            		{
+                		'Date': 'last',   # Get the last date for each group
+                		'Open': "first",  # Get the first opening price for each group
+                		'High': 'max',    # Get the maximum high price for each group
+                		'Low': 'min',     # Get the minimum low price for each group
+                		'Close': 'last',  # Get the last closing price for each group
+                		'Volume': 'last'  # Get the last volume for each group
+            		}
+       		 ).reset_index() 
+
+		dataset2.sort_values(by=['Ticker_ID', 'Date'], inplace=True)
+		dataset2['Prev Close'] = dataset2.groupby('Ticker_ID')['Close'].shift(1)
+		is_first_period = dataset2['Prev Close'].isna()
+
+		dataset2['% Return'] = 0
+		dataset2.loc[is_first_period, '% Return'] = np.round((dataset2['Close'] / dataset2['Open']) - 1.0, 4)
+    
+		same_ticker = dataset2['Ticker_ID'] == dataset2['Ticker_ID'].shift(1)
+		dataset2.loc[~is_first_period & same_ticker, '% Return'] = np.round((dataset2['Close'] / dataset2['Prev Close']) - 1.0, 4)
+
+		dataset2.loc[is_first_period, 'Log Return'] = np.log(dataset2['Close'] / dataset2['Open']) 
+		dataset2.loc[~is_first_period & same_ticker, 'Log Return'] = np.log(dataset2['Close'] / dataset2['Prev Close'])
+
+		dataset2['Cumulative Log Return'] = dataset2.groupby('Ticker_ID')['Log Return'].cumsum()
+		dataset2['Cumulative % Return'] = np.round(np.exp(dataset2['Cumulative Log Return']) - 1.0, 4)
+
+		dataset = dataset2
+
+		del dataset2
+
+To other Fact tables that will be transformed with Python are listed below along with their Python script.
+
+*Equity_Returns_by_Quarter:*
+
+[Equity Returns by Quarter Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Returns_by_Quarter_Python_Code.txt)
+
+*Equity_Returns_by_Month:*
+
+[Equity Returns by Quarter Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Returns_by_Month_Python_Code.txt)
+
+*Equity_Returns:*
+
+[Equity Returns Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Returns_Python_Code.txt)
+
+*Equity_Statistics:*
+
+[Equity Statistics Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Statistics_Python_Code.txt)
+
 
 ## *[DAX-Code-Instructions.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/DAX-Code-Instructions.txt)*    
 
