@@ -95,7 +95,7 @@ To transform existing data into other tables using more complex logic, we can ru
 
 To create the *Equity_Returns_by_Year* table, which calculates Equity returns by year, we can run the following Python script. Both the simple *Yearly % Returns* as well as the *Cumulative Yearly % Returns* (using Log Returns) are caluclated by Ticker.
 
-[Equity Returns by Year Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Returns_by_Year_Python_Code.txt)
+[Equity_Returns_by_Year_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Year_Python_Code.txt)
 
 		# 'dataset' holds the input data for this script
 		import pandas as pd
@@ -139,19 +139,19 @@ To other Fact tables that will be transformed with Python are listed below along
 
 *Equity_Returns_by_Quarter:*
 
-[Equity Returns by Quarter Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Returns_by_Quarter_Python_Code.txt)
+[Equity_Returns_by_Quarter_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Quarter_Python_Code.txt)
 
 *Equity_Returns_by_Month:*
 
-[Equity Returns by Quarter Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Returns_by_Month_Python_Code.txt)
+[Equity_Returns_by_Month_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_by_Month_Python_Code.txt)
 
 *Equity_Returns:*
 
-[Equity Returns Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Returns_Python_Code.txt)
+[Equity_Returns_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Returns_Python_Code.txt)
 
 *Equity_Statistics:*
 
-[Equity Statistics Python Code](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/Equity_Statistics_Python_Code.txt)
+[Equity_Statistics_Python_Code.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Data-Model-Development/Equity_Statistics_Python_Code.txt)
 
 
 ## *[DAX-Code-Instructions.txt](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Power_BI-Equity-Analysis/DAX-Code-Instructions.txt)*    
