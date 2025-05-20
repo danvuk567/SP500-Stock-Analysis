@@ -1,4 +1,4 @@
-# **Data Analysis: S&P 500 Stock Prices and Performance**
+# **Data Transformation and Analysis: S&P 500 Stock Prices and Performance**
 
 ![Forbes Line Chart](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/stock_chart.jpg?raw=true)
 
