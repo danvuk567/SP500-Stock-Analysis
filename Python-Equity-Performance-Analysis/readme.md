@@ -1090,7 +1090,9 @@ Another measure of risk vs. reward is the **Calmar Ratio**. For more information
            
 ![SP500_Equity_Top_10_Annualized_Calmar_Ratio_Data_Python.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equity_Top_10_Annualized_Calmar_Ratio_Data_Python.jpg?raw=true)
 
-Again, **LLY** came in at the top with a **Calmar Ratio** of **1.41** which is close to 1.5 and anything above 1.5 is considered strong performance.
+Again, **LLY** came in at the top with a **Calmar Ratio** of **1.41** which is close to 1.5 and anything above 1.5 is considered strong performance.<br/><br/>
+
+:arrow_right: **Next:** [Python Portfolio Performance Analysis](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Python-Portfolio-Performance-Analysis)
 
 
 
