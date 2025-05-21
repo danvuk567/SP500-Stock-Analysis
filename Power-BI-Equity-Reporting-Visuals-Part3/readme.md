@@ -19,4 +19,6 @@ An advanced filter is added using the *RankAnnualizedReturnsbySector* measure fr
 
 Here is the final version of the *S&P 500 Equity Performance by Sector* report tab:
 
-![Power_BI_Equity_Report_3nd_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_3nd_tab.jpg?raw=true)
+![Power_BI_Equity_Report_3nd_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_3nd_tab.jpg?raw=true)<br/><br/>
+
+:arrow_right: **Next:** [Power-BI Equity Reporting Visuals Part 4](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part4)
