@@ -631,5 +631,8 @@ Now, we create new relationships to the performance tables that we created. We'l
 
 And our final Data Model now looks like this:
 
-![Power_BI_Final_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Final_Data_Model.jpg?raw=true)
+![Power_BI_Final_Data_Model.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Final_Data_Model.jpg?raw=true)<br/><br/>
+
+:arrow_right: **Next:** [Power-BI Equity Reporting Visuals Part 1](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part1)
+
 
