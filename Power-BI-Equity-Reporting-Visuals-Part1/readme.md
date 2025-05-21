@@ -55,5 +55,7 @@ A *Clear Filters* button is added with the *Action* to *Clear all slicers*.
 
 Here is the final version of the *S&P 500 Equity Pricing* report tab:
 
-![Power_BI_Equity_Report_1st_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_1st_tab.jpg?raw=true)
+![Power_BI_Equity_Report_1st_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_1st_tab.jpg?raw=true)<br/><br/>
+
+:arrow_right: **Next:** [Power-BI Equity Reporting Visuals Part 2](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/Power-BI-Equity-Reporting-Visuals-Part2)
 
