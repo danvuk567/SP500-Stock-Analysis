@@ -144,8 +144,9 @@ This DDL statement will create the Dimension table called *Market_Calendar*. To 
 
 And there you have it! We have set up a basic Snowflake schema for our small Equity Data Warehouse.
 
-![Equity_Snowflake_Schema_ERD.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Equity_Snowflake_Schema_ERD.jpg?raw=true)
+![Equity_Snowflake_Schema_ERD.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Equity_Snowflake_Schema_ERD.jpg?raw=true)<br/><br/>
 
+:arrow_right: **Next:** [Python ETL Process Description](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Python-ETL-Process)
 
 
 
