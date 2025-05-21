@@ -29,4 +29,7 @@ We will then load *SP500_GICS_Sub-Industries.csv* and *GICS_Industries.csv* into
 
 Since our focus will be on Equities for this project, let's use Stocks that are components of the S&P 500 Index. One way to do this is to go to Barchart: [Barchart Website](https://www.barchart.com), create a free account and then navigate to the Indices Section and click on S&P Indices: [Barchart S&P 500 Index](https://www.barchart.com/stocks/indices/sp/sp500?viewName=main). Scroll down to the S&P 500 ETF Components section and click on *download* to export the csv. The file will look like: *sp-500-index-mm-dd-yyyy.csv* (mm: month, dd: day, yyyy: year). Let's rename it and save it as *SP500_Equities_Prices.csv* in the *Data_Files* folder. We will use this file to validate the *SP500_GICS_Combined.csv* file to make sure we have 2 sources that match the latest list of S&P 500 tickers.
 
-![S&P 500 GICS Combined Excel](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equities_Prices.jpg?raw=true)
+![S&P 500 GICS Combined Excel](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/SP500_Equities_Prices.jpg?raw=true)<br/><br/>
+
+:arrow_right: **Next:** [Data Warehouse Creation File Description](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/Create-Datawarehouse-Objects)
+
