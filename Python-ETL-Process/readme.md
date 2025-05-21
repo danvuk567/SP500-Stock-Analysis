@@ -942,4 +942,6 @@ And lastly, we validate if all the records have been loaded and close the sessio
             print(f"All {cnt_recs2} records were loaded into Yahoo_Equity_Prices database table!") 
 
         s1.close()  # Close the session
+<br/>
 
+:arrow_right: **Next:** [SQL Equity Performance Analysis](https://github.com/danvuk567/SP500-Stock-Analysis/tree/main/SQL-Equity-Performance-Analysis)
