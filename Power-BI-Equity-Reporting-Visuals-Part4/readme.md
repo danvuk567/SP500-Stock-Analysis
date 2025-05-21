@@ -18,5 +18,7 @@ The last visual is a **Treemap** called *Top 5 Annualized % Return by Sub-Indust
 
 Here is the final version of the *S&P 500 Equity Performance by Sector* report tab:
 
-![Power_BI_Equity_Report_4th_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_4th_tab.jpg?raw=true)
+![Power_BI_Equity_Report_4th_tab.jpg](https://github.com/danvuk567/SP500-Stock-Analysis/blob/main/images/Power_BI_Equity_Report_4th_tab.jpg?raw=true)<br/><br/>
+
+:arrow_right: **Back to:** [Home Page](https://github.com/danvuk567/SP500-Stock-Analysis)
 
